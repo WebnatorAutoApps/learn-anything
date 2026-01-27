@@ -1,0 +1,12 @@
+{
+  "name": "hello-world-static",
+  "version": "1.0.0",
+  "description": "A simple Hello World static HTML page",
+  "scripts": {
+    "build": "echo 'Static site - no build required'",
+    "start": "echo 'Static site - open index.html in browser'"
+  },
+  "keywords": ["html", "static", "hello-world"],
+  "author": "",
+  "license": "MIT"
+}
