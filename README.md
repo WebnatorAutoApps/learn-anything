@@ -1,210 +1,273 @@
-# Learn Anything
+# LearnAnything
 
-An AI-powered learning companion that helps you master any skill through personalized, project-based learning paths.
+A personalized learning companion that generates AI-powered, learn-by-doing plans adapted to your available time and learning goals.
 
-## Live Demo
-
-**Production URL**: [https://learn-anything-six.vercel.app](https://learn-anything-six.vercel.app)
+**Live Demo**: [https://learn-anything-six.vercel.app](https://learn-anything-six.vercel.app)
 
 ---
 
-## What is Learn Anything?
+## Project Overview
 
-Learn Anything is a learning platform that uses artificial intelligence to generate personalized learning paths for any skill you want to master. Whether it's programming, cooking, music, or any other skill, the app creates a structured roadmap of small, achievable projects that guide you from beginner to your desired skill level.
+LearnAnything addresses a fundamental problem in self-directed learning: the gap between wanting to learn something and knowing exactly what to do next. Traditional learning resources (courses, books, tutorials) are static and don't adapt to individual schedules, prior knowledge, or learning preferences.
 
-### The Problem
+This project builds a system where users can:
 
-Traditional learning often lacks structure and personalization. People struggle with:
-- Not knowing where to start
-- Feeling overwhelmed by the amount of content available
-- Lack of practical, hands-on projects
-- No clear milestones or progress tracking
-- Generic courses that don't fit their specific goals or timeline
+1. Select any topic they want to learn
+2. Receive an AI-generated, step-by-step learning plan
+3. Execute hands-on tasks designed to build real skills
+4. Adapt the plan based on available time
 
-### The Solution
-
-Learn Anything solves this by:
-1. **Understanding your goals** - What skill do you want to learn? What's your current level? How much time can you dedicate?
-2. **Generating a personalized path** - AI creates a custom learning roadmap based on your inputs
-3. **Project-based learning** - Each milestone is a small, practical project you complete
-4. **Flexible timelines** - Learn in 1 month or 12 months - the AI adapts the pace
-5. **Progress tracking** - Unlock skill levels as you complete projects
+The core differentiator is **learn-by-doing**: instead of passive content consumption, users receive actionable tasks that require active engagement.
 
 ---
 
-## How It Works
+## Product Goals
 
-### 1. Choose a Skill
-Select any skill you want to learn - the possibilities are endless:
-- **Programming**: Python, JavaScript, Rust, etc.
-- **Creative**: Cooking, Photography, Music Production
-- **Professional**: Public Speaking, Project Management
-- **Personal**: Fitness, Meditation, Language Learning
-
-### 2. Configure Your Learning Path
-Provide the AI with your parameters:
-- **Current Level**: Beginner, Intermediate, or Advanced
-- **Time Commitment**: How many hours per week can you dedicate?
-- **Duration**: Your target completion timeframe (e.g., 6 months)
-- **Goals/Comments**: Specific objectives like "I want to learn Python for AI" or "I want to cook Italian cuisine"
-
-### 3. Get Your Personalized Roadmap
-The AI generates a structured learning path with:
-- **Milestones**: Clear checkpoints marking your progress
-- **Projects**: Hands-on tasks to complete at regular intervals
-- **Resources**: Curated materials to support each project
-- **Timeline**: A realistic schedule based on your availability
-
-### 4. Learn by Doing
-Complete small projects at your own pace:
-- Each project builds on previous knowledge
-- Practical application reinforces learning
-- Regular achievements keep you motivated
-- Unlock skill levels as you progress
+1. **Reduce friction in starting to learn** - No more analysis paralysis about which course to take or book to read.
+2. **Enable learning in fragmented time** - Plans adapt whether you have 15 minutes or 2 hours.
+3. **Prioritize doing over reading** - Every learning step involves a concrete action or output.
+4. **Maintain context across sessions** - The system remembers where you are and what you've done.
 
 ---
 
-## Example: Learning Python for AI
+## Core Concepts
 
-**Input:**
-- Skill: Python
-- Current Level: Beginner
-- Time: 10 hours/week
-- Duration: 6 months
-- Goal: "I want to learn Python specifically for AI and machine learning"
+### Learn-by-Doing
 
-**Generated Path (Example):**
+Every learning step is an actionable task, not passive content. Instead of "Read about variables in Python," the system generates "Create a Python script that stores your name, age, and favorite color in variables, then prints a sentence using all three."
 
-| Week | Project | Skills Unlocked |
-|------|---------|-----------------|
-| 1-2 | Build a calculator CLI | Variables, Functions, Basic I/O |
-| 3-4 | Create a data parser | File handling, Data structures |
-| 5-6 | Web scraper project | Libraries, HTTP, JSON |
-| 7-8 | Data visualization dashboard | Pandas, Matplotlib |
-| 9-12 | ML classification model | NumPy, Scikit-learn |
-| 13-16 | Neural network from scratch | Math fundamentals, Backpropagation |
-| 17-20 | Image classifier with TensorFlow | Deep learning, CNNs |
-| 21-24 | Personal AI project | Integration, Deployment |
+The AI generates tasks that:
+- Require the learner to produce something (code, writing, analysis)
+- Build on previously completed tasks
+- Can be validated or self-assessed
 
----
+### Linear Plans
 
-## Tech Stack
+Learning paths are structured as linear sequences of steps. This design choice is intentional:
 
-- **Framework**: [Next.js](https://nextjs.org) 16 (App Router)
-- **Frontend**: React 19 with TypeScript
-- **Styling**: Tailwind CSS 4
-- **Fonts**: Geist Sans & Geist Mono
-- **Deployment**: Vercel with GitHub integration
-- **CI/CD**: GitHub Actions
+- **Reduces decision fatigue** - Users always know exactly what to do next
+- **Enables time-based adaptation** - Each step has an estimated duration
+- **Simplifies progress tracking** - Completion is binary per step
+
+Non-linear, branching curricula are explicitly out of scope. Users who want to skip ahead or explore tangents can start a new topic.
+
+### Time Adaptation
+
+Users specify how much time they have available. The system selects or adjusts tasks to fit that window:
+
+- **15 minutes**: Micro-tasks (review, quick exercises, short reading)
+- **30-60 minutes**: Standard learning tasks
+- **2+ hours**: Deep work sessions with multi-part projects
+
+Time adaptation happens at task selection, not by truncating tasks mid-execution.
 
 ---
 
-## Project Structure
+## Phase 1 Scope
+
+Phase 1 establishes the foundational infrastructure required before AI-powered learning can be implemented.
+
+### In Scope
+
+- **Authentication system** - Login/logout with session management
+- **Protected routes** - Only authenticated users access the main application
+- **Topic selection UI** - Users can view and select learning topics
+- **Terminal-inspired design system** - Consistent visual language (CRT aesthetic)
+- **Deployment infrastructure** - CI/CD pipeline, production hosting on Vercel
+- **Responsive layout** - Works on mobile, tablet, and desktop
+
+### Out of Scope (Phase 1)
+
+- AI integration or LLM API calls
+- Dynamic learning plan generation
+- User progress persistence (database)
+- Real user accounts (currently uses hardcoded test credentials)
+- Topic detail pages with actual learning content
+- Time-based task adaptation
+- User profile or settings
+- Multiple user support
+
+### Current Test Credentials
+
+For Phase 1 testing only:
+- Username: `test`
+- Password: `Learn1234!`
+
+---
+
+## High-Level Architecture
 
 ```
-src/
-├── app/
-│   ├── api/
-│   │   └── login/
-│   │       └── route.ts       # Authentication API endpoint
-│   ├── login/
-│   │   └── page.tsx           # Login page
-│   ├── page.tsx               # Home page (topic selection)
-│   ├── layout.tsx             # Root layout with metadata
-│   └── globals.css            # Global styles & terminal theme
-└── middleware.ts              # Route protection
+┌─────────────────────────────────────────────────────────────────┐
+│                         Client (Browser)                         │
+│                                                                  │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐   │
+│  │  Login Page  │  │  Home Page   │  │  Topic Pages (Future)│   │
+│  │              │  │  (Topics)    │  │                      │   │
+│  └──────────────┘  └──────────────┘  └──────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      Next.js Application                         │
+│                                                                  │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐   │
+│  │  Middleware  │  │  API Routes  │  │  Server Components   │   │
+│  │  (Auth)      │  │  /api/login  │  │                      │   │
+│  └──────────────┘  └──────────────┘  └──────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼ (Future)
+┌─────────────────────────────────────────────────────────────────┐
+│                      External Services                           │
+│                                                                  │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐   │
+│  │  Database    │  │  LLM API     │  │  Auth Provider       │   │
+│  │  (Future)    │  │  (Future)    │  │  (Future)            │   │
+│  └──────────────┘  └──────────────┘  └──────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
----
+### Technology Stack
 
-## Current Features
+| Layer | Technology | Purpose |
+|-------|------------|---------|
+| Framework | Next.js 16 | Server/client rendering, API routes, middleware |
+| UI Library | React 19 | Component-based UI |
+| Styling | Tailwind CSS 4 | Utility-first CSS |
+| Language | TypeScript 5 | Type safety |
+| Hosting | Vercel | Production deployment |
+| CI/CD | GitHub Actions | Build verification |
 
-- [x] Authentication system with route protection
-- [x] Home dashboard with topic selection
-- [x] Retro terminal-style UI theme
-- [x] Responsive design
-- [x] CI/CD pipeline with automated deployments
+### Key Files
 
----
-
-## Planned Features
-
-### Core Learning Experience
-- [ ] Topic detail pages with learning path configuration
-- [ ] AI-powered learning path generation
-- [ ] Project milestone system
-- [ ] Progress tracking and skill level unlocking
-- [ ] Timer/scheduling for project deadlines
-
-### User Management
-- [ ] User registration and profiles
-- [ ] Database integration for user data
-- [ ] OAuth authentication (Google, GitHub)
-- [ ] Password reset functionality
-
-### Content & Resources
-- [ ] Curated resource library per topic
-- [ ] Project templates and starter kits
-- [ ] Community-shared learning paths
-- [ ] Achievement badges and certificates
-
-### Analytics & Insights
-- [ ] Learning analytics dashboard
-- [ ] Time tracking per project
-- [ ] Skill progression visualization
-- [ ] Weekly/monthly progress reports
+| File | Purpose |
+|------|---------|
+| `src/app/page.tsx` | Home page with topic selection |
+| `src/app/login/page.tsx` | Authentication UI |
+| `src/app/api/login/route.ts` | Authentication endpoint |
+| `src/middleware.ts` | Route protection, session validation |
+| `src/app/globals.css` | Terminal-effect styling |
 
 ---
 
-## Getting Started
+## AI Responsibilities and Constraints
+
+AI is not integrated in Phase 1. This section documents how AI will be used in future phases.
+
+### AI Responsibilities (Future)
+
+1. **Generate learning plans** - Given a topic and user context, produce a sequence of learn-by-doing steps
+2. **Adapt to time constraints** - Select appropriate tasks for the available time window
+3. **Create actionable tasks** - Every generated step must be a concrete, completable action
+4. **Maintain difficulty progression** - Tasks should build on each other logically
+
+### AI Constraints (Future)
+
+1. **No open-ended conversations** - AI generates structured plans, not chat responses
+2. **No content creation at runtime** - Plans reference or generate specific tasks, not dynamic tutoring
+3. **Deterministic where possible** - Same inputs should produce consistent (if not identical) outputs
+4. **Transparent reasoning** - Users can see why a task was recommended
+
+### AI Will NOT
+
+- Replace human judgment on learning goals
+- Generate assessments or certifications
+- Provide real-time tutoring or Q&A
+- Make decisions about user skill level without explicit input
+
+---
+
+## Non-Goals and Explicit Exclusions
+
+The following are explicitly **not** goals of this project:
+
+1. **Social features** - No sharing, leaderboards, or community aspects
+2. **Content library** - We generate plans, not host educational content
+3. **Certification or credentials** - No badges, certificates, or verified completions
+4. **Mobile native apps** - Web-only, responsive design serves mobile users
+5. **Offline support** - Requires internet connection
+6. **Multi-language support** - English only for Phase 1
+7. **Accessibility beyond standard compliance** - Screen reader support is a future consideration
+8. **Gamification** - No points, streaks, or achievements
+9. **Instructor or mentor roles** - Single-user, self-directed learning only
+10. **Integration with external learning platforms** - Standalone system
+
+---
+
+## Future Phases (High-Level)
+
+### Phase 2: AI Integration
+
+- Connect to LLM API (likely Anthropic Claude)
+- Implement learning plan generation for a single topic
+- Basic time-based task selection
+- Store generated plans (not user progress)
+
+### Phase 3: Persistence and Accounts
+
+- Database integration (user data, progress, plans)
+- Real authentication (OAuth or email/password)
+- Progress tracking across sessions
+- Multiple topics per user
+
+### Phase 4: Refinement
+
+- Plan quality improvements based on user feedback
+- Additional topics and domains
+- Performance optimization
+- Expanded time adaptation logic
+
+---
+
+## Development
 
 ### Prerequisites
-- Node.js 20 or higher
-- npm, yarn, pnpm, or bun
 
-### Development
+- Node.js 20+
+- npm
 
-1. Clone the repository:
+### Setup
+
 ```bash
-git clone <repository-url>
-cd learn-anything
-```
-
-2. Install dependencies:
-```bash
+# Install dependencies
 npm install
-```
 
-3. Run the development server:
-```bash
+# Start development server
 npm run dev
-```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-### Test Credentials
-For development, use these hardcoded credentials:
-- **Username**: `test`
-- **Password**: `Learn1234!`
-
-### Build for Production
-```bash
+# Build for production
 npm run build
-npm start
+
+# Run linting
+npm run lint
 ```
+
+### Environment Variables
+
+None required for Phase 1. Future phases will require:
+
+- `ANTHROPIC_API_KEY` - For LLM API access
+- `DATABASE_URL` - For persistence layer
 
 ---
 
 ## Contributing
 
-This project follows a structured development workflow:
-1. Create a feature branch from `main`
-2. Implement the feature with proper TypeScript types
-3. Ensure `npm run build` passes
-4. Submit a pull request for review
+This project uses a Trello-based workflow:
+- Branches are named `trello/{card-id}-{description}`
+- All changes go through pull requests
+- CI must pass before merging
 
 ---
 
-## License
+## Document History
 
-This project is private and proprietary.
+This README is the authoritative source for product scope and architecture decisions. It should be updated when:
+
+- Phase scope changes
+- Architectural decisions are made
+- Non-goals are added or removed
+- New phases begin
+
+Last updated: Phase 1 development
