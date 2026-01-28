@@ -1,23 +1,37 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { updateSession } from "@/lib/supabase/middleware";
 
-const PUBLIC_PATHS = ["/login", "/api/login", "/signup"];
+const PUBLIC_PATHS = ["/login", "/api/login", "/signup", "/api/signup"];
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Allow public paths without authentication
   if (PUBLIC_PATHS.some((path) => pathname.startsWith(path))) {
     return NextResponse.next();
   }
 
-  const session = request.cookies.get("session");
+  // Check if Supabase is configured
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  if (!session || session.value !== "authenticated") {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    // Supabase not configured - redirect to login with a message
     const loginUrl = new URL("/login", request.url);
     return NextResponse.redirect(loginUrl);
   }
 
-  return NextResponse.next();
+  // Update and validate Supabase session
+  const { supabaseResponse, user } = await updateSession(request);
+
+  if (!user) {
+    // User is not authenticated, redirect to login
+    const loginUrl = new URL("/login", request.url);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  return supabaseResponse;
 }
 
 export const config = {
