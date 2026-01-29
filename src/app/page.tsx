@@ -9,6 +9,7 @@ export default function Home() {
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [userInitial, setUserInitial] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
 
@@ -21,6 +22,9 @@ export default function Home() {
           const data = await res.json();
           const name = data.profile?.full_name || data.profile?.email || "";
           setUserInitial(name.charAt(0).toUpperCase());
+          if (data.profile?.avatar_url) {
+            setAvatarUrl(data.profile.avatar_url);
+          }
         }
       } catch {
         // Profile fetch failed — avatar will remain blank
@@ -101,9 +105,18 @@ export default function Home() {
                 ref={avatarRef}
                 onClick={handleAvatarClick}
                 onMouseEnter={handleAvatarMouseEnter}
-                className="h-10 w-10 rounded-full border-2 border-green-500 flex items-center justify-center text-green-400 font-semibold cursor-pointer hover:border-green-400 hover:bg-green-950/50 transition-colors"
+                className="h-10 w-10 rounded-full border-2 border-green-500 flex items-center justify-center text-green-400 font-semibold cursor-pointer hover:border-green-400 hover:bg-green-950/50 transition-colors overflow-hidden"
               >
-                {userInitial}
+                {avatarUrl ? (
+                  <img
+                    src={avatarUrl}
+                    alt="Profile"
+                    className="h-full w-full object-cover"
+                    referrerPolicy="no-referrer"
+                  />
+                ) : (
+                  userInitial
+                )}
               </div>
 
               {/* Dropdown Menu */}
