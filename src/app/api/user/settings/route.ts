@@ -33,6 +33,7 @@ export async function PUT(request: Request) {
       .eq("id", user.id);
 
     if (updateError) {
+      console.error("Settings update error:", updateError);
       return NextResponse.json(
         { success: false, error: "Failed to update settings" },
         { status: 500 }
