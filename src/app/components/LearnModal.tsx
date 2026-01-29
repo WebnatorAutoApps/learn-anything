@@ -103,6 +103,14 @@ export default function LearnModal({ onClose, onCourseCreated }: LearnModalProps
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
+  // Low likelihood warning state
+  const [showLowLikelihood, setShowLowLikelihood] = useState(false);
+  const [lowLikelihoodData, setLowLikelihoodData] = useState<{
+    likelihood: number;
+    title: string;
+    message: string;
+  } | null>(null);
+
   // Tracks the message index where each step's system question lives.
   // This allows us to truncate the chat correctly when editing, even if
   // extra messages were inserted (e.g. module-count validation re-prompts).
@@ -322,6 +330,18 @@ export default function LearnModal({ onClose, onCourseCreated }: LearnModalProps
       });
 
       const data = await res.json();
+
+      // Handle low likelihood response
+      if (data.low_likelihood) {
+        setShowConfirmation(false);
+        setLowLikelihoodData({
+          likelihood: data.likelihood_of_learning,
+          title: data.normalized_title,
+          message: data.error,
+        });
+        setShowLowLikelihood(true);
+        return;
+      }
 
       if (!res.ok || !data.success) {
         setSubmitError(data.error || "Something went wrong. Please try again.");
@@ -751,6 +771,73 @@ export default function LearnModal({ onClose, onCourseCreated }: LearnModalProps
                 className="px-6 py-2 rounded-lg bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? "Creating..." : "Confirm"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Low likelihood warning dialog */}
+      {showLowLikelihood && lowLikelihoodData && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/80" />
+          <div className="relative z-10 w-full max-w-lg mx-4 rounded-lg border border-yellow-700/60 bg-green-950/95 shadow-lg shadow-yellow-900/20">
+            {/* Header */}
+            <div className="flex items-center gap-3 border-b border-yellow-700/40 px-6 py-4">
+              <svg
+                className="h-6 w-6 text-yellow-500 shrink-0"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+              <h3 className="text-lg font-semibold text-yellow-400 tracking-wide">
+                Low Likelihood of Success
+              </h3>
+            </div>
+
+            {/* Content */}
+            <div className="px-6 py-5 space-y-4">
+              <div className="flex items-center gap-3">
+                <span className="text-yellow-500 text-3xl font-bold">
+                  {lowLikelihoodData.likelihood}%
+                </span>
+                <span className="text-green-500 text-sm">
+                  likelihood of meaningful progress
+                </span>
+              </div>
+
+              <p className="text-green-300 text-sm leading-relaxed">
+                {lowLikelihoodData.message}
+              </p>
+
+              <div className="rounded border border-yellow-700/30 bg-yellow-900/10 px-4 py-3">
+                <p className="text-yellow-400/80 text-xs uppercase tracking-wider font-semibold mb-1">
+                  Suggestions
+                </p>
+                <ul className="text-green-400 text-sm space-y-1 list-disc list-inside">
+                  <li>Break the goal into smaller, more specific skills</li>
+                  <li>Focus on a hands-on, project-based aspect of the topic</li>
+                  <li>Adjust expectations or increase the number of modules</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="flex justify-end gap-3 border-t border-yellow-700/40 px-6 py-4">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowLowLikelihood(false);
+                  setLowLikelihoodData(null);
+                }}
+                className="px-6 py-2 rounded-lg bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors"
+              >
+                Edit Learning Plan
               </button>
             </div>
           </div>

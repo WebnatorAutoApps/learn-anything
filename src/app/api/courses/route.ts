@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { generateMockResponse } from "@/lib/gemini/mock";
+import { createLLMProvider, LIKELIHOOD_THRESHOLD } from "@/lib/llm";
 
 export async function POST(request: Request) {
   try {
@@ -34,8 +34,28 @@ export async function POST(request: Request) {
       );
     }
 
-    // Call mock Gemini service (will be replaced with real API later)
-    const geminiResponse = generateMockResponse({
+    // Fetch the user's Gemini API key from their profile
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("gemini_api_key")
+      .eq("id", user.id)
+      .single();
+
+    if (profileError || !profile?.gemini_api_key) {
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            "No Gemini API key found. Please add your API key in Settings.",
+        },
+        { status: 400 }
+      );
+    }
+
+    // Call Gemini via the LLM provider abstraction
+    const provider = createLLMProvider("gemini", profile.gemini_api_key);
+
+    const llmResponse = await provider.generateCourse({
       learning_goal_short: whatToLearn,
       learning_goal_long: openDetail,
       expertise_level: currentExpertise,
@@ -43,18 +63,29 @@ export async function POST(request: Request) {
       number_of_modules: totalModules,
     });
 
+    // Check likelihood threshold — don't store courses unlikely to succeed
+    if (llmResponse.likelihood_of_learning < LIKELIHOOD_THRESHOLD) {
+      return NextResponse.json({
+        success: false,
+        low_likelihood: true,
+        likelihood_of_learning: llmResponse.likelihood_of_learning,
+        normalized_title: llmResponse.normalized_title,
+        error: `This learning goal has a low likelihood of success (${llmResponse.likelihood_of_learning}%). The AI determined that meaningful progress through small practical projects is unlikely for this goal. Consider refining your learning goal, adjusting the scope, or choosing a more project-oriented skill.`,
+      });
+    }
+
     // Store course in database
     const { data: course, error: courseError } = await supabase
       .from("courses")
       .insert({
         user_id: user.id,
-        normalized_title: geminiResponse.normalized_title,
+        normalized_title: llmResponse.normalized_title,
         learning_goal: whatToLearn,
         learning_goal_details: openDetail,
         expertise_level: currentExpertise,
         expertise_details: expertiseDetail || null,
-        expected_skill_level: geminiResponse.expected_skill_level,
-        likelihood_of_learning: geminiResponse.likelihood_of_learning,
+        expected_skill_level: llmResponse.expected_skill_level,
+        likelihood_of_learning: llmResponse.likelihood_of_learning,
         total_modules: totalModules,
       })
       .select("id")
@@ -69,7 +100,7 @@ export async function POST(request: Request) {
     }
 
     // Insert all modules
-    const modulesData = geminiResponse.program.map((mod) => ({
+    const modulesData = llmResponse.program.map((mod) => ({
       course_id: course.id,
       module_index: mod.module_index,
       title: mod.module_title,
@@ -98,7 +129,7 @@ export async function POST(request: Request) {
     }
 
     // Insert all projects
-    const projectsData = geminiResponse.program.flatMap((mod) =>
+    const projectsData = llmResponse.program.flatMap((mod) =>
       mod.projects.map((proj, projIdx) => ({
         module_id: moduleIdMap.get(mod.module_index)!,
         project_index: projIdx + 1,
@@ -126,16 +157,18 @@ export async function POST(request: Request) {
       success: true,
       course: {
         id: course.id,
-        normalized_title: geminiResponse.normalized_title,
-        expected_skill_level: geminiResponse.expected_skill_level,
-        likelihood_of_learning: geminiResponse.likelihood_of_learning,
+        normalized_title: llmResponse.normalized_title,
+        expected_skill_level: llmResponse.expected_skill_level,
+        likelihood_of_learning: llmResponse.likelihood_of_learning,
         total_modules: totalModules,
       },
     });
   } catch (error) {
     console.error("Course creation error:", error);
+    const message =
+      error instanceof Error ? error.message : "An unexpected error occurred";
     return NextResponse.json(
-      { success: false, error: "An unexpected error occurred" },
+      { success: false, error: message },
       { status: 500 }
     );
   }
