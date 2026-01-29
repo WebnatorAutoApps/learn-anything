@@ -1,7 +1,7 @@
 import { LLMProvider, LearningRequest, LLMResponse } from "./types";
 import { SYSTEM_PROMPT, buildUserPrompt } from "./prompt";
 
-const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
 
 export class GeminiProvider implements LLMProvider {
   private apiKey: string;
