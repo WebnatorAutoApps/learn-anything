@@ -19,7 +19,7 @@ export async function GET() {
 
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("id, full_name, email, avatar_url, created_at, updated_at")
+      .select("id, full_name, email, avatar_url, gemini_api_key, created_at, updated_at")
       .eq("id", user.id)
       .single();
 
@@ -30,7 +30,16 @@ export async function GET() {
       );
     }
 
-    return NextResponse.json({ success: true, profile });
+    // Mask the API key before returning — only show last 4 characters
+    const maskedProfile = {
+      ...profile,
+      gemini_api_key: profile.gemini_api_key
+        ? "••••••••" + profile.gemini_api_key.slice(-4)
+        : null,
+      has_gemini_api_key: !!profile.gemini_api_key,
+    };
+
+    return NextResponse.json({ success: true, profile: maskedProfile });
   } catch (error) {
     console.error("User fetch error:", error);
     return NextResponse.json(

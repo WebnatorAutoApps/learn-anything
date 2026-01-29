@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import LearnModal from "./components/LearnModal";
+import SettingsModal from "./components/SettingsModal";
 
 export default function Home() {
   const router = useRouter();
@@ -12,6 +13,7 @@ export default function Home() {
   const [userInitial, setUserInitial] = useState("");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [showLearnModal, setShowLearnModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
 
@@ -62,6 +64,11 @@ export default function Home() {
 
   function handleMenuMouseLeave() {
     setIsMenuOpen(false);
+  }
+
+  function handleSettingsClick() {
+    setIsMenuOpen(false);
+    setShowSettingsModal(true);
   }
 
   function handleLogoutClick() {
@@ -128,6 +135,23 @@ export default function Home() {
                   onMouseLeave={handleMenuMouseLeave}
                   className="absolute right-0 top-full mt-2 w-48 rounded-lg border border-green-900/60 bg-green-950/95 shadow-lg shadow-green-900/20 overflow-hidden"
                 >
+                  <button
+                    onClick={handleSettingsClick}
+                    className="w-full px-4 py-3 text-left text-green-400 hover:bg-green-900/50 transition-colors flex items-center gap-2"
+                  >
+                    <svg
+                      className="h-4 w-4"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                    </svg>
+                    Settings
+                  </button>
                   <button
                     onClick={handleLogoutClick}
                     className="w-full px-4 py-3 text-left text-green-400 hover:bg-green-900/50 transition-colors flex items-center gap-2"
@@ -231,6 +255,11 @@ export default function Home() {
           </button>
         </div>
       </main>
+
+      {/* Settings Modal */}
+      {showSettingsModal && (
+        <SettingsModal onClose={() => setShowSettingsModal(false)} />
+      )}
 
       {/* Learn Something New Modal */}
       {showLearnModal && (
