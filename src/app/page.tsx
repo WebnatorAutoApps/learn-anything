@@ -16,12 +16,22 @@ export default function Home() {
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [profileLoading, setProfileLoading] = useState(true);
   const [profileError, setProfileError] = useState(false);
+  const [courses, setCourses] = useState<Array<{
+    id: string;
+    normalized_title: string;
+    expected_skill_level: string;
+    likelihood_of_learning: number;
+    total_modules: number;
+    status: string;
+    created_at: string;
+  }>>([]);
   const menuRef = useRef<HTMLDivElement>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
 
-  // Fetch user profile on mount
+  // Fetch user profile and courses on mount
   useEffect(() => {
     fetchProfile();
+    fetchCourses();
   }, []);
 
   async function fetchProfile() {
@@ -43,6 +53,18 @@ export default function Home() {
       setProfileError(true);
     } finally {
       setProfileLoading(false);
+    }
+  }
+
+  async function fetchCourses() {
+    try {
+      const res = await fetch("/api/courses");
+      if (res.ok) {
+        const data = await res.json();
+        setCourses(data.courses || []);
+      }
+    } catch {
+      // Courses fetch failure is non-critical
     }
   }
 
@@ -231,39 +253,28 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {/* Python Button */}
-          <button className="group relative overflow-hidden rounded-lg border border-green-900/60 bg-green-950/20 p-6 text-left transition-all hover:shadow-[0_0_15px_rgba(0,255,65,0.15)] hover:border-green-500/70 hover:bg-green-950/40">
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-green-800/50 bg-green-950/50">
-                <span className="text-2xl">🐍</span>
+          {courses.map((course) => (
+            <button
+              key={course.id}
+              className="group relative overflow-hidden rounded-lg border border-green-900/60 bg-green-950/20 p-6 text-left transition-all hover:shadow-[0_0_15px_rgba(0,255,65,0.15)] hover:border-green-500/70 hover:bg-green-950/40"
+            >
+              <div className="flex items-center gap-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-green-800/50 bg-green-950/50">
+                  <span className="text-lg font-bold text-green-400">
+                    {course.normalized_title.charAt(0)}
+                  </span>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-lg font-semibold text-green-400 truncate">
+                    {course.normalized_title}
+                  </h3>
+                  <p className="text-sm text-green-700">
+                    {course.total_modules} modules
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-lg font-semibold text-green-400">
-                  Python
-                </h3>
-                <p className="text-sm text-green-700">
-                  Programming Language
-                </p>
-              </div>
-            </div>
-          </button>
-
-          {/* AI Button */}
-          <button className="group relative overflow-hidden rounded-lg border border-green-900/60 bg-green-950/20 p-6 text-left transition-all hover:shadow-[0_0_15px_rgba(0,255,65,0.15)] hover:border-green-500/70 hover:bg-green-950/40">
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-green-800/50 bg-green-950/50">
-                <span className="text-2xl">🤖</span>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-green-400">
-                  AI
-                </h3>
-                <p className="text-sm text-green-700">
-                  Artificial Intelligence
-                </p>
-              </div>
-            </div>
-          </button>
+            </button>
+          ))}
 
           {/* Add New Button */}
           <button
@@ -304,7 +315,10 @@ export default function Home() {
 
       {/* Learn Something New Modal */}
       {showLearnModal && (
-        <LearnModal onClose={() => setShowLearnModal(false)} />
+        <LearnModal
+          onClose={() => setShowLearnModal(false)}
+          onCourseCreated={fetchCourses}
+        />
       )}
 
       {/* Logout Confirmation Dialog */}

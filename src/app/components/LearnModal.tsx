@@ -25,6 +25,7 @@ type CommitmentFrequency = (typeof COMMITMENT_FREQUENCIES)[number];
 
 interface LearnModalProps {
   onClose: () => void;
+  onCourseCreated?: () => void;
 }
 
 type StepKey =
@@ -78,7 +79,7 @@ const QUESTIONS: Record<Exclude<StepKey, "done">, string> = {
   duration: "Last one — how long do you want to commit to this goal?",
 };
 
-export default function LearnModal({ onClose }: LearnModalProps) {
+export default function LearnModal({ onClose, onCourseCreated }: LearnModalProps) {
   const [step, setStep] = useState<StepKey>("topic");
   const [messages, setMessages] = useState<Message[]>([
     { role: "system", text: QUESTIONS.topic },
@@ -99,6 +100,8 @@ export default function LearnModal({ onClose }: LearnModalProps) {
   // Confirmation dialog state
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [planData, setPlanData] = useState<LearningPlanData | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   // Tracks the message index where each step's system question lives.
   // This allows us to truncate the chat correctly when editing, even if
@@ -304,6 +307,34 @@ export default function LearnModal({ onClose }: LearnModalProps) {
       totalModules: modules,
     });
     setShowConfirmation(true);
+  }
+
+  async function handleConfirmSubmit() {
+    if (!planData) return;
+    setIsSubmitting(true);
+    setSubmitError("");
+
+    try {
+      const res = await fetch("/api/courses", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(planData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        setSubmitError(data.error || "Something went wrong. Please try again.");
+        return;
+      }
+
+      onCourseCreated?.();
+      onClose();
+    } catch {
+      setSubmitError("Network error. Please check your connection and try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   // Determine what input to show for the current step
@@ -694,14 +725,32 @@ export default function LearnModal({ onClose }: LearnModalProps) {
               </div>
             </div>
 
+            {/* Error message */}
+            {submitError && (
+              <div className="px-6">
+                <p className="text-red-400 text-sm bg-red-950/30 border border-red-900/40 rounded px-3 py-2">
+                  {submitError}
+                </p>
+              </div>
+            )}
+
             {/* Footer */}
             <div className="flex justify-end gap-3 border-t border-green-900/40 px-6 py-4">
               <button
                 type="button"
                 onClick={() => setShowConfirmation(false)}
-                className="px-4 py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/30 transition-colors text-sm"
+                disabled={isSubmitting}
+                className="px-4 py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/30 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Go Back
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmSubmit}
+                disabled={isSubmitting}
+                className="px-6 py-2 rounded-lg bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? "Creating..." : "Confirm"}
               </button>
             </div>
           </div>
