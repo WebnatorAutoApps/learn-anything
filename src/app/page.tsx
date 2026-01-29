@@ -256,6 +256,7 @@ export default function Home() {
           {courses.map((course) => (
             <button
               key={course.id}
+              onClick={() => router.push(`/course/${course.id}`)}
               className="group relative overflow-hidden rounded-lg border border-green-900/60 bg-green-950/20 p-6 text-left transition-all hover:shadow-[0_0_15px_rgba(0,255,65,0.15)] hover:border-green-500/70 hover:bg-green-950/40"
             >
               <div className="flex items-center gap-4">
