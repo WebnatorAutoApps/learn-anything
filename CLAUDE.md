@@ -1,0 +1,119 @@
+# CLAUDE.md
+
+Project guidelines and conventions for AI-assisted development.
+
+## Tech Stack
+
+- **Framework**: Next.js 16, React 19, TypeScript 5
+- **Styling**: Tailwind CSS 4
+- **Backend**: Supabase (PostgreSQL 17, Auth, RLS)
+- **Hosting**: Vercel
+- **CI**: GitHub Actions
+
+## Commands
+
+```bash
+npm install          # Install dependencies
+npm run dev          # Start dev server (http://localhost:3000)
+npm run build        # Production build
+npm run lint         # Run ESLint
+```
+
+## Database & Migrations
+
+Migrations live in `supabase/migrations/` and are ordered by filename timestamp.
+
+### Automatic migration deployment
+
+Migrations are **automatically applied to production** when a PR is merged to `main`. The CI pipeline (`migrate` job in `.github/workflows/ci.yml`) runs `supabase db push` after a successful build.
+
+This requires three GitHub repository settings:
+
+| Setting | Type | Where to get it |
+|---------|------|-----------------|
+| `SUPABASE_ACCESS_TOKEN` | Secret | [Supabase Dashboard > Account > Access Tokens](https://supabase.com/dashboard/account/tokens) |
+| `SUPABASE_DB_PASSWORD` | Secret | Your project's database password (set during project creation) |
+| `SUPABASE_PROJECT_REF` | Secret | The project ref from your Supabase project URL (e.g., `kxdkmywttkhwpixpvqhq`) |
+
+Set secrets at: **GitHub repo > Settings > Secrets and variables > Actions** (or at org level)
+
+### Manual migration push (if needed)
+
+```bash
+# Link to your Supabase project (one-time setup)
+supabase link --project-ref <project-ref>
+
+# Push migrations to the remote database
+supabase db push
+```
+
+### Rules for migrations
+
+- Migration filenames use the format `YYYYMMDDHHMMSS_description.sql`. The timestamp determines execution order.
+- Make sure the timestamp on a new migration is **later** than all existing ones so it runs last.
+- Never modify an already-applied migration. Create a new migration to alter existing schema.
+- Test migrations locally with `supabase start` and `supabase db reset` before pushing.
+
+### Local Supabase
+
+```bash
+supabase start       # Start local Supabase (Postgres, Auth, Studio)
+supabase db reset    # Reset local DB and re-run all migrations
+supabase stop        # Stop local services
+```
+
+Local services:
+- API: `localhost:54321`
+- Studio: `localhost:54323`
+- DB: `localhost:54322`
+
+## Environment Variables
+
+Required in `.env.local`:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=<supabase-project-url>
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<supabase-anon-key>
+```
+
+## Project Structure
+
+```
+src/
+  app/
+    page.tsx                    # Dashboard (main page, protected)
+    login/page.tsx              # Login page
+    signup/page.tsx             # Signup page
+    components/                 # Shared components (LearnModal, SettingsModal)
+    api/
+      user/route.ts             # GET user profile
+      user/settings/route.ts    # PUT user settings (API key)
+      login/route.ts            # POST login
+      signup/route.ts           # POST signup
+      logout/route.ts           # POST logout
+    auth/callback/route.ts      # OAuth callback
+  lib/supabase/
+    client.ts                   # Browser Supabase client
+    server.ts                   # Server Supabase client
+    middleware.ts               # Session refresh logic
+  middleware.ts                 # Route protection
+supabase/
+  config.toml                   # Local Supabase config
+  migrations/                   # Database migrations (ordered by timestamp)
+```
+
+## Auth Flow
+
+1. User logs in via email/password or Google OAuth
+2. Supabase sets session cookies
+3. Middleware (`src/middleware.ts`) validates session on every request
+4. Protected routes redirect to `/login` if no session
+5. `/api/user` fetches profile from `profiles` table (auto-creates if missing)
+
+## Conventions
+
+- Terminal/CRT green theme throughout the UI
+- All protected API routes verify auth via `supabase.auth.getUser()`
+- RLS policies on all tables — never bypass RLS from client code
+- Branches named `trello/{card-id}-{description}`
+- All changes go through pull requests; CI must pass before merging

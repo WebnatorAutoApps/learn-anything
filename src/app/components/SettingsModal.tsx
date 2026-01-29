@@ -29,9 +29,11 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
             setHasExistingKey(true);
             setMaskedKey(data.profile.gemini_api_key);
           }
+        } else {
+          setMessage({ type: "error", text: "Failed to load settings. Please try again later." });
         }
       } catch {
-        // Failed to load settings
+        setMessage({ type: "error", text: "Failed to load settings. Please try again later." });
       } finally {
         setIsLoading(false);
       }

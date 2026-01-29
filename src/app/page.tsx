@@ -14,28 +14,37 @@ export default function Home() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [showLearnModal, setShowLearnModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [profileLoading, setProfileLoading] = useState(true);
+  const [profileError, setProfileError] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
 
   // Fetch user profile on mount
   useEffect(() => {
-    async function fetchProfile() {
-      try {
-        const res = await fetch("/api/user");
-        if (res.ok) {
-          const data = await res.json();
-          const name = data.profile?.full_name || data.profile?.email || "";
-          setUserInitial(name.charAt(0).toUpperCase());
-          if (data.profile?.avatar_url) {
-            setAvatarUrl(data.profile.avatar_url);
-          }
-        }
-      } catch {
-        // Profile fetch failed — avatar will remain blank
-      }
-    }
     fetchProfile();
   }, []);
+
+  async function fetchProfile() {
+    setProfileLoading(true);
+    setProfileError(false);
+    try {
+      const res = await fetch("/api/user");
+      if (res.ok) {
+        const data = await res.json();
+        const name = data.profile?.full_name || data.profile?.email || "";
+        setUserInitial(name.charAt(0).toUpperCase());
+        if (data.profile?.avatar_url) {
+          setAvatarUrl(data.profile.avatar_url);
+        }
+      } else {
+        setProfileError(true);
+      }
+    } catch {
+      setProfileError(true);
+    } finally {
+      setProfileLoading(false);
+    }
+  }
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -176,6 +185,37 @@ export default function Home() {
           </div>
         </div>
       </header>
+
+      {/* Error Banner */}
+      {profileError && (
+        <div className="relative z-20 border-b border-red-900/50 bg-red-950/30 px-4 sm:px-6 lg:px-8 py-4">
+          <div className="mx-auto max-w-7xl flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 text-red-400">
+              <svg
+                className="h-5 w-5 flex-shrink-0"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="text-sm">
+                We&apos;re having trouble right now. Some features may not work properly.
+              </span>
+            </div>
+            <button
+              onClick={fetchProfile}
+              disabled={profileLoading}
+              className="flex-shrink-0 rounded-md border border-red-900/60 px-3 py-1 text-xs text-red-400 hover:bg-red-900/30 transition-colors disabled:opacity-50"
+            >
+              {profileLoading ? "Retrying..." : "Retry"}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Body */}
       <main className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
