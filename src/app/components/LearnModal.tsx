@@ -41,6 +41,31 @@ interface Message {
   text: string;
 }
 
+interface LearningPlanData {
+  whatToLearn: string;
+  openDetail: string;
+  currentExpertise: ExpertiseLevel;
+  expertiseDetail: string;
+  totalModules: number;
+}
+
+const SESSIONS_PER_MONTH: Record<CommitmentFrequency, number> = {
+  Daily: 30,
+  "Every 3 days": 10,
+  Weekly: 4,
+  "Bi-weekly": 2,
+  Monthly: 1,
+};
+
+const MIN_MODULES = 5;
+
+function calculateModules(
+  commitment: CommitmentFrequency,
+  durationMonths: number
+): number {
+  return SESSIONS_PER_MONTH[commitment] * durationMonths;
+}
+
 const QUESTIONS: Record<Exclude<StepKey, "done">, string> = {
   topic:
     "Hey! I'm here to help you start a new learning journey. What do you want to learn?",
@@ -70,6 +95,10 @@ export default function LearnModal({ onClose }: LearnModalProps) {
 
   // Tracks whether we're waiting for the next question to appear
   const [isTyping, setIsTyping] = useState(false);
+
+  // Confirmation dialog state
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [planData, setPlanData] = useState<LearningPlanData | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -149,17 +178,54 @@ export default function LearnModal({ onClose }: LearnModalProps) {
   function handleDurationSelect(months: number) {
     setDuration(months);
     const label = months === 1 ? "1 month" : `${months} months`;
+
+    // Validate module count
+    if (commitment) {
+      const modules = calculateModules(
+        commitment as CommitmentFrequency,
+        months
+      );
+      if (modules < MIN_MODULES) {
+        // Add the user's answer, then show a warning and re-prompt from commitment
+        setMessages((prev) => [...prev, { role: "user", text: label }]);
+        setInputValue("");
+        setIsTyping(true);
+        setTimeout(() => {
+          setMessages((prev) => [
+            ...prev,
+            {
+              role: "system",
+              text: `That combination only gives ${modules} module${modules === 1 ? "" : "s"}, but we need at least ${MIN_MODULES} for the program to work. Let's try again — how often can you dedicate time to this?`,
+            },
+          ]);
+          setIsTyping(false);
+          setStep("commitment");
+          setCommitment("");
+          setDuration("");
+        }, 600);
+        return;
+      }
+    }
+
     advanceToStep("done", label);
   }
 
   function handleBegin() {
-    // TODO: handle form submission in a future iteration
-    void topic;
-    void details;
-    void expertise;
-    void expertiseDetails;
-    void commitment;
-    void duration;
+    if (!commitment || !duration || !expertise) return;
+
+    const modules = calculateModules(
+      commitment as CommitmentFrequency,
+      duration as number
+    );
+
+    setPlanData({
+      whatToLearn: topic,
+      openDetail: details,
+      currentExpertise: expertise as ExpertiseLevel,
+      expertiseDetail: expertiseDetails || "(none)",
+      totalModules: modules,
+    });
+    setShowConfirmation(true);
   }
 
   // Determine what input to show for the current step
@@ -323,107 +389,207 @@ export default function LearnModal({ onClose }: LearnModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/70" />
+    <>
+      <div className="fixed inset-0 z-50 flex items-center justify-center">
+        {/* Backdrop */}
+        <div className="absolute inset-0 bg-black/70" />
 
-      {/* Modal */}
-      <div className="relative z-10 w-full max-w-2xl mx-4 flex flex-col max-h-[90vh] rounded-lg border border-green-900/60 bg-green-950/95 shadow-lg shadow-green-900/30">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-green-900/40 px-6 py-4">
-          <h3 className="text-lg font-semibold text-green-400 tracking-wide">
-            <span className="text-green-600">{">"}</span> Start a New Learning
-            Path
-          </h3>
-          <button
-            onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-md text-green-600 hover:text-green-400 hover:bg-green-900/40 transition-colors"
-            aria-label="Close"
-          >
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+        {/* Modal */}
+        <div className="relative z-10 w-full max-w-2xl mx-4 flex flex-col max-h-[90vh] rounded-lg border border-green-900/60 bg-green-950/95 shadow-lg shadow-green-900/30">
+          {/* Header */}
+          <div className="flex items-center justify-between border-b border-green-900/40 px-6 py-4">
+            <h3 className="text-lg font-semibold text-green-400 tracking-wide">
+              <span className="text-green-600">{">"}</span> Start a New Learning
+              Path
+            </h3>
+            <button
+              onClick={onClose}
+              className="flex h-8 w-8 items-center justify-center rounded-md text-green-600 hover:text-green-400 hover:bg-green-900/40 transition-colors"
+              aria-label="Close"
             >
-              <path d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
+              <svg
+                className="h-5 w-5"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
 
-        {/* Chat area */}
-        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4 min-h-[300px]">
-          {messages.map((msg, i) => (
-            <div
-              key={i}
-              className={`chat-message flex ${
-                msg.role === "user" ? "justify-end" : "justify-start"
-              }`}
-            >
+          {/* Chat area */}
+          <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4 min-h-[300px]">
+            {messages.map((msg, i) => (
               <div
-                className={`max-w-[80%] rounded-lg px-4 py-2.5 ${
-                  msg.role === "system"
-                    ? "bg-green-900/30 text-green-300 border border-green-900/40"
-                    : "bg-green-600/20 text-green-400 border border-green-600/30"
+                key={i}
+                className={`chat-message flex ${
+                  msg.role === "user" ? "justify-end" : "justify-start"
                 }`}
               >
-                {msg.text}
+                <div
+                  className={`max-w-[80%] rounded-lg px-4 py-2.5 ${
+                    msg.role === "system"
+                      ? "bg-green-900/30 text-green-300 border border-green-900/40"
+                      : "bg-green-600/20 text-green-400 border border-green-600/30"
+                  }`}
+                >
+                  {msg.text}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
 
-          {/* Typing indicator */}
-          {isTyping && (
-            <div className="flex justify-start">
-              <div className="bg-green-900/30 text-green-500 border border-green-900/40 rounded-lg px-4 py-2.5">
-                <span className="typing-dots">
-                  <span className="dot">.</span>
-                  <span className="dot">.</span>
-                  <span className="dot">.</span>
-                </span>
+            {/* Typing indicator */}
+            {isTyping && (
+              <div className="flex justify-start">
+                <div className="bg-green-900/30 text-green-500 border border-green-900/40 rounded-lg px-4 py-2.5">
+                  <span className="typing-dots">
+                    <span className="dot">.</span>
+                    <span className="dot">.</span>
+                    <span className="dot">.</span>
+                  </span>
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Begin button when conversation is complete */}
-          {step === "done" && (
-            <div className="chat-message flex flex-col items-center gap-4 pt-4">
-              <p className="text-green-500 text-sm text-center">
-                All set! Ready to start your learning journey?
-              </p>
-              <button
-                type="button"
-                onClick={handleBegin}
-                className="px-8 py-3 rounded-lg bg-green-600 text-black font-semibold text-lg hover:bg-green-500 transition-colors shadow-lg shadow-green-900/40"
-              >
-                Begin
-              </button>
-            </div>
-          )}
+            {/* Begin button when conversation is complete */}
+            {step === "done" && (
+              <div className="chat-message flex flex-col items-center gap-4 pt-4">
+                <p className="text-green-500 text-sm text-center">
+                  All set! Ready to start your learning journey?
+                </p>
+                <button
+                  type="button"
+                  onClick={handleBegin}
+                  className="px-8 py-3 rounded-lg bg-green-600 text-black font-semibold text-lg hover:bg-green-500 transition-colors shadow-lg shadow-green-900/40"
+                >
+                  Begin
+                </button>
+              </div>
+            )}
 
-          <div ref={messagesEndRef} />
-        </div>
+            <div ref={messagesEndRef} />
+          </div>
 
-        {/* Input area */}
-        <div className="border-t border-green-900/40 px-6 py-4">
-          {step !== "done" && !isTyping ? (
-            renderInput()
-          ) : step === "done" ? (
-            <div className="flex justify-end">
-              <button
-                type="button"
-                onClick={onClose}
-                className="px-4 py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/30 transition-colors text-sm"
-              >
-                Cancel
-              </button>
-            </div>
-          ) : null}
+          {/* Input area */}
+          <div className="border-t border-green-900/40 px-6 py-4">
+            {step !== "done" && !isTyping ? (
+              renderInput()
+            ) : step === "done" ? (
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="px-4 py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/30 transition-colors text-sm"
+                >
+                  Cancel
+                </button>
+              </div>
+            ) : null}
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Confirmation dialog */}
+      {showConfirmation && planData && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/80"
+            onClick={() => setShowConfirmation(false)}
+          />
+          <div className="relative z-10 w-full max-w-lg mx-4 rounded-lg border border-green-900/60 bg-green-950/95 shadow-lg shadow-green-900/30">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-green-900/40 px-6 py-4">
+              <h3 className="text-lg font-semibold text-green-400 tracking-wide">
+                <span className="text-green-600">{">"}</span> Learning Plan
+                Summary
+              </h3>
+              <button
+                onClick={() => setShowConfirmation(false)}
+                className="flex h-8 w-8 items-center justify-center rounded-md text-green-600 hover:text-green-400 hover:bg-green-900/40 transition-colors"
+                aria-label="Close"
+              >
+                <svg
+                  className="h-5 w-5"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Plan data */}
+            <div className="px-6 py-5 space-y-4">
+              <p className="text-green-500 text-sm mb-4">
+                This data will be sent to the LLM to generate your learning
+                plan:
+              </p>
+
+              <div className="space-y-3">
+                <div className="rounded border border-green-900/40 bg-green-900/20 px-4 py-3">
+                  <span className="text-green-600 text-xs uppercase tracking-wider font-semibold">
+                    What to learn
+                  </span>
+                  <p className="text-green-300 mt-1">{planData.whatToLearn}</p>
+                </div>
+
+                <div className="rounded border border-green-900/40 bg-green-900/20 px-4 py-3">
+                  <span className="text-green-600 text-xs uppercase tracking-wider font-semibold">
+                    Details
+                  </span>
+                  <p className="text-green-300 mt-1">{planData.openDetail}</p>
+                </div>
+
+                <div className="rounded border border-green-900/40 bg-green-900/20 px-4 py-3">
+                  <span className="text-green-600 text-xs uppercase tracking-wider font-semibold">
+                    Current expertise
+                  </span>
+                  <p className="text-green-300 mt-1">
+                    {planData.currentExpertise}
+                  </p>
+                </div>
+
+                <div className="rounded border border-green-900/40 bg-green-900/20 px-4 py-3">
+                  <span className="text-green-600 text-xs uppercase tracking-wider font-semibold">
+                    More about expertise
+                  </span>
+                  <p className="text-green-300 mt-1">
+                    {planData.expertiseDetail}
+                  </p>
+                </div>
+
+                <div className="rounded border border-green-900/40 bg-green-900/20 px-4 py-3">
+                  <span className="text-green-600 text-xs uppercase tracking-wider font-semibold">
+                    Total modules
+                  </span>
+                  <p className="text-green-300 mt-1">
+                    {planData.totalModules}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="flex justify-end gap-3 border-t border-green-900/40 px-6 py-4">
+              <button
+                type="button"
+                onClick={() => setShowConfirmation(false)}
+                className="px-4 py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/30 transition-colors text-sm"
+              >
+                Go Back
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
