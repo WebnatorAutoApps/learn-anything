@@ -4,6 +4,7 @@ import type { FormEvent } from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -47,9 +48,17 @@ export default function SignupPage() {
     }
   }
 
-  function handleGoogleSignup() {
-    // Google OAuth will be configured once Supabase credentials are available
-    setError("Google sign up is not yet configured");
+  async function handleGoogleSignup() {
+    const supabase = createClient();
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+    if (error) {
+      setError(error.message);
+    }
   }
 
   return (
