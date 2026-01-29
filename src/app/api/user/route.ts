@@ -17,9 +17,12 @@ export async function GET() {
       );
     }
 
+    const profileSelect = "id, full_name, email, avatar_url, gemini_api_key, created_at, updated_at";
+    const meta = user.user_metadata ?? {};
+
     let { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("id, full_name, email, avatar_url, gemini_api_key, created_at, updated_at")
+      .select(profileSelect)
       .eq("id", user.id)
       .single();
 
@@ -27,36 +30,43 @@ export async function GET() {
     // This handles cases where the handle_new_user trigger didn't fire
     // (e.g., user created before trigger existed, or trigger failed).
     if (profileError && profileError.code === "PGRST116") {
-      const meta = user.user_metadata ?? {};
-      const { data: newProfile, error: insertError } = await supabase
+      const { data: newProfile, error: upsertError } = await supabase
         .from("profiles")
-        .insert({
+        .upsert({
           id: user.id,
           full_name: meta.full_name || meta.name || null,
           email: user.email || null,
           avatar_url: meta.avatar_url || meta.picture || null,
         })
-        .select("id, full_name, email, avatar_url, gemini_api_key, created_at, updated_at")
+        .select(profileSelect)
         .single();
 
-      if (insertError) {
-        console.error("Profile auto-create failed:", insertError);
-        return NextResponse.json(
-          { success: false, error: "Profile not found" },
-          { status: 404 }
-        );
+      if (!upsertError && newProfile) {
+        profile = newProfile;
+        profileError = null;
+      } else {
+        console.error("Profile auto-create failed:", upsertError);
       }
-
-      profile = newProfile;
-      profileError = null;
+    } else if (profileError) {
+      console.error("Profile fetch error:", profileError);
     }
 
-    if (profileError || !profile) {
-      console.error("Profile fetch error:", profileError);
-      return NextResponse.json(
-        { success: false, error: "Profile not found" },
-        { status: 404 }
-      );
+    // If we still don't have a profile (DB down, RLS issue, etc.),
+    // return auth metadata so the frontend isn't left with nothing.
+    if (!profile) {
+      return NextResponse.json({
+        success: true,
+        profile: {
+          id: user.id,
+          full_name: meta.full_name || meta.name || null,
+          email: user.email || null,
+          avatar_url: meta.avatar_url || meta.picture || null,
+          gemini_api_key: null,
+          has_gemini_api_key: false,
+          created_at: null,
+          updated_at: null,
+        },
+      });
     }
 
     // Fall back to auth metadata for avatar if not in profile
