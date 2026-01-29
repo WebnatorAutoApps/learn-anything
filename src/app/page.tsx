@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import LearnModal from "./components/LearnModal";
 
 export default function Home() {
   const router = useRouter();
@@ -10,6 +11,7 @@ export default function Home() {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [userInitial, setUserInitial] = useState("");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [showLearnModal, setShowLearnModal] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
 
@@ -199,7 +201,10 @@ export default function Home() {
           </button>
 
           {/* Add New Button */}
-          <button className="group relative overflow-hidden rounded-lg border-2 border-dashed border-green-900/50 bg-green-950/10 p-6 text-left transition-all hover:border-green-600/50 hover:bg-green-950/30">
+          <button
+            onClick={() => setShowLearnModal(true)}
+            className="group relative overflow-hidden rounded-lg border-2 border-dashed border-green-900/50 bg-green-950/10 p-6 text-left transition-all hover:border-green-600/50 hover:bg-green-950/30"
+          >
             <div className="flex items-center gap-4">
               <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-green-800/50 bg-green-950/50">
                 <svg
@@ -226,6 +231,11 @@ export default function Home() {
           </button>
         </div>
       </main>
+
+      {/* Learn Something New Modal */}
+      {showLearnModal && (
+        <LearnModal onClose={() => setShowLearnModal(false)} />
+      )}
 
       {/* Logout Confirmation Dialog */}
       {showLogoutDialog && (
