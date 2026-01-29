@@ -30,9 +30,17 @@ export async function GET() {
       );
     }
 
+    // Fall back to auth metadata for avatar if not in profile
+    const avatarUrl =
+      profile.avatar_url ||
+      user.user_metadata?.avatar_url ||
+      user.user_metadata?.picture ||
+      null;
+
     // Mask the API key before returning — only show last 4 characters
     const maskedProfile = {
       ...profile,
+      avatar_url: avatarUrl,
       gemini_api_key: profile.gemini_api_key
         ? "••••••••" + profile.gemini_api_key.slice(-4)
         : null,

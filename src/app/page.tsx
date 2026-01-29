@@ -114,7 +114,7 @@ export default function Home() {
                 ref={avatarRef}
                 onClick={handleAvatarClick}
                 onMouseEnter={handleAvatarMouseEnter}
-                className="h-10 w-10 rounded-full border-2 border-green-500 flex items-center justify-center text-green-400 font-semibold cursor-pointer hover:border-green-400 hover:bg-green-950/50 transition-colors overflow-hidden"
+                className="h-10 w-10 rounded-full border-2 border-green-500 bg-green-950 flex items-center justify-center text-green-400 font-semibold cursor-pointer hover:border-green-400 hover:bg-green-950/50 transition-colors overflow-hidden"
               >
                 {avatarUrl ? (
                   <img
@@ -122,9 +122,10 @@ export default function Home() {
                     alt="Profile"
                     className="h-full w-full object-cover"
                     referrerPolicy="no-referrer"
+                    onError={() => setAvatarUrl(null)}
                   />
                 ) : (
-                  userInitial
+                  userInitial || "?"
                 )}
               </div>
 
