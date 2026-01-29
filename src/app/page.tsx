@@ -8,8 +8,26 @@ export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [userInitial, setUserInitial] = useState("");
   const menuRef = useRef<HTMLDivElement>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
+
+  // Fetch user profile on mount
+  useEffect(() => {
+    async function fetchProfile() {
+      try {
+        const res = await fetch("/api/user");
+        if (res.ok) {
+          const data = await res.json();
+          const name = data.profile?.full_name || data.profile?.email || "";
+          setUserInitial(name.charAt(0).toUpperCase());
+        }
+      } catch {
+        // Profile fetch failed — avatar will remain blank
+      }
+    }
+    fetchProfile();
+  }, []);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -72,7 +90,7 @@ export default function Home() {
       <div className="terminal-vignette" />
 
       {/* Top Bar */}
-      <header className="relative z-10 border-b border-green-900/50">
+      <header className="relative z-20 border-b border-green-900/50">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <h1 className="text-xl font-semibold text-green-400 tracking-wider">
@@ -85,7 +103,7 @@ export default function Home() {
                 onMouseEnter={handleAvatarMouseEnter}
                 className="h-10 w-10 rounded-full border-2 border-green-500 flex items-center justify-center text-green-400 font-semibold cursor-pointer hover:border-green-400 hover:bg-green-950/50 transition-colors"
               >
-                U
+                {userInitial}
               </div>
 
               {/* Dropdown Menu */}
