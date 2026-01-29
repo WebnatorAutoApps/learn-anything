@@ -100,6 +100,13 @@ export default function LearnModal({ onClose }: LearnModalProps) {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [planData, setPlanData] = useState<LearningPlanData | null>(null);
 
+  // Tracks the message index where each step's system question lives.
+  // This allows us to truncate the chat correctly when editing, even if
+  // extra messages were inserted (e.g. module-count validation re-prompts).
+  const stepMessageIndex = useRef<Partial<Record<StepKey, number>>>({
+    topic: 0, // The first system message is always index 0
+  });
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -131,10 +138,15 @@ export default function LearnModal({ onClose }: LearnModalProps) {
     // Show typing indicator, then reveal next question
     setIsTyping(true);
     setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        { role: "system", text: QUESTIONS[nextStep] },
-      ]);
+      setMessages((prev) => {
+        const updated = [
+          ...prev,
+          { role: "system" as const, text: QUESTIONS[nextStep] },
+        ];
+        // Record the index of this step's system question
+        stepMessageIndex.current[nextStep] = updated.length - 1;
+        return updated;
+      });
       setIsTyping(false);
       setStep(nextStep);
     }, 600);
@@ -191,13 +203,18 @@ export default function LearnModal({ onClose }: LearnModalProps) {
         setInputValue("");
         setIsTyping(true);
         setTimeout(() => {
-          setMessages((prev) => [
-            ...prev,
-            {
-              role: "system",
-              text: `That combination only gives ${modules} module${modules === 1 ? "" : "s"}, but we need at least ${MIN_MODULES} for the program to work. Let's try again — how often can you dedicate time to this?`,
-            },
-          ]);
+          setMessages((prev) => {
+            const updated = [
+              ...prev,
+              {
+                role: "system" as const,
+                text: `That combination only gives ${modules} module${modules === 1 ? "" : "s"}, but we need at least ${MIN_MODULES} for the program to work. Let's try again — how often can you dedicate time to this?`,
+              },
+            ];
+            // Update the commitment step's message index to this re-prompt
+            stepMessageIndex.current.commitment = updated.length - 1;
+            return updated;
+          });
           setIsTyping(false);
           setStep("commitment");
           setCommitment("");
@@ -208,6 +225,67 @@ export default function LearnModal({ onClose }: LearnModalProps) {
     }
 
     advanceToStep("done", label);
+  }
+
+  function handleEditStep(targetStep: StepKey) {
+    const stepOrder: StepKey[] = [
+      "topic",
+      "details",
+      "expertise",
+      "expertiseDetails",
+      "commitment",
+      "duration",
+    ];
+    const targetIndex = stepOrder.indexOf(targetStep);
+
+    // Use tracked message index for the target step's system question
+    const msgIndex = stepMessageIndex.current[targetStep];
+    if (msgIndex === undefined) return;
+
+    // Keep messages up to and including the system question for the target step
+    setMessages((prev) => prev.slice(0, msgIndex + 1));
+
+    // Clear answers from the target step onward and remove their tracked indices
+    const stepsToReset = stepOrder.slice(targetIndex);
+    for (const s of stepsToReset) {
+      switch (s) {
+        case "topic":
+          setTopic("");
+          break;
+        case "details":
+          setDetails("");
+          break;
+        case "expertise":
+          setExpertise("");
+          break;
+        case "expertiseDetails":
+          setExpertiseDetails("");
+          break;
+        case "commitment":
+          setCommitment("");
+          break;
+        case "duration":
+          setDuration("");
+          break;
+      }
+      // Remove tracked indices for steps after the target (not the target itself)
+      if (s !== targetStep) {
+        delete stepMessageIndex.current[s];
+      }
+    }
+
+    // Pre-fill the input for text steps so users can edit the existing value
+    if (targetStep === "topic") {
+      setInputValue(topic);
+    } else if (targetStep === "details") {
+      setInputValue(details);
+    } else if (targetStep === "expertiseDetails") {
+      setInputValue(expertiseDetails);
+    } else {
+      setInputValue("");
+    }
+
+    setStep(targetStep);
   }
 
   function handleBegin() {
@@ -455,19 +533,58 @@ export default function LearnModal({ onClose }: LearnModalProps) {
               </div>
             )}
 
-            {/* Begin button when conversation is complete */}
+            {/* Summary and Begin when conversation is complete */}
             {step === "done" && (
-              <div className="chat-message flex flex-col items-center gap-4 pt-4">
+              <div className="chat-message flex flex-col gap-4 pt-4">
                 <p className="text-green-500 text-sm text-center">
-                  All set! Ready to start your learning journey?
+                  All set! Review your answers below — click any to edit.
                 </p>
-                <button
-                  type="button"
-                  onClick={handleBegin}
-                  className="px-8 py-3 rounded-lg bg-green-600 text-black font-semibold text-lg hover:bg-green-500 transition-colors shadow-lg shadow-green-900/40"
-                >
-                  Begin
-                </button>
+
+                <div className="space-y-2">
+                  {[
+                    { label: "Topic", value: topic, targetStep: "topic" as StepKey },
+                    { label: "Details", value: details, targetStep: "details" as StepKey },
+                    { label: "Expertise", value: expertise, targetStep: "expertise" as StepKey },
+                    { label: "Expertise details", value: expertiseDetails || "(skipped)", targetStep: "expertiseDetails" as StepKey },
+                    { label: "Commitment", value: commitment, targetStep: "commitment" as StepKey },
+                    { label: "Duration", value: duration ? `${duration} month${duration === 1 ? "" : "s"}` : "", targetStep: "duration" as StepKey },
+                  ].map((item) => (
+                    <button
+                      key={item.targetStep}
+                      type="button"
+                      onClick={() => handleEditStep(item.targetStep)}
+                      className="w-full text-left rounded border border-green-900/40 bg-green-900/20 px-4 py-2.5 hover:bg-green-900/40 hover:border-green-500 transition-colors group"
+                    >
+                      <span className="text-green-600 text-xs uppercase tracking-wider font-semibold">
+                        {item.label}
+                      </span>
+                      <div className="flex items-center justify-between mt-0.5">
+                        <span className="text-green-300 text-sm">{item.value}</span>
+                        <svg
+                          className="h-4 w-4 text-green-700 group-hover:text-green-400 transition-colors shrink-0 ml-2"
+                          fill="none"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex justify-center pt-2">
+                  <button
+                    type="button"
+                    onClick={handleBegin}
+                    className="px-8 py-3 rounded-lg bg-green-600 text-black font-semibold text-lg hover:bg-green-500 transition-colors shadow-lg shadow-green-900/40"
+                  >
+                    Begin
+                  </button>
+                </div>
               </div>
             )}
 
