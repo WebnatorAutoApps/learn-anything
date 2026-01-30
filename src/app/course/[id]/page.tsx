@@ -8,9 +8,14 @@ import {
   useUnenrollCourse,
   useSelectProject,
   useCompleteProject,
+  useUploadCompletionImage,
 } from "@/lib/hooks/queries";
 import type { ModuleSchedule, Module, Project } from "@/lib/hooks/queries";
 import { CourseDetailSkeleton } from "../../components/PageLoader";
+
+const MAX_COMMENT_LENGTH = 2000;
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 const CADENCE_OPTIONS = [
   { value: 1, label: "Every day" },
@@ -39,11 +44,56 @@ function ProjectSelectionArea({
 }) {
   const selectMutation = useSelectProject();
   const completeMutation = useCompleteProject();
+  const uploadMutation = useUploadCompletionImage();
+
+  const [comment, setComment] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const selection = mod.selectedProject;
   const hasSelection = !!selection;
   const selectedProjectId = selection?.projectId ?? null;
   const isCompleted = selection?.completed ?? false;
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setFileError(null);
+    const file = e.target.files?.[0];
+    if (!file) {
+      setSelectedFile(null);
+      setImagePreview(null);
+      return;
+    }
+
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      setFileError("Invalid file type. Accepted formats: JPEG, PNG, WebP");
+      setSelectedFile(null);
+      setImagePreview(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      setFileError("File too large. Maximum size is 10 MB");
+      setSelectedFile(null);
+      setImagePreview(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+
+    setSelectedFile(file);
+    const reader = new FileReader();
+    reader.onload = (ev) => setImagePreview(ev.target?.result as string);
+    reader.readAsDataURL(file);
+  }
+
+  function clearFile() {
+    setSelectedFile(null);
+    setImagePreview(null);
+    setFileError(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
 
   async function handleSelect(project: Project) {
     await selectMutation.mutateAsync({
@@ -53,11 +103,31 @@ function ProjectSelectionArea({
     });
   }
 
+  const isSubmitting = completeMutation.isPending || uploadMutation.isPending;
+
   async function handleComplete() {
+    let imageUrl: string | undefined;
+
+    // Upload image first if one is selected
+    if (selectedFile) {
+      try {
+        imageUrl = await uploadMutation.mutateAsync(selectedFile);
+      } catch {
+        // Upload error is surfaced via uploadMutation.error
+        return;
+      }
+    }
+
     await completeMutation.mutateAsync({
       courseId,
       moduleId: mod.id,
+      comment: comment.trim() || undefined,
+      imageUrl,
     });
+
+    // Reset form state after successful completion
+    setComment("");
+    clearFile();
   }
 
   if (mod.projects.length === 0) {
@@ -154,68 +224,176 @@ function ProjectSelectionArea({
             </div>
           </div>
 
-          {/* Completion button or completed status */}
+          {/* Completion section */}
           <div className="mt-4">
             {isCompleted ? (
-              <div className="flex items-center gap-2 text-green-500 text-sm">
-                <svg
-                  className="h-5 w-5"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span className="font-medium">
-                  Project completed
-                  {selection?.completedAt && (
-                    <span className="text-green-700 font-normal ml-1">
-                      — {new Date(selection.completedAt).toLocaleDateString(undefined, {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                        timeZone: "UTC",
-                      })}
-                    </span>
-                  )}
-                </span>
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 text-green-500 text-sm">
+                  <svg
+                    className="h-5 w-5"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="font-medium">
+                    Project completed
+                    {selection?.completedAt && (
+                      <span className="text-green-700 font-normal ml-1">
+                        — {new Date(selection.completedAt).toLocaleDateString(undefined, {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                          timeZone: "UTC",
+                        })}
+                      </span>
+                    )}
+                  </span>
+                </div>
+
+                {/* Display submitted comment */}
+                {selection?.comment && (
+                  <div className="rounded border border-green-900/40 bg-green-950/30 p-3">
+                    <p className="text-xs text-green-700 uppercase tracking-wider mb-1">
+                      Your Comment
+                    </p>
+                    <p className="text-sm text-green-500 leading-relaxed whitespace-pre-wrap">
+                      {selection.comment}
+                    </p>
+                  </div>
+                )}
+
+                {/* Display submitted image */}
+                {selection?.imageUrl && (
+                  <div className="rounded border border-green-900/40 bg-green-950/30 p-3">
+                    <p className="text-xs text-green-700 uppercase tracking-wider mb-2">
+                      Uploaded Image
+                    </p>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={selection.imageUrl}
+                      alt="Completion submission"
+                      className="max-w-full max-h-64 rounded border border-green-900/40 object-contain"
+                    />
+                  </div>
+                )}
               </div>
             ) : (
-              <button
-                onClick={handleComplete}
-                disabled={completeMutation.isPending}
-                className="w-full py-2.5 px-4 rounded-lg border border-green-500/50 bg-green-900/30 text-green-400 font-medium text-sm hover:bg-green-900/50 hover:border-green-400/60 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {completeMutation.isPending ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <svg
-                      className="animate-spin h-4 w-4"
-                      viewBox="0 0 24 24"
-                      fill="none"
+              <div className="space-y-3">
+                {/* Comment textarea */}
+                <div>
+                  <label className="block text-xs text-green-700 uppercase tracking-wider mb-1">
+                    Comment (optional)
+                  </label>
+                  <textarea
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    maxLength={MAX_COMMENT_LENGTH}
+                    placeholder="Share your thoughts on this project..."
+                    rows={3}
+                    className="w-full rounded border border-green-900/50 bg-green-950/40 text-green-400 text-sm px-3 py-2 placeholder:text-green-800 focus:outline-none focus:border-green-500/60 resize-y"
+                    disabled={isSubmitting}
+                  />
+                  <p className="text-xs text-green-800 mt-0.5 text-right">
+                    {comment.length}/{MAX_COMMENT_LENGTH}
+                  </p>
+                </div>
+
+                {/* Image upload */}
+                <div>
+                  <label className="block text-xs text-green-700 uppercase tracking-wider mb-1">
+                    Image (optional)
+                  </label>
+
+                  {imagePreview ? (
+                    <div className="space-y-2">
+                      <div className="relative inline-block">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={imagePreview}
+                          alt="Preview"
+                          className="max-w-full max-h-48 rounded border border-green-900/40 object-contain"
+                        />
+                        <button
+                          onClick={clearFile}
+                          disabled={isSubmitting}
+                          className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-red-900/80 border border-red-700/50 text-red-400 flex items-center justify-center text-xs hover:bg-red-800/80 transition-colors disabled:opacity-50"
+                          aria-label="Remove image"
+                        >
+                          X
+                        </button>
+                      </div>
+                      <p className="text-xs text-green-700">
+                        {selectedFile?.name}
+                      </p>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={isSubmitting}
+                      className="w-full py-3 px-4 rounded border border-dashed border-green-900/50 bg-green-950/20 text-green-600 text-sm hover:bg-green-950/30 hover:border-green-700/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                      />
-                    </svg>
-                    Marking...
-                  </span>
-                ) : (
-                  "Mark as Completed"
-                )}
-              </button>
+                      Click to upload an image (JPEG, PNG, WebP, max 10 MB)
+                    </button>
+                  )}
+
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+
+                  {fileError && (
+                    <p className="text-xs text-red-400 mt-1">{fileError}</p>
+                  )}
+
+                  {uploadMutation.isError && (
+                    <p className="text-xs text-red-400 mt-1">
+                      Upload failed: {uploadMutation.error?.message || "Unknown error"}. Please try again.
+                    </p>
+                  )}
+                </div>
+
+                {/* Complete button */}
+                <button
+                  onClick={handleComplete}
+                  disabled={isSubmitting}
+                  className="w-full py-2.5 px-4 rounded-lg border border-green-500/50 bg-green-900/30 text-green-400 font-medium text-sm hover:bg-green-900/50 hover:border-green-400/60 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <svg
+                        className="animate-spin h-4 w-4"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                        />
+                      </svg>
+                      {uploadMutation.isPending ? "Uploading image..." : "Marking..."}
+                    </span>
+                  ) : (
+                    "Mark as Completed"
+                  )}
+                </button>
+              </div>
             )}
           </div>
         </div>

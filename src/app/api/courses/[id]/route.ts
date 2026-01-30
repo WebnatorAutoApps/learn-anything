@@ -157,7 +157,7 @@ export async function GET(
       // Fetch user's project selections for all modules in this course
       const projectSelectionsMap: Map<
         string,
-        { projectId: string; completed: boolean; completedAt: string | null }
+        { projectId: string; completed: boolean; completedAt: string | null; comment: string | null; imageUrl: string | null }
       > = new Map();
 
       if (moduleIds.length > 0) {
@@ -182,7 +182,7 @@ export async function GET(
         if (user) {
           const { data: selections } = await supabase
             .from("user_module_projects")
-            .select("module_id, project_id, completed, completed_at")
+            .select("module_id, project_id, completed, completed_at, comment, image_url")
             .eq("user_id", user.id)
             .in("module_id", moduleIds);
 
@@ -192,6 +192,8 @@ export async function GET(
                 projectId: sel.project_id,
                 completed: sel.completed,
                 completedAt: sel.completed_at,
+                comment: sel.comment,
+                imageUrl: sel.image_url,
               });
             }
           }

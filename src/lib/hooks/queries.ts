@@ -65,6 +65,8 @@ export interface SelectedProject {
   projectId: string;
   completed: boolean;
   completedAt: string | null;
+  comment: string | null;
+  imageUrl: string | null;
 }
 
 export interface Module {
@@ -285,14 +287,18 @@ export function useCompleteProject() {
     mutationFn: ({
       courseId,
       moduleId,
+      comment,
+      imageUrl,
     }: {
       courseId: string;
       moduleId: string;
+      comment?: string;
+      imageUrl?: string;
     }) =>
       fetchJSON<{ success: boolean }>(`/api/courses/${courseId}/projects`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ moduleId }),
+        body: JSON.stringify({ moduleId, comment, imageUrl }),
       }),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
@@ -301,6 +307,28 @@ export function useCompleteProject() {
       queryClient.invalidateQueries({
         queryKey: queryKeys.upcomingProjects,
       });
+    },
+  });
+}
+
+export function useUploadCompletionImage() {
+  return useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error || `Upload failed (${res.status})`);
+      }
+
+      const data: { success: boolean; url: string } = await res.json();
+      return data.url;
     },
   });
 }
