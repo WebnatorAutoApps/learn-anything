@@ -3,22 +3,55 @@ import { createCipheriv, createDecipheriv, randomBytes } from "crypto";
 const ALGORITHM = "aes-256-gcm";
 const IV_LENGTH = 12; // 96 bits recommended for GCM
 const AUTH_TAG_LENGTH = 16; // 128 bits
+const HEX_KEY_LENGTH = 64; // 64 hex chars = 32 bytes
+const KEY_BYTE_LENGTH = 32; // AES-256 requires 32-byte key
+
+/**
+ * Validates the GEMINI_KEY_ENCRYPTION_SECRET env var and returns a list of
+ * issues. Returns an empty array if valid.
+ */
+export function validateEncryptionConfig(): string[] {
+  const errors: string[] = [];
+  const secret = process.env.GEMINI_KEY_ENCRYPTION_SECRET;
+
+  if (!secret) {
+    errors.push(
+      "GEMINI_KEY_ENCRYPTION_SECRET environment variable is not set. " +
+        'Generate one with: node -e "console.log(require(\'crypto\').randomBytes(32).toString(\'hex\'))"'
+    );
+    return errors;
+  }
+
+  if (secret.length !== HEX_KEY_LENGTH) {
+    errors.push(
+      `GEMINI_KEY_ENCRYPTION_SECRET must be exactly ${HEX_KEY_LENGTH} hex characters (got ${secret.length})`
+    );
+  }
+
+  if (!/^[0-9a-fA-F]+$/.test(secret)) {
+    errors.push(
+      "GEMINI_KEY_ENCRYPTION_SECRET contains non-hex characters — it must be a hex-encoded string"
+    );
+  }
+
+  if (errors.length === 0) {
+    const key = Buffer.from(secret, "hex");
+    if (key.length !== KEY_BYTE_LENGTH) {
+      errors.push(
+        `GEMINI_KEY_ENCRYPTION_SECRET decoded to ${key.length} bytes, but ${KEY_BYTE_LENGTH} bytes are required`
+      );
+    }
+  }
+
+  return errors;
+}
 
 function getEncryptionKey(): Buffer {
-  const secret = process.env.GEMINI_KEY_ENCRYPTION_SECRET;
-  if (!secret) {
-    throw new Error(
-      "GEMINI_KEY_ENCRYPTION_SECRET environment variable is not set"
-    );
+  const errors = validateEncryptionConfig();
+  if (errors.length > 0) {
+    throw new Error(errors[0]);
   }
-  // The secret must be exactly 32 bytes (256 bits) hex-encoded (64 hex chars)
-  const key = Buffer.from(secret, "hex");
-  if (key.length !== 32) {
-    throw new Error(
-      "GEMINI_KEY_ENCRYPTION_SECRET must be a 64-character hex string (32 bytes)"
-    );
-  }
-  return key;
+  return Buffer.from(process.env.GEMINI_KEY_ENCRYPTION_SECRET!, "hex");
 }
 
 /**

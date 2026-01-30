@@ -54,7 +54,16 @@ export async function POST(request: Request) {
     }
 
     // Decrypt the key server-side only for the Gemini API call
-    const apiKey = decrypt(profile.encrypted_api_key);
+    let apiKey: string;
+    try {
+      apiKey = decrypt(profile.encrypted_api_key);
+    } catch (decryptError) {
+      console.error("Decryption error:", decryptError);
+      return NextResponse.json(
+        { success: false, error: "Server configuration error — unable to decrypt API key" },
+        { status: 500 }
+      );
+    }
 
     // Call Gemini via the LLM provider abstraction
     const provider = createLLMProvider("gemini", apiKey);
