@@ -2,38 +2,12 @@
 
 import { useState, useEffect, useRef, use } from "react";
 import { useRouter } from "next/navigation";
-
-interface Project {
-  id: string;
-  module_id: string;
-  project_index: number;
-  title: string;
-  instructions: string;
-  objective: string;
-}
-
-interface Module {
-  id: string;
-  module_index: number;
-  title: string;
-  description: string;
-  projects: Project[];
-}
-
-interface Course {
-  id: string;
-  normalized_title: string;
-  learning_goal: string;
-  learning_goal_details: string;
-  expertise_level: string;
-  expertise_details: string | null;
-  expected_skill_level: string;
-  likelihood_of_learning: number;
-  total_modules: number;
-  status: string;
-  created_at: string;
-  modules: Module[];
-}
+import {
+  useCourseDetail,
+  useEnrollCourse,
+  useUnenrollCourse,
+} from "@/lib/hooks/queries";
+import { CourseDetailSkeleton } from "../../components/PageLoader";
 
 export default function CoursePage({
   params,
@@ -42,48 +16,29 @@ export default function CoursePage({
 }) {
   const { id } = use(params);
   const router = useRouter();
-  const [course, setCourse] = useState<Course | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [expandedModules, setExpandedModules] = useState<Set<number>>(
     new Set()
   );
-  const [isEnrolled, setIsEnrolled] = useState(false);
-  const [isOwner, setIsOwner] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [enrolling, setEnrolling] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showUnenrollDialog, setShowUnenrollDialog] = useState(false);
-  const [unenrolling, setUnenrolling] = useState(false);
   const [unenrollError, setUnenrollError] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    async function fetchCourse() {
-      try {
-        const res = await fetch(`/api/courses/${id}`);
-        if (!res.ok) {
-          if (res.status === 404) {
-            setError("Course not found");
-          } else {
-            setError("Failed to load course");
-          }
-          return;
-        }
-        const data = await res.json();
-        setCourse(data.course);
-        setIsEnrolled(data.isEnrolled);
-        setIsOwner(data.isOwner);
-        setIsAuthenticated(data.isAuthenticated);
-      } catch {
-        setError("Failed to load course");
-      } finally {
-        setLoading(false);
-      }
-    }
+  // TanStack Query hooks
+  const {
+    data: courseData,
+    isLoading: loading,
+    isError,
+    error: queryError,
+  } = useCourseDetail(id);
 
-    fetchCourse();
-  }, [id]);
+  const enrollMutation = useEnrollCourse();
+  const unenrollMutation = useUnenrollCourse();
+
+  const course = courseData?.course ?? null;
+  const isEnrolled = courseData?.isEnrolled ?? false;
+  const isOwner = courseData?.isOwner ?? false;
+  const isAuthenticated = courseData?.isAuthenticated ?? false;
 
   async function handleEnroll() {
     if (!isAuthenticated) {
@@ -91,51 +46,15 @@ export default function CoursePage({
       return;
     }
 
-    setEnrolling(true);
     try {
-      const res = isOwner
-        ? await fetch(`/api/courses/${id}/enroll`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ action: "enroll" }),
-          })
-        : await fetch(`/api/courses/${id}/enroll`, {
-            method: "POST",
-          });
-      const data = await res.json();
-
-      if (!res.ok) {
-        if (res.status === 401) {
-          router.push("/login");
-          return;
-        }
-        // 409 means already enrolled — treat as success
-        if (res.status === 409) {
-          setIsEnrolled(true);
-          const courseRes = await fetch(`/api/courses/${id}`);
-          if (courseRes.ok) {
-            const courseData = await courseRes.json();
-            setCourse(courseData.course);
-          }
-          return;
-        }
-        setError(data.error || "Failed to enroll");
+      await enrollMutation.mutateAsync({ courseId: id, isOwner });
+    } catch (err: unknown) {
+      const status = (err as Error & { status?: number })?.status;
+      if (status === 401) {
+        router.push("/login");
         return;
       }
-
-      if (data.success) {
-        setIsEnrolled(true);
-        // Re-fetch course to get project data now that we're enrolled
-        const courseRes = await fetch(`/api/courses/${id}`);
-        if (courseRes.ok) {
-          const courseData = await courseRes.json();
-          setCourse(courseData.course);
-        }
-      }
-    } catch {
-      setError("Failed to enroll");
-    } finally {
-      setEnrolling(false);
+      // 409 means already enrolled — the cache will refresh via invalidation
     }
   }
 
@@ -154,45 +73,25 @@ export default function CoursePage({
   }, [menuOpen]);
 
   async function handleUnenroll() {
-    setUnenrolling(true);
     setUnenrollError(null);
     try {
-      const res = await fetch(`/api/courses/${id}/enroll`, {
-        method: "DELETE",
-      });
-
-      if (!res.ok) {
-        if (res.status === 404) {
-          // Course deleted concurrently — navigate away
-          router.push("/");
-          return;
-        }
-        const data = await res.json();
-        setUnenrollError(data.error || "Failed to unenroll");
+      await unenrollMutation.mutateAsync(id);
+      setShowUnenrollDialog(false);
+      setExpandedModules(new Set());
+    } catch (err: unknown) {
+      const status = (err as Error & { status?: number })?.status;
+      if (status === 404) {
+        router.push("/");
         return;
       }
-
-      const data = await res.json();
-      if (data.success) {
-        setIsEnrolled(false);
-        setShowUnenrollDialog(false);
-        setExpandedModules(new Set());
-        // Re-fetch course to clear project data
-        const courseRes = await fetch(`/api/courses/${id}`);
-        if (courseRes.ok) {
-          const courseData = await courseRes.json();
-          setCourse(courseData.course);
-        }
-      }
-    } catch {
-      setUnenrollError("Failed to unenroll. Please try again.");
-    } finally {
-      setUnenrolling(false);
+      setUnenrollError(
+        (err as Error)?.message || "Failed to unenroll. Please try again."
+      );
     }
   }
 
   function toggleModule(moduleIndex: number) {
-    if (!isEnrolled) return; // Only enrolled users can expand modules
+    if (!isEnrolled) return;
     setExpandedModules((prev) => {
       const next = new Set(prev);
       if (next.has(moduleIndex)) {
@@ -205,31 +104,21 @@ export default function CoursePage({
   }
 
   if (loading) {
-    return (
-      <div className="terminal-screen min-h-screen font-mono">
-        <div className="terminal-vignette" />
-        <div className="relative z-10 flex items-center justify-center min-h-screen">
-          <div className="text-green-400 text-lg">
-            <span className="text-green-600">{">"}</span> Loading course
-            <span className="typing-dots">
-              <span className="dot">.</span>
-              <span className="dot">.</span>
-              <span className="dot">.</span>
-            </span>
-          </div>
-        </div>
-      </div>
-    );
+    return <CourseDetailSkeleton />;
   }
 
-  if (error || !course) {
+  if (isError || !course) {
+    const errorMessage =
+      (queryError as Error & { status?: number })?.status === 404
+        ? "Course not found"
+        : (queryError as Error)?.message || "Failed to load course";
+
     return (
       <div className="terminal-screen min-h-screen font-mono">
         <div className="terminal-vignette" />
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen gap-4">
           <p className="text-red-400 text-lg">
-            <span className="text-red-600">{">"}</span>{" "}
-            {error || "Course not found"}
+            <span className="text-red-600">{">"}</span> {errorMessage}
           </p>
           <button
             onClick={() => router.push("/")}
@@ -386,10 +275,10 @@ export default function CoursePage({
           ) : (
             <button
               onClick={handleEnroll}
-              disabled={enrolling}
+              disabled={enrollMutation.isPending}
               className="w-full py-3 px-6 rounded-lg border border-green-500/60 bg-green-900/40 text-green-400 font-semibold tracking-wider hover:bg-green-900/60 hover:border-green-400/60 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {enrolling ? (
+              {enrollMutation.isPending ? (
                 <span className="flex items-center justify-center gap-2">
                   <svg
                     className="animate-spin h-4 w-4"
@@ -541,7 +430,7 @@ export default function CoursePage({
           <div
             className="absolute inset-0 bg-black/70"
             onClick={() => {
-              if (!unenrolling) {
+              if (!unenrollMutation.isPending) {
                 setShowUnenrollDialog(false);
                 setUnenrollError(null);
               }
@@ -568,17 +457,17 @@ export default function CoursePage({
                   setShowUnenrollDialog(false);
                   setUnenrollError(null);
                 }}
-                disabled={unenrolling}
+                disabled={unenrollMutation.isPending}
                 className="px-4 py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/30 transition-colors text-sm font-medium disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
                 onClick={handleUnenroll}
-                disabled={unenrolling}
+                disabled={unenrollMutation.isPending}
                 className="px-4 py-2 rounded-lg border border-red-900/60 bg-red-950/30 text-red-400 hover:bg-red-900/40 transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {unenrolling ? (
+                {unenrollMutation.isPending ? (
                   <span className="flex items-center gap-2">
                     <svg
                       className="animate-spin h-4 w-4"

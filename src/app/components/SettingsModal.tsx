@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useProfile, useSaveSettings } from "@/lib/hooks/queries";
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -8,90 +9,41 @@ interface SettingsModalProps {
 
 export default function SettingsModal({ onClose }: SettingsModalProps) {
   const [apiKey, setApiKey] = useState("");
-  const [maskedKey, setMaskedKey] = useState<string | null>(null);
-  const [hasExistingKey, setHasExistingKey] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [isClearing, setIsClearing] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState<{
     type: "success" | "error";
     text: string;
   } | null>(null);
 
-  // Fetch current settings on mount
-  useEffect(() => {
-    async function fetchSettings() {
-      try {
-        const res = await fetch("/api/user");
-        if (res.ok) {
-          const data = await res.json();
-          if (data.profile?.has_gemini_api_key) {
-            setHasExistingKey(true);
-            setMaskedKey(data.profile.gemini_api_key);
-          }
-        } else {
-          setMessage({ type: "error", text: "Failed to load settings. Please try again later." });
-        }
-      } catch {
-        setMessage({ type: "error", text: "Failed to load settings. Please try again later." });
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchSettings();
-  }, []);
+  // Use profile query for initial settings data (uses cached data)
+  const { data: profile, isLoading, isError } = useProfile();
+  const saveMutation = useSaveSettings();
+
+  const hasExistingKey = profile?.has_gemini_api_key ?? false;
+  const maskedKey = profile?.gemini_api_key ?? null;
 
   async function handleSave() {
     if (!apiKey.trim()) return;
 
-    setIsSaving(true);
     setMessage(null);
 
     try {
-      const res = await fetch("/api/user/settings", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ gemini_api_key: apiKey.trim() }),
-      });
-
-      if (res.ok) {
-        setHasExistingKey(true);
-        setMaskedKey("••••••••" + apiKey.trim().slice(-4));
-        setApiKey("");
-        setMessage({ type: "success", text: "API key saved successfully." });
-      } else {
-        setMessage({ type: "error", text: "Failed to save API key." });
-      }
+      await saveMutation.mutateAsync({ gemini_api_key: apiKey.trim() });
+      setApiKey("");
+      setMessage({ type: "success", text: "API key saved successfully." });
     } catch {
-      setMessage({ type: "error", text: "An error occurred while saving." });
-    } finally {
-      setIsSaving(false);
+      setMessage({ type: "error", text: "Failed to save API key." });
     }
   }
 
   async function handleClear() {
-    setIsClearing(true);
     setMessage(null);
 
     try {
-      const res = await fetch("/api/user/settings", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ gemini_api_key: "" }),
-      });
-
-      if (res.ok) {
-        setHasExistingKey(false);
-        setMaskedKey(null);
-        setApiKey("");
-        setMessage({ type: "success", text: "API key cleared." });
-      } else {
-        setMessage({ type: "error", text: "Failed to clear API key." });
-      }
+      await saveMutation.mutateAsync({ gemini_api_key: "" });
+      setApiKey("");
+      setMessage({ type: "success", text: "API key cleared." });
     } catch {
-      setMessage({ type: "error", text: "An error occurred while clearing." });
-    } finally {
-      setIsClearing(false);
+      setMessage({ type: "error", text: "Failed to clear API key." });
     }
   }
 
@@ -131,6 +83,10 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
           {isLoading ? (
             <div className="flex items-center justify-center py-8">
               <span className="text-green-600">Loading settings...</span>
+            </div>
+          ) : isError ? (
+            <div className="flex items-center justify-center py-8">
+              <span className="text-red-400">Failed to load settings. Please try again later.</span>
             </div>
           ) : (
             <>
@@ -197,17 +153,17 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
               <div className="flex gap-3 justify-end pt-2">
                 <button
                   onClick={handleClear}
-                  disabled={!hasExistingKey || isClearing}
+                  disabled={!hasExistingKey || saveMutation.isPending}
                   className="px-4 py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/30 transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
                 >
-                  {isClearing ? "Clearing..." : "Clear Key"}
+                  {saveMutation.isPending ? "Clearing..." : "Clear Key"}
                 </button>
                 <button
                   onClick={handleSave}
-                  disabled={!apiKey.trim() || isSaving}
+                  disabled={!apiKey.trim() || saveMutation.isPending}
                   className="px-4 py-2 rounded-lg bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
                 >
-                  {isSaving ? "Saving..." : "Save Key"}
+                  {saveMutation.isPending ? "Saving..." : "Save Key"}
                 </button>
               </div>
             </>
