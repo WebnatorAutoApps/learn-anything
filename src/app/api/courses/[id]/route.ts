@@ -124,6 +124,7 @@ export async function GET(
         modules: modulesWithProjects,
       },
       isEnrolled,
+      isOwner,
       isAuthenticated: !!user,
     });
   } catch (error) {
