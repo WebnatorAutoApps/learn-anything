@@ -1,12 +1,17 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
   useUpcomingProjects,
   useCompleteProject,
+  useUploadCompletionImage,
 } from "@/lib/hooks/queries";
 import type { UpcomingProject } from "@/lib/hooks/queries";
+
+const MAX_COMMENT_LENGTH = 2000;
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 function formatDueDate(dateStr: string): string {
   const date = new Date(dateStr + "T00:00:00Z");
@@ -29,14 +34,229 @@ function getDueStatus(dueDate: string | null): "overdue" | "soon" | "normal" | "
   return "normal";
 }
 
+function CompletionModal({
+  project,
+  onClose,
+  onCompleted,
+}: {
+  project: UpcomingProject;
+  onClose: () => void;
+  onCompleted: () => void;
+}) {
+  const completeMutation = useCompleteProject();
+  const uploadMutation = useUploadCompletionImage();
+  const [comment, setComment] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const isSubmitting = completeMutation.isPending || uploadMutation.isPending;
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setFileError(null);
+    const file = e.target.files?.[0];
+    if (!file) {
+      setSelectedFile(null);
+      setImagePreview(null);
+      return;
+    }
+
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      setFileError("Invalid file type. Accepted formats: JPEG, PNG, WebP");
+      setSelectedFile(null);
+      setImagePreview(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      setFileError("File too large. Maximum size is 10 MB");
+      setSelectedFile(null);
+      setImagePreview(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+
+    setSelectedFile(file);
+    const reader = new FileReader();
+    reader.onload = (ev) => setImagePreview(ev.target?.result as string);
+    reader.readAsDataURL(file);
+  }
+
+  function clearFile() {
+    setSelectedFile(null);
+    setImagePreview(null);
+    setFileError(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
+  async function handleSubmit() {
+    let imageUrl: string | undefined;
+
+    if (selectedFile) {
+      try {
+        imageUrl = await uploadMutation.mutateAsync(selectedFile);
+      } catch {
+        return;
+      }
+    }
+
+    await completeMutation.mutateAsync({
+      courseId: project.courseId,
+      moduleId: project.moduleId,
+      comment: comment.trim() || undefined,
+      imageUrl,
+    });
+
+    onCompleted();
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div
+        className="absolute inset-0 bg-black/70"
+        onClick={() => {
+          if (!isSubmitting) onClose();
+        }}
+      />
+      <div className="relative z-10 w-full max-w-lg mx-4 rounded-lg border border-green-900/60 bg-green-950 p-6 shadow-xl max-h-[90vh] overflow-y-auto">
+        <h3 className="text-lg font-semibold text-green-400 mb-1">
+          Complete Module
+        </h3>
+        <p className="text-sm text-green-600 mb-4">
+          {project.courseName} — {project.moduleName}
+        </p>
+
+        {/* Comment textarea */}
+        <div className="mb-4">
+          <label className="block text-xs text-green-700 uppercase tracking-wider mb-1">
+            Comment (optional)
+          </label>
+          <textarea
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            maxLength={MAX_COMMENT_LENGTH}
+            placeholder="Share your thoughts on this project..."
+            rows={3}
+            className="w-full rounded border border-green-900/50 bg-green-950/40 text-green-400 text-sm px-3 py-2 placeholder:text-green-800 focus:outline-none focus:border-green-500/60 resize-y"
+            disabled={isSubmitting}
+          />
+          <p className="text-xs text-green-800 mt-0.5 text-right">
+            {comment.length}/{MAX_COMMENT_LENGTH}
+          </p>
+        </div>
+
+        {/* Image upload */}
+        <div className="mb-4">
+          <label className="block text-xs text-green-700 uppercase tracking-wider mb-1">
+            Image (optional)
+          </label>
+
+          {imagePreview ? (
+            <div className="space-y-2">
+              <div className="relative inline-block">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="max-w-full max-h-48 rounded border border-green-900/40 object-contain"
+                />
+                <button
+                  onClick={clearFile}
+                  disabled={isSubmitting}
+                  className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-red-900/80 border border-red-700/50 text-red-400 flex items-center justify-center text-xs hover:bg-red-800/80 transition-colors disabled:opacity-50"
+                  aria-label="Remove image"
+                >
+                  X
+                </button>
+              </div>
+              <p className="text-xs text-green-700">
+                {selectedFile?.name}
+              </p>
+            </div>
+          ) : (
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isSubmitting}
+              className="w-full py-3 px-4 rounded border border-dashed border-green-900/50 bg-green-950/20 text-green-600 text-sm hover:bg-green-950/30 hover:border-green-700/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Click to upload an image (JPEG, PNG, WebP, max 10 MB)
+            </button>
+          )}
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            onChange={handleFileChange}
+            className="hidden"
+          />
+
+          {fileError && (
+            <p className="text-xs text-red-400 mt-1">{fileError}</p>
+          )}
+
+          {uploadMutation.isError && (
+            <p className="text-xs text-red-400 mt-1">
+              Upload failed: {uploadMutation.error?.message || "Unknown error"}. Please try again.
+            </p>
+          )}
+        </div>
+
+        {/* Actions */}
+        <div className="flex gap-3 justify-end">
+          <button
+            onClick={onClose}
+            disabled={isSubmitting}
+            className="px-4 py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/30 transition-colors text-sm font-medium disabled:opacity-50"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+            className="px-4 py-2 rounded-lg bg-green-600 text-black font-semibold text-sm hover:bg-green-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          >
+            {isSubmitting ? (
+              <>
+                <svg
+                  className="animate-spin h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  />
+                </svg>
+                {uploadMutation.isPending ? "Uploading..." : "Completing..."}
+              </>
+            ) : (
+              "Mark as Completed"
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ActiveModuleSlide({
   project,
   onComplete,
-  isCompleting,
 }: {
   project: UpcomingProject;
   onComplete: (project: UpcomingProject) => void;
-  isCompleting: boolean;
 }) {
   const router = useRouter();
   const dueStatus = getDueStatus(project.dueDate);
@@ -97,49 +317,21 @@ function ActiveModuleSlide({
             </button>
             <button
               onClick={() => onComplete(project)}
-              disabled={isCompleting}
-              className="px-3 py-1.5 text-xs rounded bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
+              className="px-3 py-1.5 text-xs rounded bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors flex items-center gap-1.5"
               aria-label={`Mark module "${project.moduleName}" as complete`}
             >
-              {isCompleting ? (
-                <>
-                  <svg
-                    className="animate-spin h-3 w-3"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                    />
-                  </svg>
-                  Completing...
-                </>
-              ) : (
-                <>
-                  <svg
-                    className="h-3 w-3"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path d="M5 13l4 4L19 7" />
-                  </svg>
-                  Complete
-                </>
-              )}
+              <svg
+                className="h-3 w-3"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path d="M5 13l4 4L19 7" />
+              </svg>
+              Complete
             </button>
           </div>
         </div>
@@ -150,20 +342,17 @@ function ActiveModuleSlide({
 
 export default function ActiveModuleCarousel() {
   const { data: projects, isLoading } = useUpcomingProjects();
-  const completeMutation = useCompleteProject();
-  const [completingId, setCompletingId] = useState<string | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [completingProject, setCompletingProject] = useState<UpcomingProject | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const projectCount = projects?.length ?? 0;
   const hasMultiple = projectCount > 1;
 
   // Clamp activeIndex when projects change (e.g. after completion)
-  useEffect(() => {
-    if (activeIndex >= projectCount && projectCount > 0) {
-      setActiveIndex(projectCount - 1);
-    }
-  }, [projectCount, activeIndex]);
+  const clampedIndex = projectCount > 0 && activeIndex >= projectCount
+    ? projectCount - 1
+    : activeIndex;
 
   const scrollToIndex = useCallback(
     (index: number) => {
@@ -185,27 +374,19 @@ export default function ActiveModuleCarousel() {
   }, []);
 
   const goToPrev = useCallback(() => {
-    const newIndex = Math.max(0, activeIndex - 1);
+    const newIndex = Math.max(0, clampedIndex - 1);
     setActiveIndex(newIndex);
     scrollToIndex(newIndex);
-  }, [activeIndex, scrollToIndex]);
+  }, [clampedIndex, scrollToIndex]);
 
   const goToNext = useCallback(() => {
-    const newIndex = Math.min(projectCount - 1, activeIndex + 1);
+    const newIndex = Math.min(projectCount - 1, clampedIndex + 1);
     setActiveIndex(newIndex);
     scrollToIndex(newIndex);
-  }, [activeIndex, projectCount, scrollToIndex]);
+  }, [clampedIndex, projectCount, scrollToIndex]);
 
-  async function handleComplete(project: UpcomingProject) {
-    setCompletingId(project.id);
-    try {
-      await completeMutation.mutateAsync({
-        courseId: project.courseId,
-        moduleId: project.moduleId,
-      });
-    } finally {
-      setCompletingId(null);
-    }
+  function handleComplete(project: UpcomingProject) {
+    setCompletingProject(project);
   }
 
   // Loading skeleton
@@ -263,7 +444,7 @@ export default function ActiveModuleCarousel() {
           </h3>
           {hasMultiple && (
             <span className="text-xs text-green-700 ml-1">
-              ({activeIndex + 1} of {projectCount} projects)
+              ({clampedIndex + 1} of {projectCount} projects)
             </span>
           )}
         </div>
@@ -273,7 +454,7 @@ export default function ActiveModuleCarousel() {
           <div className="flex items-center gap-1">
             <button
               onClick={goToPrev}
-              disabled={activeIndex === 0}
+              disabled={clampedIndex === 0}
               className="p-1.5 rounded border border-green-900/60 text-green-500 hover:bg-green-900/30 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
               aria-label="Previous project"
             >
@@ -291,7 +472,7 @@ export default function ActiveModuleCarousel() {
             </button>
             <button
               onClick={goToNext}
-              disabled={activeIndex === projectCount - 1}
+              disabled={clampedIndex === projectCount - 1}
               className="p-1.5 rounded border border-green-900/60 text-green-500 hover:bg-green-900/30 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
               aria-label="Next project"
             >
@@ -325,7 +506,6 @@ export default function ActiveModuleCarousel() {
             <ActiveModuleSlide
               project={project}
               onComplete={handleComplete}
-              isCompleting={completingId === project.id}
             />
           </div>
         ))}
@@ -346,16 +526,25 @@ export default function ActiveModuleCarousel() {
                 scrollToIndex(index);
               }}
               className={`h-2 rounded-full transition-all ${
-                index === activeIndex
+                index === clampedIndex
                   ? "w-6 bg-green-400"
                   : "w-2 bg-green-800 hover:bg-green-600"
               }`}
               role="tab"
-              aria-selected={index === activeIndex}
+              aria-selected={index === clampedIndex}
               aria-label={`Go to ${project.courseName}`}
             />
           ))}
         </div>
+      )}
+
+      {/* Completion Modal */}
+      {completingProject && (
+        <CompletionModal
+          project={completingProject}
+          onClose={() => setCompletingProject(null)}
+          onCompleted={() => setCompletingProject(null)}
+        />
       )}
     </div>
   );

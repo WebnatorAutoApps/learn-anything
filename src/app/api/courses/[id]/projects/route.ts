@@ -101,7 +101,7 @@ export async function POST(
 
 /**
  * PATCH /api/courses/[id]/projects — Mark a project as completed
- * Body: { moduleId: string }
+ * Body: { moduleId: string, comment?: string, imageUrl?: string }
  */
 export async function PATCH(
   request: Request,
@@ -124,13 +124,39 @@ export async function PATCH(
     }
 
     const body = await request.json();
-    const { moduleId } = body;
+    const { moduleId, comment, imageUrl } = body;
 
     if (!moduleId) {
       return NextResponse.json(
         { success: false, error: "moduleId is required" },
         { status: 400 }
       );
+    }
+
+    // Validate comment length
+    if (comment !== undefined && comment !== null) {
+      if (typeof comment !== "string") {
+        return NextResponse.json(
+          { success: false, error: "comment must be a string" },
+          { status: 400 }
+        );
+      }
+      if (comment.length > 2000) {
+        return NextResponse.json(
+          { success: false, error: "Comment must be 2000 characters or fewer" },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Validate imageUrl if provided
+    if (imageUrl !== undefined && imageUrl !== null) {
+      if (typeof imageUrl !== "string") {
+        return NextResponse.json(
+          { success: false, error: "imageUrl must be a string" },
+          { status: 400 }
+        );
+      }
     }
 
     // Verify the module belongs to this course
@@ -170,12 +196,22 @@ export async function PATCH(
       );
     }
 
+    const updateData: Record<string, unknown> = {
+      completed: true,
+      completed_at: new Date().toISOString(),
+    };
+
+    if (comment !== undefined && comment !== null) {
+      updateData.comment = comment || null;
+    }
+
+    if (imageUrl !== undefined && imageUrl !== null) {
+      updateData.image_url = imageUrl || null;
+    }
+
     const { error: updateError } = await supabase
       .from("user_module_projects")
-      .update({
-        completed: true,
-        completed_at: new Date().toISOString(),
-      })
+      .update(updateData)
       .eq("id", selection.id)
       .eq("user_id", user.id);
 
