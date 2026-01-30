@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import LearnModal from "./components/LearnModal";
+import type { LearningPlanData } from "./components/LearnModal";
 import SettingsModal from "./components/SettingsModal";
+import ProgramCreationLoader from "./components/ProgramCreationLoader";
 
 export default function Home() {
   const router = useRouter();
@@ -25,6 +27,9 @@ export default function Home() {
     status: string;
     created_at: string;
   }>>([]);
+  const [isCreating, setIsCreating] = useState(false);
+  const [creationError, setCreationError] = useState<string | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
 
@@ -66,6 +71,77 @@ export default function Home() {
     } catch {
       // Courses fetch failure is non-critical
     }
+  }
+
+  // Abort in-flight creation request on unmount
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort();
+    };
+  }, []);
+
+  const handleProgramSubmit = useCallback(
+    async (planData: LearningPlanData) => {
+      if (isCreating) return; // Prevent double submission
+
+      // Close modal, show loader
+      setShowLearnModal(false);
+      setIsCreating(true);
+      setCreationError(null);
+
+      const controller = new AbortController();
+      abortControllerRef.current = controller;
+
+      try {
+        const res = await fetch("/api/courses", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(planData),
+          signal: controller.signal,
+        });
+
+        const data = await res.json();
+
+        // Handle low likelihood response
+        if (data.low_likelihood) {
+          setCreationError(
+            `Low likelihood of success (${data.likelihood_of_learning}%). ${data.error}`
+          );
+          return;
+        }
+
+        if (!res.ok || !data.success) {
+          setCreationError(
+            data.error || "Something went wrong. Please try again."
+          );
+          return;
+        }
+
+        // Navigate to the new course page
+        const courseId = data.course?.id;
+        if (courseId) {
+          router.push(`/course/${courseId}`);
+        } else {
+          // Fallback: course created but no ID returned
+          await fetchCourses();
+          setIsCreating(false);
+        }
+      } catch (err: unknown) {
+        if (err instanceof DOMException && err.name === "AbortError") {
+          // Request was aborted (user navigated away), do nothing
+          return;
+        }
+        setCreationError(
+          "Network error. Please check your connection and try again."
+        );
+      }
+    },
+    [isCreating, router]
+  );
+
+  function handleDismissCreationError() {
+    setIsCreating(false);
+    setCreationError(null);
   }
 
   // Close menu when clicking outside
@@ -318,7 +394,15 @@ export default function Home() {
       {showLearnModal && (
         <LearnModal
           onClose={() => setShowLearnModal(false)}
-          onCourseCreated={fetchCourses}
+          onSubmit={handleProgramSubmit}
+        />
+      )}
+
+      {/* Program Creation Loading Screen */}
+      {isCreating && (
+        <ProgramCreationLoader
+          error={creationError}
+          onDismissError={handleDismissCreationError}
         />
       )}
 
