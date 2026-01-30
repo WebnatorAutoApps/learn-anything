@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { resolveModuleStatuses, type ModuleScheduleEntry } from "@/lib/schedule";
 
 export async function GET(
   _request: Request,
@@ -17,7 +18,7 @@ export async function GET(
     const { data: courseRow, error: courseError } = await supabase
       .from("courses")
       .select(
-        "id, user_id, normalized_title, learning_goal, learning_goal_details, expertise_level, expertise_details, expected_skill_level, likelihood_of_learning, total_modules, status, created_at"
+        "id, user_id, normalized_title, learning_goal, learning_goal_details, expertise_level, expertise_details, expected_skill_level, likelihood_of_learning, total_modules, status, commitment_interval_days, created_at"
       )
       .eq("id", id)
       .single();
@@ -32,6 +33,7 @@ export async function GET(
     // Determine enrollment status
     const isOwner = user ? courseRow.user_id === user.id : false;
     let isEnrolled = isOwner && courseRow.status === "started";
+    let enrollmentId: string | null = null;
 
     if (user && !isOwner) {
       const { data: enrollment } = await supabase
@@ -42,6 +44,7 @@ export async function GET(
         .single();
 
       isEnrolled = !!enrollment;
+      enrollmentId = enrollment?.id ?? null;
     }
 
     // Build course response object without user_id
@@ -56,6 +59,7 @@ export async function GET(
       likelihood_of_learning: courseRow.likelihood_of_learning,
       total_modules: courseRow.total_modules,
       status: courseRow.status,
+      commitment_interval_days: courseRow.commitment_interval_days,
       created_at: courseRow.created_at,
     };
 
@@ -71,6 +75,70 @@ export async function GET(
         { success: false, error: "Failed to fetch modules" },
         { status: 500 }
       );
+    }
+
+    // Fetch schedule data if enrolled
+    const scheduleMap: Map<string, { unlock_date: string; due_date: string }> =
+      new Map();
+
+    if (isEnrolled && user) {
+      if (isOwner) {
+        // Fetch from owner_module_schedules
+        const { data: ownerSchedules } = await supabase
+          .from("owner_module_schedules")
+          .select("module_id, unlock_date, due_date")
+          .eq("course_id", id)
+          .eq("user_id", user.id);
+
+        if (ownerSchedules) {
+          for (const s of ownerSchedules) {
+            scheduleMap.set(s.module_id, {
+              unlock_date: s.unlock_date,
+              due_date: s.due_date,
+            });
+          }
+        }
+      } else if (enrollmentId) {
+        // Fetch from module_schedules
+        const { data: schedules } = await supabase
+          .from("module_schedules")
+          .select("module_id, unlock_date, due_date")
+          .eq("enrollment_id", enrollmentId);
+
+        if (schedules) {
+          for (const s of schedules) {
+            scheduleMap.set(s.module_id, {
+              unlock_date: s.unlock_date,
+              due_date: s.due_date,
+            });
+          }
+        }
+      }
+    }
+
+    // Build schedule entries for status resolution
+    const hasSchedule = scheduleMap.size > 0;
+    const statusMap: Map<string, { status: string; unlockDate: string; dueDate: string }> =
+      new Map();
+
+    if (hasSchedule && modules) {
+      const scheduleEntries: ModuleScheduleEntry[] = modules
+        .filter((m) => scheduleMap.has(m.id))
+        .map((m) => ({
+          moduleId: m.id,
+          moduleIndex: m.module_index,
+          unlockDate: scheduleMap.get(m.id)!.unlock_date,
+          dueDate: scheduleMap.get(m.id)!.due_date,
+        }));
+
+      const resolved = resolveModuleStatuses(scheduleEntries);
+      for (const entry of resolved) {
+        statusMap.set(entry.moduleId, {
+          status: entry.status,
+          unlockDate: entry.unlockDate,
+          dueDate: entry.dueDate,
+        });
+      }
     }
 
     // Only fetch projects if the user is enrolled (owner or enrolled user)
@@ -105,15 +173,26 @@ export async function GET(
         projects = projectsData || [];
       }
 
-      modulesWithProjects = (modules || []).map((mod) => ({
-        ...mod,
-        projects: projects.filter((p) => p.module_id === mod.id),
-      }));
+      modulesWithProjects = (modules || []).map((mod) => {
+        const schedule = statusMap.get(mod.id);
+        return {
+          ...mod,
+          projects: projects.filter((p) => p.module_id === mod.id),
+          schedule: schedule
+            ? {
+                status: schedule.status,
+                unlockDate: schedule.unlockDate,
+                dueDate: schedule.dueDate,
+              }
+            : null,
+        };
+      });
     } else {
-      // Unenrolled users get modules without projects
+      // Unenrolled users get modules without projects or schedule
       modulesWithProjects = (modules || []).map((mod) => ({
         ...mod,
         projects: [],
+        schedule: null,
       }));
     }
 
