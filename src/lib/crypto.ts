@@ -12,7 +12,8 @@ const KEY_BYTE_LENGTH = 32; // AES-256 requires 32-byte key
  */
 export function validateEncryptionConfig(): string[] {
   const errors: string[] = [];
-  const secret = process.env.GEMINI_KEY_ENCRYPTION_SECRET;
+  const raw = process.env.GEMINI_KEY_ENCRYPTION_SECRET;
+  const secret = raw?.trim();
 
   if (!secret) {
     errors.push(
@@ -51,7 +52,7 @@ function getEncryptionKey(): Buffer {
   if (errors.length > 0) {
     throw new Error(errors[0]);
   }
-  return Buffer.from(process.env.GEMINI_KEY_ENCRYPTION_SECRET!, "hex");
+  return Buffer.from(process.env.GEMINI_KEY_ENCRYPTION_SECRET!.trim(), "hex");
 }
 
 /**

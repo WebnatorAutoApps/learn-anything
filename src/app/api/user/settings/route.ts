@@ -45,8 +45,15 @@ export async function PUT(request: Request) {
         };
       } catch (encryptError) {
         console.error("Encryption error:", encryptError);
+        const detail =
+          encryptError instanceof Error ? encryptError.message : undefined;
         return NextResponse.json(
-          { success: false, error: "Server configuration error — unable to encrypt API key" },
+          {
+            success: false,
+            error: detail
+              ? `Server configuration error: ${detail}`
+              : "Server configuration error — unable to encrypt API key",
+          },
           { status: 500 }
         );
       }

@@ -63,6 +63,28 @@ describe("validateEncryptionConfig", () => {
       expect(errors).toEqual([]);
     });
   });
+
+  it("accepts a valid key with trailing whitespace", () => {
+    withEnv("GEMINI_KEY_ENCRYPTION_SECRET", VALID_KEY + "  \n", () => {
+      const errors = validateEncryptionConfig();
+      expect(errors).toEqual([]);
+    });
+  });
+
+  it("accepts a valid key with leading whitespace", () => {
+    withEnv("GEMINI_KEY_ENCRYPTION_SECRET", "  " + VALID_KEY, () => {
+      const errors = validateEncryptionConfig();
+      expect(errors).toEqual([]);
+    });
+  });
+
+  it("treats whitespace-only value as not set", () => {
+    withEnv("GEMINI_KEY_ENCRYPTION_SECRET", "  \n  ", () => {
+      const errors = validateEncryptionConfig();
+      expect(errors.length).toBeGreaterThan(0);
+      expect(errors[0]).toContain("not set");
+    });
+  });
 });
 
 describe("encrypt / decrypt round-trip", () => {
@@ -119,6 +141,18 @@ describe("encrypt / decrypt round-trip", () => {
     const encrypted = encrypt("test");
     const parts = encrypted.split(":");
     expect(parts.length).toBe(3);
+  });
+
+  it("encrypts and decrypts when env var has trailing whitespace", () => {
+    const originalEnvValue = process.env.GEMINI_KEY_ENCRYPTION_SECRET;
+    process.env.GEMINI_KEY_ENCRYPTION_SECRET = VALID_KEY + "  \n";
+    try {
+      const plaintext = "AIzaSyTestKey12345";
+      const encrypted = encrypt(plaintext);
+      expect(decrypt(encrypted)).toBe(plaintext);
+    } finally {
+      process.env.GEMINI_KEY_ENCRYPTION_SECRET = originalEnvValue;
+    }
   });
 });
 
