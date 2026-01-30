@@ -16,6 +16,7 @@ export default function Home() {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [showLearnModal, setShowLearnModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [showApiKeyWarning, setShowApiKeyWarning] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [creationError, setCreationError] = useState<string | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -134,6 +135,19 @@ export default function Home() {
 
   function handleMenuMouseLeave() {
     setIsMenuOpen(false);
+  }
+
+  function handleLearnClick() {
+    if (!profile?.has_gemini_api_key) {
+      setShowApiKeyWarning(true);
+      return;
+    }
+    setShowLearnModal(true);
+  }
+
+  function handleApiKeyWarningGoToSettings() {
+    setShowApiKeyWarning(false);
+    setShowSettingsModal(true);
   }
 
   function handleSettingsClick() {
@@ -361,7 +375,7 @@ export default function Home() {
 
             {/* Add New Button */}
             <button
-              onClick={() => setShowLearnModal(true)}
+              onClick={handleLearnClick}
               className="group relative overflow-hidden rounded-lg border-2 border-dashed border-green-900/50 bg-green-950/10 p-6 text-left transition-all hover:border-green-600/50 hover:bg-green-950/30"
             >
               <div className="flex items-center gap-4">
@@ -395,6 +409,40 @@ export default function Home() {
       {/* Settings Modal */}
       {showSettingsModal && (
         <SettingsModal onClose={() => setShowSettingsModal(false)} />
+      )}
+
+      {/* API Key Warning Dialog */}
+      {showApiKeyWarning && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/70"
+            onClick={() => setShowApiKeyWarning(false)}
+          />
+          <div className="relative z-10 w-full max-w-md mx-4 rounded-lg border border-green-900/60 bg-green-950/95 p-6 shadow-lg shadow-green-900/30">
+            <h3 className="text-lg font-semibold text-green-400 mb-2">
+              API Key Required
+            </h3>
+            <p className="text-green-600 mb-6">
+              You don&apos;t have an API key configured. We won&apos;t be able
+              to create a learning path for you. Please go to Settings to add
+              one.
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setShowApiKeyWarning(false)}
+                className="px-4 py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/30 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleApiKeyWarningGoToSettings}
+                className="px-4 py-2 rounded-lg bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors"
+              >
+                Go to Settings
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Learn Something New Modal */}
