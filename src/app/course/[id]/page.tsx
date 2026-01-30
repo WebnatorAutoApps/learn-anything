@@ -48,6 +48,8 @@ export default function CoursePage({
   const [expandedModules, setExpandedModules] = useState<Set<number>>(
     new Set()
   );
+  const [isEnrolled, setIsEnrolled] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [enrolling, setEnrolling] = useState(false);
 
   useEffect(() => {
@@ -57,9 +59,6 @@ export default function CoursePage({
         if (!res.ok) {
           if (res.status === 404) {
             setError("Course not found");
-          } else if (res.status === 401) {
-            router.push("/login");
-            return;
           } else {
             setError("Failed to load course");
           }
@@ -67,6 +66,8 @@ export default function CoursePage({
         }
         const data = await res.json();
         setCourse(data.course);
+        setIsEnrolled(data.isEnrolled);
+        setIsAuthenticated(data.isAuthenticated);
       } catch {
         setError("Failed to load course");
       } finally {
@@ -75,9 +76,48 @@ export default function CoursePage({
     }
 
     fetchCourse();
-  }, [id, router]);
+  }, [id]);
+
+  async function handleEnroll() {
+    if (!isAuthenticated) {
+      router.push("/login");
+      return;
+    }
+
+    setEnrolling(true);
+    try {
+      const res = await fetch(`/api/courses/${id}/enroll`, {
+        method: "POST",
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        if (res.status === 401) {
+          router.push("/login");
+          return;
+        }
+        setError(data.error || "Failed to enroll");
+        return;
+      }
+
+      if (data.success) {
+        setIsEnrolled(true);
+        // Re-fetch course to get project data now that we're enrolled
+        const courseRes = await fetch(`/api/courses/${id}`);
+        if (courseRes.ok) {
+          const courseData = await courseRes.json();
+          setCourse(courseData.course);
+        }
+      }
+    } catch {
+      setError("Failed to enroll");
+    } finally {
+      setEnrolling(false);
+    }
+  }
 
   function toggleModule(moduleIndex: number) {
+    if (!isEnrolled) return; // Only enrolled users can expand modules
     setExpandedModules((prev) => {
       const next = new Set(prev);
       if (next.has(moduleIndex)) {
@@ -87,27 +127,6 @@ export default function CoursePage({
       }
       return next;
     });
-  }
-
-  async function handleEnrollmentToggle() {
-    if (!course || enrolling) return;
-    setEnrolling(true);
-    const action = course.status === "started" ? "unenroll" : "enroll";
-    try {
-      const res = await fetch(`/api/courses/${id}/enroll`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setCourse((prev) => (prev ? { ...prev, status: data.status } : prev));
-      }
-    } catch {
-      // Non-critical
-    } finally {
-      setEnrolling(false);
-    }
   }
 
   if (loading) {
@@ -134,7 +153,8 @@ export default function CoursePage({
         <div className="terminal-vignette" />
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen gap-4">
           <p className="text-red-400 text-lg">
-            <span className="text-red-600">{">"}</span> {error || "Course not found"}
+            <span className="text-red-600">{">"}</span>{" "}
+            {error || "Course not found"}
           </p>
           <button
             onClick={() => router.push("/")}
@@ -146,6 +166,8 @@ export default function CoursePage({
       </div>
     );
   }
+
+  const hasModules = course.modules.length > 0;
 
   return (
     <div className="terminal-screen min-h-screen font-mono">
@@ -183,38 +205,10 @@ export default function CoursePage({
       <main className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-8">
         {/* Course Header */}
         <div className="mb-8">
-          <div className="flex items-start justify-between gap-4 mb-2">
-            <h2 className="text-2xl font-semibold text-green-400 tracking-wide">
-              <span className="text-green-600">{">"}</span>{" "}
-              {course.normalized_title}
-            </h2>
-            <div className="flex items-center gap-3 flex-shrink-0">
-              <span
-                className={`text-xs font-mono px-2 py-1 rounded border ${
-                  course.status === "started"
-                    ? "border-green-500/50 text-green-400 bg-green-950/40"
-                    : "border-green-900/60 text-green-700 bg-green-950/20"
-                }`}
-              >
-                {course.status === "started" ? "Started" : "Not Started"}
-              </span>
-              <button
-                onClick={handleEnrollmentToggle}
-                disabled={enrolling}
-                className={`px-4 py-2 rounded-lg font-semibold text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
-                  course.status === "started"
-                    ? "border border-green-900/60 text-green-400 hover:bg-green-900/30"
-                    : "bg-green-600 text-black hover:bg-green-500"
-                }`}
-              >
-                {enrolling
-                  ? "Updating..."
-                  : course.status === "started"
-                    ? "Stop Course"
-                    : "Start Course"}
-              </button>
-            </div>
-          </div>
+          <h2 className="text-2xl font-semibold text-green-400 mb-2 tracking-wide">
+            <span className="text-green-600">{">"}</span>{" "}
+            {course.normalized_title}
+          </h2>
           <p className="text-green-500 text-lg mb-4">
             {course.learning_goal}
           </p>
@@ -271,97 +265,165 @@ export default function CoursePage({
           </div>
         )}
 
-        {/* Modules List */}
+        {/* Enrollment CTA */}
         <div className="mb-8">
-          <h3 className="text-lg font-semibold text-green-400 mb-4 tracking-wide">
-            <span className="text-green-600">{">"}</span> Course Modules
-          </h3>
-
-          <div className="space-y-2">
-            {course.modules.map((mod) => {
-              const isExpanded = expandedModules.has(mod.module_index);
-              return (
-                <div
-                  key={mod.id}
-                  className="rounded-lg border border-green-900/60 bg-green-950/20 overflow-hidden"
-                >
-                  {/* Module Header */}
-                  <button
-                    onClick={() => toggleModule(mod.module_index)}
-                    className="w-full p-4 text-left flex items-start gap-4 hover:bg-green-950/40 transition-colors"
+          {isEnrolled ? (
+            <button
+              disabled
+              className="w-full py-3 px-6 rounded-lg border border-green-900/60 bg-green-950/30 text-green-700 font-semibold tracking-wider cursor-not-allowed"
+            >
+              Already Enrolled
+            </button>
+          ) : (
+            <button
+              onClick={handleEnroll}
+              disabled={enrolling}
+              className="w-full py-3 px-6 rounded-lg border border-green-500/60 bg-green-900/40 text-green-400 font-semibold tracking-wider hover:bg-green-900/60 hover:border-green-400/60 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {enrolling ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg
+                    className="animate-spin h-4 w-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
                   >
-                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded border border-green-800/50 bg-green-950/50 text-sm font-bold text-green-400">
-                      {mod.module_index}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-green-400">
-                        {mod.title}
-                      </h4>
-                      <p className="text-sm text-green-700 mt-1">
-                        {mod.description}
-                      </p>
-                    </div>
-                    <svg
-                      className={`h-5 w-5 text-green-600 flex-shrink-0 mt-1 transition-transform ${
-                        isExpanded ? "rotate-180" : ""
-                      }`}
-                      fill="none"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
                       stroke="currentColor"
-                    >
-                      <path d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-
-                  {/* Projects (expanded) */}
-                  {isExpanded && mod.projects.length > 0 && (
-                    <div className="border-t border-green-900/40 px-4 py-3 space-y-3">
-                      <p className="text-xs text-green-700 uppercase tracking-wider">
-                        Project Options
-                      </p>
-                      {mod.projects.map((project) => (
-                        <div
-                          key={project.id}
-                          className="rounded border border-green-900/40 bg-green-950/30 p-4"
-                        >
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="text-xs font-mono text-green-700 border border-green-900/40 rounded px-1.5 py-0.5">
-                              Option {project.project_index}
-                            </span>
-                            <h5 className="font-semibold text-green-400 text-sm">
-                              {project.title}
-                            </h5>
-                          </div>
-                          <div className="space-y-2">
-                            <div>
-                              <p className="text-xs text-green-700 uppercase tracking-wider mb-1">
-                                Objective
-                              </p>
-                              <p className="text-sm text-green-500 leading-relaxed">
-                                {project.objective}
-                              </p>
-                            </div>
-                            <div>
-                              <p className="text-xs text-green-700 uppercase tracking-wider mb-1">
-                                Instructions
-                              </p>
-                              <p className="text-sm text-green-600 leading-relaxed">
-                                {project.instructions}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
+                  </svg>
+                  Enrolling...
+                </span>
+              ) : (
+                "Start Now"
+              )}
+            </button>
+          )}
         </div>
+
+        {/* Modules List */}
+        {hasModules && (
+          <div className="mb-8">
+            <h3 className="text-lg font-semibold text-green-400 mb-4 tracking-wide">
+              <span className="text-green-600">{">"}</span> Course Modules
+              <span className="text-sm font-normal text-green-700 ml-2">
+                ({course.modules.length} module
+                {course.modules.length !== 1 ? "s" : ""})
+              </span>
+            </h3>
+
+            <div className="space-y-2">
+              {course.modules.map((mod) => {
+                const isExpanded = expandedModules.has(mod.module_index);
+                return (
+                  <div
+                    key={mod.id}
+                    className="rounded-lg border border-green-900/60 bg-green-950/20 overflow-hidden"
+                  >
+                    {/* Module Header */}
+                    <button
+                      onClick={() => toggleModule(mod.module_index)}
+                      className={`w-full p-4 text-left flex items-start gap-4 transition-colors ${
+                        isEnrolled
+                          ? "hover:bg-green-950/40 cursor-pointer"
+                          : "cursor-default"
+                      }`}
+                    >
+                      <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded border border-green-800/50 bg-green-950/50 text-sm font-bold text-green-400">
+                        {mod.module_index}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold text-green-400">
+                          {mod.title}
+                        </h4>
+                        {isEnrolled && (
+                          <p className="text-sm text-green-700 mt-1">
+                            {mod.description}
+                          </p>
+                        )}
+                      </div>
+                      {isEnrolled && (
+                        <svg
+                          className={`h-5 w-5 text-green-600 flex-shrink-0 mt-1 transition-transform ${
+                            isExpanded ? "rotate-180" : ""
+                          }`}
+                          fill="none"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path d="M19 9l-7 7-7-7" />
+                        </svg>
+                      )}
+                    </button>
+
+                    {/* Projects (expanded) — only for enrolled users */}
+                    {isEnrolled &&
+                      isExpanded &&
+                      mod.projects.length > 0 && (
+                        <div className="border-t border-green-900/40 px-4 py-3 space-y-3">
+                          <p className="text-xs text-green-700 uppercase tracking-wider">
+                            Project Options
+                          </p>
+                          {mod.projects.map((project) => (
+                            <div
+                              key={project.id}
+                              className="rounded border border-green-900/40 bg-green-950/30 p-4"
+                            >
+                              <div className="flex items-center gap-2 mb-2">
+                                <span className="text-xs font-mono text-green-700 border border-green-900/40 rounded px-1.5 py-0.5">
+                                  Option {project.project_index}
+                                </span>
+                                <h5 className="font-semibold text-green-400 text-sm">
+                                  {project.title}
+                                </h5>
+                              </div>
+                              <div className="space-y-2">
+                                <div>
+                                  <p className="text-xs text-green-700 uppercase tracking-wider mb-1">
+                                    Objective
+                                  </p>
+                                  <p className="text-sm text-green-500 leading-relaxed">
+                                    {project.objective}
+                                  </p>
+                                </div>
+                                <div>
+                                  <p className="text-xs text-green-700 uppercase tracking-wider mb-1">
+                                    Instructions
+                                  </p>
+                                  <p className="text-sm text-green-600 leading-relaxed">
+                                    {project.instructions}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Hint for unenrolled users */}
+            {!isEnrolled && (
+              <p className="text-sm text-green-700 mt-4 text-center">
+                Enroll to unlock module details and project options.
+              </p>
+            )}
+          </div>
+        )}
       </main>
     </div>
   );
