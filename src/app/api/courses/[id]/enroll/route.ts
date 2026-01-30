@@ -1,6 +1,106 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
+export async function DELETE(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const supabase = await createClient();
+
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+      return NextResponse.json(
+        { success: false, error: "Not authenticated" },
+        { status: 401 }
+      );
+    }
+
+    // Check if the user is the course owner
+    const { data: course } = await supabase
+      .from("courses")
+      .select("id, user_id, status")
+      .eq("id", id)
+      .single();
+
+    if (!course) {
+      return NextResponse.json(
+        { success: false, error: "Course not found" },
+        { status: 404 }
+      );
+    }
+
+    const isOwner = course.user_id === user.id;
+
+    if (isOwner) {
+      // Owner unenroll: change course status back to 'created'
+      if (course.status === "created") {
+        return NextResponse.json(
+          { success: true, already_unenrolled: true },
+          { status: 200 }
+        );
+      }
+
+      const { error: updateError } = await supabase
+        .from("courses")
+        .update({ status: "created" })
+        .eq("id", id)
+        .eq("user_id", user.id);
+
+      if (updateError) {
+        console.error("Owner unenroll error:", updateError);
+        return NextResponse.json(
+          { success: false, error: "Failed to unenroll" },
+          { status: 500 }
+        );
+      }
+    } else {
+      // Non-owner unenroll: delete enrollment record
+      const { data: enrollment } = await supabase
+        .from("enrollments")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("course_id", id)
+        .single();
+
+      if (!enrollment) {
+        // Already unenrolled or never enrolled — treat as success
+        return NextResponse.json(
+          { success: true, already_unenrolled: true },
+          { status: 200 }
+        );
+      }
+
+      const { error: deleteError } = await supabase
+        .from("enrollments")
+        .delete()
+        .eq("user_id", user.id)
+        .eq("course_id", id);
+
+      if (deleteError) {
+        console.error("Enrollment delete error:", deleteError);
+        return NextResponse.json(
+          { success: false, error: "Failed to unenroll" },
+          { status: 500 }
+        );
+      }
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Unenroll error:", error);
+    return NextResponse.json(
+      { success: false, error: "An unexpected error occurred" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(
   _request: Request,
   { params }: { params: Promise<{ id: string }> }

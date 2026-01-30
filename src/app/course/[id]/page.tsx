@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect, useRef, use } from "react";
 import { useRouter } from "next/navigation";
 
 interface Project {
@@ -51,6 +51,11 @@ export default function CoursePage({
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [enrolling, setEnrolling] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [showUnenrollDialog, setShowUnenrollDialog] = useState(false);
+  const [unenrolling, setUnenrolling] = useState(false);
+  const [unenrollError, setUnenrollError] = useState<string | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     async function fetchCourse() {
@@ -113,6 +118,58 @@ export default function CoursePage({
       setError("Failed to enroll");
     } finally {
       setEnrolling(false);
+    }
+  }
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    }
+    if (menuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [menuOpen]);
+
+  async function handleUnenroll() {
+    setUnenrolling(true);
+    setUnenrollError(null);
+    try {
+      const res = await fetch(`/api/courses/${id}/enroll`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        if (res.status === 404) {
+          // Course deleted concurrently — navigate away
+          router.push("/");
+          return;
+        }
+        const data = await res.json();
+        setUnenrollError(data.error || "Failed to unenroll");
+        return;
+      }
+
+      const data = await res.json();
+      if (data.success) {
+        setIsEnrolled(false);
+        setShowUnenrollDialog(false);
+        setExpandedModules(new Set());
+        // Re-fetch course to clear project data
+        const courseRes = await fetch(`/api/courses/${id}`);
+        if (courseRes.ok) {
+          const courseData = await courseRes.json();
+          setCourse(courseData.course);
+        }
+      }
+    } catch {
+      setUnenrollError("Failed to unenroll. Please try again.");
+    } finally {
+      setUnenrolling(false);
     }
   }
 
@@ -195,9 +252,43 @@ export default function CoursePage({
               <span className="text-sm">Back</span>
             </button>
             <div className="h-6 w-px bg-green-900/50" />
-            <h1 className="text-xl font-semibold text-green-400 tracking-wider truncate">
+            <h1 className="text-xl font-semibold text-green-400 tracking-wider truncate flex-1">
               {course.normalized_title}
             </h1>
+
+            {/* Three-dot overflow menu — only shown when enrolled */}
+            {isEnrolled && (
+              <div className="relative" ref={menuRef}>
+                <button
+                  onClick={() => setMenuOpen((prev) => !prev)}
+                  className="p-2 text-green-600 hover:text-green-400 hover:bg-green-900/30 rounded-lg transition-colors"
+                  aria-label="Course options"
+                >
+                  <svg
+                    className="h-5 w-5"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle cx="12" cy="5" r="2" />
+                    <circle cx="12" cy="12" r="2" />
+                    <circle cx="12" cy="19" r="2" />
+                  </svg>
+                </button>
+                {menuOpen && (
+                  <div className="absolute right-0 mt-1 w-48 rounded-lg border border-green-900/60 bg-green-950 shadow-lg z-30">
+                    <button
+                      onClick={() => {
+                        setMenuOpen(false);
+                        setShowUnenrollDialog(true);
+                      }}
+                      className="w-full px-4 py-3 text-left text-sm text-red-400 hover:bg-green-900/40 transition-colors rounded-lg"
+                    >
+                      Unenroll
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </header>
@@ -425,6 +516,81 @@ export default function CoursePage({
           </div>
         )}
       </main>
+
+      {/* Unenroll Confirmation Dialog */}
+      {showUnenrollDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/70"
+            onClick={() => {
+              if (!unenrolling) {
+                setShowUnenrollDialog(false);
+                setUnenrollError(null);
+              }
+            }}
+          />
+          <div className="relative z-10 w-full max-w-md mx-4 rounded-lg border border-green-900/60 bg-green-950 p-6 shadow-xl">
+            <h3 className="text-lg font-semibold text-green-400 mb-2">
+              Already leaving?
+            </h3>
+            <p className="text-green-500 text-sm leading-relaxed mb-6">
+              You&apos;ve been doing so well! Are you sure you want to unenroll
+              from this course? Your progress won&apos;t be saved.
+            </p>
+
+            {unenrollError && (
+              <p className="text-red-400 text-sm mb-4 px-3 py-2 rounded border border-red-900/40 bg-red-950/30">
+                {unenrollError}
+              </p>
+            )}
+
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => {
+                  setShowUnenrollDialog(false);
+                  setUnenrollError(null);
+                }}
+                disabled={unenrolling}
+                className="px-4 py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/30 transition-colors text-sm font-medium disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleUnenroll}
+                disabled={unenrolling}
+                className="px-4 py-2 rounded-lg border border-red-900/60 bg-red-950/30 text-red-400 hover:bg-red-900/40 transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {unenrolling ? (
+                  <span className="flex items-center gap-2">
+                    <svg
+                      className="animate-spin h-4 w-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                      />
+                    </svg>
+                    Unenrolling...
+                  </span>
+                ) : (
+                  "Unenroll"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
