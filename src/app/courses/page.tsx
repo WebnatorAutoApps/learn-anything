@@ -1,54 +1,20 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-
-interface Course {
-  id: string;
-  normalized_title: string;
-  expected_skill_level: string;
-  likelihood_of_learning: number;
-  total_modules: number;
-  status: string;
-  created_at: string;
-}
+import { useCourses, useEnrollCourse } from "@/lib/hooks/queries";
+import { CourseGridSkeleton } from "../components/PageLoader";
 
 export default function CoursesPage() {
   const router = useRouter();
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: courses = [], isLoading } = useCourses("created");
+  const enrollMutation = useEnrollCourse();
   const [enrollingId, setEnrollingId] = useState<string | null>(null);
-
-  const fetchCourses = useCallback(async () => {
-    try {
-      const res = await fetch("/api/courses?status=created");
-      if (res.ok) {
-        const data = await res.json();
-        setCourses(data.courses || []);
-      }
-    } catch {
-      // Non-critical
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchCourses();
-  }, [fetchCourses]);
 
   async function handleEnroll(courseId: string) {
     setEnrollingId(courseId);
     try {
-      const res = await fetch(`/api/courses/${courseId}/enroll`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "enroll" }),
-      });
-      if (res.ok) {
-        // Remove the enrolled course from the list
-        setCourses((prev) => prev.filter((c) => c.id !== courseId));
-      }
+      await enrollMutation.mutateAsync({ courseId, isOwner: true });
     } catch {
       // Non-critical
     } finally {
@@ -100,15 +66,8 @@ export default function CoursesPage() {
           </p>
         </div>
 
-        {loading ? (
-          <div className="text-green-400 text-lg">
-            <span className="text-green-600">{">"}</span> Loading courses
-            <span className="typing-dots">
-              <span className="dot">.</span>
-              <span className="dot">.</span>
-              <span className="dot">.</span>
-            </span>
-          </div>
+        {isLoading ? (
+          <CourseGridSkeleton count={3} />
         ) : courses.length === 0 ? (
           <div className="rounded-lg border border-green-900/60 bg-green-950/20 p-8 text-center">
             <p className="text-green-600 mb-4">

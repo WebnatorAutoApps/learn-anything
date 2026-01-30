@@ -6,72 +6,36 @@ import LearnModal from "./components/LearnModal";
 import type { LearningPlanData } from "./components/LearnModal";
 import SettingsModal from "./components/SettingsModal";
 import ProgramCreationLoader from "./components/ProgramCreationLoader";
+import { CourseGridSkeleton } from "./components/PageLoader";
+import { useProfile, useCourses } from "@/lib/hooks/queries";
 
 export default function Home() {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [userInitial, setUserInitial] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [showLearnModal, setShowLearnModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
-  const [profileLoading, setProfileLoading] = useState(true);
-  const [profileError, setProfileError] = useState(false);
-  const [courses, setCourses] = useState<Array<{
-    id: string;
-    normalized_title: string;
-    expected_skill_level: string;
-    likelihood_of_learning: number;
-    total_modules: number;
-    status: string;
-    created_at: string;
-  }>>([]);
   const [isCreating, setIsCreating] = useState(false);
   const [creationError, setCreationError] = useState<string | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
 
-  // Fetch user profile and courses on mount
-  useEffect(() => {
-    fetchProfile();
-    fetchCourses();
-  }, []);
+  // TanStack Query hooks
+  const {
+    data: profile,
+    isLoading: profileLoading,
+    isError: profileError,
+    refetch: refetchProfile,
+  } = useProfile();
 
-  async function fetchProfile() {
-    setProfileLoading(true);
-    setProfileError(false);
-    try {
-      const res = await fetch("/api/user");
-      if (res.ok) {
-        const data = await res.json();
-        const name = data.profile?.full_name || data.profile?.email || "";
-        setUserInitial(name.charAt(0).toUpperCase());
-        if (data.profile?.avatar_url) {
-          setAvatarUrl(data.profile.avatar_url);
-        }
-      } else {
-        setProfileError(true);
-      }
-    } catch {
-      setProfileError(true);
-    } finally {
-      setProfileLoading(false);
-    }
-  }
+  const { data: courses = [], isLoading: coursesLoading } = useCourses("started");
 
-  async function fetchCourses() {
-    try {
-      const res = await fetch("/api/courses?status=started");
-      if (res.ok) {
-        const data = await res.json();
-        setCourses(data.courses || []);
-      }
-    } catch {
-      // Courses fetch failure is non-critical
-    }
-  }
+  const userInitial = profile
+    ? (profile.full_name || profile.email || "").charAt(0).toUpperCase()
+    : "";
+  const avatarUrl = profile?.avatar_url || null;
 
   // Abort in-flight creation request on unmount
   useEffect(() => {
@@ -123,7 +87,6 @@ export default function Home() {
           router.push(`/course/${courseId}`);
         } else {
           // Fallback: course created but no ID returned
-          await fetchCourses();
           setIsCreating(false);
         }
       } catch (err: unknown) {
@@ -223,13 +186,14 @@ export default function Home() {
                 onMouseEnter={handleAvatarMouseEnter}
                 className="h-10 w-10 rounded-full border-2 border-green-500 bg-green-950 flex items-center justify-center text-green-400 font-semibold cursor-pointer hover:border-green-400 hover:bg-green-950/50 transition-colors overflow-hidden"
               >
-                {avatarUrl ? (
+                {profileLoading ? (
+                  <div className="h-full w-full bg-green-900/40 animate-pulse rounded-full" />
+                ) : avatarUrl ? (
                   <img
                     src={avatarUrl}
                     alt="Profile"
                     className="h-full w-full object-cover"
                     referrerPolicy="no-referrer"
-                    onError={() => setAvatarUrl(null)}
                   />
                 ) : (
                   userInitial || "?"
@@ -325,7 +289,7 @@ export default function Home() {
               </span>
             </div>
             <button
-              onClick={fetchProfile}
+              onClick={() => refetchProfile()}
               disabled={profileLoading}
               className="flex-shrink-0 rounded-md border border-red-900/60 px-3 py-1 text-xs text-red-400 hover:bg-red-900/30 transition-colors disabled:opacity-50"
             >
@@ -367,61 +331,65 @@ export default function Home() {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {courses.map((course) => (
+        {coursesLoading ? (
+          <CourseGridSkeleton count={3} />
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {courses.map((course) => (
+              <button
+                key={course.id}
+                onClick={() => router.push(`/course/${course.id}`)}
+                className="group relative overflow-hidden rounded-lg border border-green-900/60 bg-green-950/20 p-6 text-left transition-all hover:shadow-[0_0_15px_rgba(0,255,65,0.15)] hover:border-green-500/70 hover:bg-green-950/40"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-green-800/50 bg-green-950/50">
+                    <span className="text-lg font-bold text-green-400">
+                      {course.normalized_title.charAt(0)}
+                    </span>
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-lg font-semibold text-green-400 truncate">
+                      {course.normalized_title}
+                    </h3>
+                    <p className="text-sm text-green-700">
+                      {course.total_modules} modules
+                    </p>
+                  </div>
+                </div>
+              </button>
+            ))}
+
+            {/* Add New Button */}
             <button
-              key={course.id}
-              onClick={() => router.push(`/course/${course.id}`)}
-              className="group relative overflow-hidden rounded-lg border border-green-900/60 bg-green-950/20 p-6 text-left transition-all hover:shadow-[0_0_15px_rgba(0,255,65,0.15)] hover:border-green-500/70 hover:bg-green-950/40"
+              onClick={() => setShowLearnModal(true)}
+              className="group relative overflow-hidden rounded-lg border-2 border-dashed border-green-900/50 bg-green-950/10 p-6 text-left transition-all hover:border-green-600/50 hover:bg-green-950/30"
             >
               <div className="flex items-center gap-4">
                 <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-green-800/50 bg-green-950/50">
-                  <span className="text-lg font-bold text-green-400">
-                    {course.normalized_title.charAt(0)}
-                  </span>
+                  <svg
+                    className="h-6 w-6 text-green-600"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path d="M12 4v16m8-8H4" />
+                  </svg>
                 </div>
-                <div className="min-w-0 flex-1">
-                  <h3 className="text-lg font-semibold text-green-400 truncate">
-                    {course.normalized_title}
+                <div>
+                  <h3 className="text-lg font-semibold text-green-400">
+                    Learn Something New
                   </h3>
                   <p className="text-sm text-green-700">
-                    {course.total_modules} modules
+                    Add a new topic
                   </p>
                 </div>
               </div>
             </button>
-          ))}
-
-          {/* Add New Button */}
-          <button
-            onClick={() => setShowLearnModal(true)}
-            className="group relative overflow-hidden rounded-lg border-2 border-dashed border-green-900/50 bg-green-950/10 p-6 text-left transition-all hover:border-green-600/50 hover:bg-green-950/30"
-          >
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-green-800/50 bg-green-950/50">
-                <svg
-                  className="h-6 w-6 text-green-600"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path d="M12 4v16m8-8H4" />
-                </svg>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-green-400">
-                  Learn Something New
-                </h3>
-                <p className="text-sm text-green-700">
-                  Add a new topic
-                </p>
-              </div>
-            </div>
-          </button>
-        </div>
+          </div>
+        )}
       </main>
 
       {/* Settings Modal */}
