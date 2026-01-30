@@ -31,7 +31,7 @@ export async function GET(
 
     // Determine enrollment status
     const isOwner = user ? courseRow.user_id === user.id : false;
-    let isEnrolled = isOwner; // Owners are implicitly enrolled
+    let isEnrolled = isOwner && courseRow.status === "started";
 
     if (user && !isOwner) {
       const { data: enrollment } = await supabase

@@ -49,6 +49,7 @@ export default function CoursePage({
     new Set()
   );
   const [isEnrolled, setIsEnrolled] = useState(false);
+  const [isOwner, setIsOwner] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [enrolling, setEnrolling] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -72,6 +73,7 @@ export default function CoursePage({
         const data = await res.json();
         setCourse(data.course);
         setIsEnrolled(data.isEnrolled);
+        setIsOwner(data.isOwner);
         setIsAuthenticated(data.isAuthenticated);
       } catch {
         setError("Failed to load course");
@@ -91,14 +93,30 @@ export default function CoursePage({
 
     setEnrolling(true);
     try {
-      const res = await fetch(`/api/courses/${id}/enroll`, {
-        method: "POST",
-      });
+      const res = isOwner
+        ? await fetch(`/api/courses/${id}/enroll`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ action: "enroll" }),
+          })
+        : await fetch(`/api/courses/${id}/enroll`, {
+            method: "POST",
+          });
       const data = await res.json();
 
       if (!res.ok) {
         if (res.status === 401) {
           router.push("/login");
+          return;
+        }
+        // 409 means already enrolled — treat as success
+        if (res.status === 409) {
+          setIsEnrolled(true);
+          const courseRes = await fetch(`/api/courses/${id}`);
+          if (courseRes.ok) {
+            const courseData = await courseRes.json();
+            setCourse(courseData.course);
+          }
           return;
         }
         setError(data.error || "Failed to enroll");
