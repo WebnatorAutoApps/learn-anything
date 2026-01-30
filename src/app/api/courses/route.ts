@@ -191,7 +191,7 @@ export async function GET(request: Request) {
       );
     }
 
-    // Optional status filter: ?status=created or ?status=started
+    // Optional status filter: ?status=created, ?status=started, or ?status=all
     const { searchParams } = new URL(request.url);
     const statusFilter = searchParams.get("status");
 
@@ -214,7 +214,13 @@ export async function GET(request: Request) {
       );
     }
 
-    return NextResponse.json({ success: true, courses: courses || [] });
+    // When fetching all courses, include isEnrolled flag per course
+    const coursesWithEnrollment = (courses || []).map((course) => ({
+      ...course,
+      isEnrolled: course.status === "started",
+    }));
+
+    return NextResponse.json({ success: true, courses: coursesWithEnrollment });
   } catch (error) {
     console.error("Courses fetch error:", error);
     return NextResponse.json(
