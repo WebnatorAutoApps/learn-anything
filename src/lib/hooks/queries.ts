@@ -54,12 +54,19 @@ interface Project {
   objective: string;
 }
 
+export interface ModuleSchedule {
+  status: "CURRENT" | "NEXT_PREVIEW" | "LOCKED";
+  unlockDate: string;
+  dueDate: string;
+}
+
 interface Module {
   id: string;
   module_index: number;
   title: string;
   description: string;
   projects: Project[];
+  schedule: ModuleSchedule | null;
 }
 
 export interface CourseDetail {
@@ -73,6 +80,7 @@ export interface CourseDetail {
   likelihood_of_learning: number;
   total_modules: number;
   status: string;
+  commitment_interval_days: number | null;
   created_at: string;
   modules: Module[];
 }
@@ -149,19 +157,26 @@ export function useEnrollCourse() {
     mutationFn: ({
       courseId,
       isOwner,
+      commitmentIntervalDays,
     }: {
       courseId: string;
       isOwner: boolean;
+      commitmentIntervalDays?: number;
     }) => {
       if (isOwner) {
         return fetchJSON<{ success: boolean }>(`/api/courses/${courseId}/enroll`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ action: "enroll" }),
+          body: JSON.stringify({
+            action: "enroll",
+            commitmentIntervalDays,
+          }),
         });
       }
       return fetchJSON<{ success: boolean }>(`/api/courses/${courseId}/enroll`, {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ commitmentIntervalDays }),
       });
     },
     onSuccess: (_data, variables) => {

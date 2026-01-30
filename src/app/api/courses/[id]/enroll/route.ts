@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { generateModuleSchedule, todayUTC } from "@/lib/schedule";
 
 export async function DELETE(
   _request: Request,
@@ -48,7 +49,7 @@ export async function DELETE(
 
       const { error: updateError } = await supabase
         .from("courses")
-        .update({ status: "created" })
+        .update({ status: "created", commitment_interval_days: null })
         .eq("id", id)
         .eq("user_id", user.id);
 
@@ -59,6 +60,13 @@ export async function DELETE(
           { status: 500 }
         );
       }
+
+      // Delete owner module schedules
+      await supabase
+        .from("owner_module_schedules")
+        .delete()
+        .eq("course_id", id)
+        .eq("user_id", user.id);
     } else {
       // Non-owner unenroll: delete enrollment record
       const { data: enrollment } = await supabase
@@ -75,6 +83,13 @@ export async function DELETE(
           { status: 200 }
         );
       }
+
+      // Delete module schedules first (cascade will also handle this,
+      // but being explicit)
+      await supabase
+        .from("module_schedules")
+        .delete()
+        .eq("enrollment_id", enrollment.id);
 
       const { error: deleteError } = await supabase
         .from("enrollments")
@@ -102,7 +117,7 @@ export async function DELETE(
 }
 
 export async function POST(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
@@ -119,6 +134,21 @@ export async function POST(
         { success: false, error: "Not authenticated" },
         { status: 401 }
       );
+    }
+
+    // Parse commitmentIntervalDays from request body
+    let commitmentIntervalDays = 3; // default
+    try {
+      const body = await request.json();
+      if (
+        body.commitmentIntervalDays &&
+        typeof body.commitmentIntervalDays === "number" &&
+        body.commitmentIntervalDays >= 1
+      ) {
+        commitmentIntervalDays = body.commitmentIntervalDays;
+      }
+    } catch {
+      // No body or invalid JSON — use default
     }
 
     // Verify the course exists
@@ -150,17 +180,56 @@ export async function POST(
       );
     }
 
-    // Create enrollment
-    const { error: enrollError } = await supabase
+    // Create enrollment with commitment interval
+    const { data: enrollment, error: enrollError } = await supabase
       .from("enrollments")
-      .insert({ user_id: user.id, course_id: id });
+      .insert({
+        user_id: user.id,
+        course_id: id,
+        commitment_interval_days: commitmentIntervalDays,
+      })
+      .select("id")
+      .single();
 
-    if (enrollError) {
+    if (enrollError || !enrollment) {
       console.error("Enrollment error:", enrollError);
       return NextResponse.json(
         { success: false, error: "Failed to enroll" },
         { status: 500 }
       );
+    }
+
+    // Fetch modules to generate schedule
+    const { data: modules } = await supabase
+      .from("modules")
+      .select("id, module_index")
+      .eq("course_id", id)
+      .order("module_index", { ascending: true });
+
+    if (modules && modules.length > 0) {
+      const enrollmentDate = todayUTC();
+      const schedule = generateModuleSchedule(
+        modules,
+        enrollmentDate,
+        commitmentIntervalDays
+      );
+
+      const scheduleRows = schedule.map((entry) => ({
+        enrollment_id: enrollment.id,
+        module_id: entry.moduleId,
+        unlock_date: entry.unlockDate,
+        due_date: entry.dueDate,
+      }));
+
+      const { error: scheduleError } = await supabase
+        .from("module_schedules")
+        .insert(scheduleRows);
+
+      if (scheduleError) {
+        console.error("Schedule creation error:", scheduleError);
+        // Non-fatal: enrollment succeeded but schedule failed
+        // The course view will fall back to showing all modules unlocked
+      }
     }
 
     return NextResponse.json({ success: true });
@@ -194,7 +263,7 @@ export async function PATCH(
     }
 
     const body = await request.json();
-    const { action } = body;
+    const { action, commitmentIntervalDays } = body;
 
     if (action !== "enroll" && action !== "unenroll") {
       return NextResponse.json(
@@ -234,9 +303,21 @@ export async function PATCH(
       );
     }
 
+    const intervalDays =
+      typeof commitmentIntervalDays === "number" && commitmentIntervalDays >= 1
+        ? commitmentIntervalDays
+        : 3;
+
+    const updateData: Record<string, unknown> = { status: newStatus };
+    if (action === "enroll") {
+      updateData.commitment_interval_days = intervalDays;
+    } else {
+      updateData.commitment_interval_days = null;
+    }
+
     const { error: updateError } = await supabase
       .from("courses")
-      .update({ status: newStatus })
+      .update(updateData)
       .eq("id", id)
       .eq("user_id", user.id);
 
@@ -246,6 +327,47 @@ export async function PATCH(
         { success: false, error: "Failed to update enrollment status" },
         { status: 500 }
       );
+    }
+
+    if (action === "enroll") {
+      // Generate owner module schedules
+      const { data: modules } = await supabase
+        .from("modules")
+        .select("id, module_index")
+        .eq("course_id", id)
+        .order("module_index", { ascending: true });
+
+      if (modules && modules.length > 0) {
+        const enrollmentDate = todayUTC();
+        const schedule = generateModuleSchedule(
+          modules,
+          enrollmentDate,
+          intervalDays
+        );
+
+        const scheduleRows = schedule.map((entry) => ({
+          course_id: id,
+          user_id: user.id,
+          module_id: entry.moduleId,
+          unlock_date: entry.unlockDate,
+          due_date: entry.dueDate,
+        }));
+
+        const { error: scheduleError } = await supabase
+          .from("owner_module_schedules")
+          .insert(scheduleRows);
+
+        if (scheduleError) {
+          console.error("Owner schedule creation error:", scheduleError);
+        }
+      }
+    } else {
+      // Unenroll: delete owner schedules
+      await supabase
+        .from("owner_module_schedules")
+        .delete()
+        .eq("course_id", id)
+        .eq("user_id", user.id);
     }
 
     return NextResponse.json({ success: true, status: newStatus });

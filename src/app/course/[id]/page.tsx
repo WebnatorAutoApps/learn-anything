@@ -7,7 +7,26 @@ import {
   useEnrollCourse,
   useUnenrollCourse,
 } from "@/lib/hooks/queries";
+import type { ModuleSchedule } from "@/lib/hooks/queries";
 import { CourseDetailSkeleton } from "../../components/PageLoader";
+
+const CADENCE_OPTIONS = [
+  { value: 1, label: "Every day" },
+  { value: 2, label: "Every 2 days" },
+  { value: 3, label: "Every 3 days" },
+  { value: 5, label: "Every 5 days" },
+  { value: 7, label: "Every 7 days" },
+];
+
+function formatDate(dateStr: string): string {
+  const date = new Date(dateStr + "T00:00:00Z");
+  return date.toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
 
 export default function CoursePage({
   params,
@@ -22,6 +41,7 @@ export default function CoursePage({
   const [menuOpen, setMenuOpen] = useState(false);
   const [showUnenrollDialog, setShowUnenrollDialog] = useState(false);
   const [unenrollError, setUnenrollError] = useState<string | null>(null);
+  const [commitmentIntervalDays, setCommitmentIntervalDays] = useState(3);
   const menuRef = useRef<HTMLDivElement>(null);
 
   // TanStack Query hooks
@@ -47,7 +67,11 @@ export default function CoursePage({
     }
 
     try {
-      await enrollMutation.mutateAsync({ courseId: id, isOwner });
+      await enrollMutation.mutateAsync({
+        courseId: id,
+        isOwner,
+        commitmentIntervalDays,
+      });
     } catch (err: unknown) {
       const status = (err as Error & { status?: number })?.status;
       if (status === 401) {
@@ -90,8 +114,10 @@ export default function CoursePage({
     }
   }
 
-  function toggleModule(moduleIndex: number) {
+  function toggleModule(moduleIndex: number, schedule: ModuleSchedule | null) {
+    // Only allow expanding CURRENT modules (unlocked)
     if (!isEnrolled) return;
+    if (schedule && schedule.status !== "CURRENT") return;
     setExpandedModules((prev) => {
       const next = new Set(prev);
       if (next.has(moduleIndex)) {
@@ -132,6 +158,20 @@ export default function CoursePage({
   }
 
   const hasModules = course.modules.length > 0;
+  const hasSchedule =
+    isEnrolled && course.modules.some((m) => m.schedule !== null);
+
+  // Separate current module from the rest for highlighted display
+  const currentModule = hasSchedule
+    ? course.modules.find(
+        (m) => m.schedule?.status === "CURRENT" && m.module_index ===
+          Math.max(
+            ...course.modules
+              .filter((mod) => mod.schedule?.status === "CURRENT")
+              .map((mod) => mod.module_index)
+          )
+      )
+    : null;
 
   return (
     <div className="terminal-screen min-h-screen font-mono">
@@ -266,53 +306,183 @@ export default function CoursePage({
         {/* Enrollment CTA */}
         <div className="mb-8">
           {isEnrolled ? (
-            <button
-              disabled
-              className="w-full py-3 px-6 rounded-lg border border-green-900/60 bg-green-950/30 text-green-700 font-semibold tracking-wider cursor-not-allowed"
-            >
-              Already Enrolled
-            </button>
+            <div>
+              <button
+                disabled
+                className="w-full py-3 px-6 rounded-lg border border-green-900/60 bg-green-950/30 text-green-700 font-semibold tracking-wider cursor-not-allowed"
+              >
+                Already Enrolled
+                {course.commitment_interval_days && (
+                  <span className="text-green-800 font-normal ml-2">
+                    — every {course.commitment_interval_days} day
+                    {course.commitment_interval_days !== 1 ? "s" : ""}
+                  </span>
+                )}
+              </button>
+            </div>
           ) : (
-            <button
-              onClick={handleEnroll}
-              disabled={enrollMutation.isPending}
-              className="w-full py-3 px-6 rounded-lg border border-green-500/60 bg-green-900/40 text-green-400 font-semibold tracking-wider hover:bg-green-900/60 hover:border-green-400/60 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {enrollMutation.isPending ? (
-                <span className="flex items-center justify-center gap-2">
-                  <svg
-                    className="animate-spin h-4 w-4"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                    />
-                  </svg>
-                  Enrolling...
-                </span>
-              ) : (
-                "Start Now"
-              )}
-            </button>
+            <div className="space-y-4">
+              {/* Cadence Selector */}
+              <div className="rounded-lg border border-green-900/60 bg-green-950/20 p-4">
+                <label className="block text-xs text-green-700 uppercase tracking-wider mb-3">
+                  How often will you study?
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {CADENCE_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      onClick={() => setCommitmentIntervalDays(opt.value)}
+                      className={`px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
+                        commitmentIntervalDays === opt.value
+                          ? "border-green-500/60 bg-green-900/40 text-green-400"
+                          : "border-green-900/60 bg-green-950/30 text-green-700 hover:bg-green-900/20 hover:text-green-500"
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                onClick={handleEnroll}
+                disabled={enrollMutation.isPending}
+                className="w-full py-3 px-6 rounded-lg border border-green-500/60 bg-green-900/40 text-green-400 font-semibold tracking-wider hover:bg-green-900/60 hover:border-green-400/60 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {enrollMutation.isPending ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <svg
+                      className="animate-spin h-4 w-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                      />
+                    </svg>
+                    Enrolling...
+                  </span>
+                ) : (
+                  `Start Now — Every ${commitmentIntervalDays} Day${commitmentIntervalDays !== 1 ? "s" : ""}`
+                )}
+              </button>
+            </div>
           )}
         </div>
+
+        {/* Current Module Highlight (when enrolled with schedule) */}
+        {isEnrolled && hasSchedule && currentModule && (
+          <div className="mb-8">
+            <h3 className="text-lg font-semibold text-green-400 mb-4 tracking-wide">
+              <span className="text-green-600">{">"}</span> Current Module
+            </h3>
+            <div className="rounded-lg border-2 border-green-500/60 bg-green-950/30 overflow-hidden shadow-lg shadow-green-900/20">
+              <button
+                onClick={() =>
+                  toggleModule(currentModule.module_index, currentModule.schedule)
+                }
+                className="w-full p-5 text-left flex items-start gap-4 hover:bg-green-950/40 cursor-pointer transition-colors"
+              >
+                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg border border-green-500/50 bg-green-900/40 text-base font-bold text-green-400">
+                  {currentModule.module_index}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xs font-mono text-green-400 border border-green-500/40 rounded px-1.5 py-0.5 bg-green-900/30">
+                      CURRENT
+                    </span>
+                    {currentModule.schedule && (
+                      <span className="text-xs text-green-700">
+                        Due {formatDate(currentModule.schedule.dueDate)}
+                      </span>
+                    )}
+                  </div>
+                  <h4 className="font-semibold text-green-400 text-lg">
+                    {currentModule.title}
+                  </h4>
+                  <p className="text-sm text-green-600 mt-1">
+                    {currentModule.description}
+                  </p>
+                </div>
+                <svg
+                  className={`h-5 w-5 text-green-500 flex-shrink-0 mt-2 transition-transform ${
+                    expandedModules.has(currentModule.module_index)
+                      ? "rotate-180"
+                      : ""
+                  }`}
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {/* Projects (expanded) */}
+              {expandedModules.has(currentModule.module_index) &&
+                currentModule.projects.length > 0 && (
+                  <div className="border-t border-green-500/30 px-5 py-4 space-y-3">
+                    <p className="text-xs text-green-700 uppercase tracking-wider">
+                      Project Options
+                    </p>
+                    {currentModule.projects.map((project) => (
+                      <div
+                        key={project.id}
+                        className="rounded border border-green-900/40 bg-green-950/30 p-4"
+                      >
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-xs font-mono text-green-700 border border-green-900/40 rounded px-1.5 py-0.5">
+                            Option {project.project_index}
+                          </span>
+                          <h5 className="font-semibold text-green-400 text-sm">
+                            {project.title}
+                          </h5>
+                        </div>
+                        <div className="space-y-2">
+                          <div>
+                            <p className="text-xs text-green-700 uppercase tracking-wider mb-1">
+                              Objective
+                            </p>
+                            <p className="text-sm text-green-500 leading-relaxed">
+                              {project.objective}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-green-700 uppercase tracking-wider mb-1">
+                              Instructions
+                            </p>
+                            <p className="text-sm text-green-600 leading-relaxed">
+                              {project.instructions}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+            </div>
+          </div>
+        )}
 
         {/* Modules List */}
         {hasModules && (
           <div className="mb-8">
             <h3 className="text-lg font-semibold text-green-400 mb-4 tracking-wide">
-              <span className="text-green-600">{">"}</span> Course Modules
+              <span className="text-green-600">{">"}</span>{" "}
+              {isEnrolled && hasSchedule ? "All Modules" : "Course Modules"}
               <span className="text-sm font-normal text-green-700 ml-2">
                 ({course.modules.length} module
                 {course.modules.length !== 1 ? "s" : ""})
@@ -321,35 +491,121 @@ export default function CoursePage({
 
             <div className="space-y-2">
               {course.modules.map((mod) => {
+                const schedule = mod.schedule;
+                const status = schedule?.status ?? null;
+                const isLocked =
+                  status === "LOCKED" || status === "NEXT_PREVIEW";
+                const isCurrent = status === "CURRENT";
+                const isNextPreview = status === "NEXT_PREVIEW";
                 const isExpanded = expandedModules.has(mod.module_index);
+
+                // Skip rendering current module in the main list when
+                // it's already highlighted above — unless there's no schedule
+                // (Note: we still show it in the list but not as highlighted)
+
                 return (
                   <div
                     key={mod.id}
-                    className="rounded-lg border border-green-900/60 bg-green-950/20 overflow-hidden"
+                    className={`rounded-lg border overflow-hidden transition-colors ${
+                      isCurrent && hasSchedule
+                        ? "border-green-500/40 bg-green-950/25"
+                        : isNextPreview
+                          ? "border-yellow-900/40 bg-green-950/15"
+                          : isLocked
+                            ? "border-green-900/30 bg-green-950/10 opacity-60"
+                            : "border-green-900/60 bg-green-950/20"
+                    }`}
                   >
                     {/* Module Header */}
                     <button
-                      onClick={() => toggleModule(mod.module_index)}
+                      onClick={() => toggleModule(mod.module_index, schedule)}
                       className={`w-full p-4 text-left flex items-start gap-4 transition-colors ${
-                        isEnrolled
+                        isEnrolled && !isLocked
                           ? "hover:bg-green-950/40 cursor-pointer"
                           : "cursor-default"
                       }`}
+                      disabled={isLocked}
                     >
-                      <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded border border-green-800/50 bg-green-950/50 text-sm font-bold text-green-400">
-                        {mod.module_index}
+                      <div
+                        className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded border text-sm font-bold ${
+                          isCurrent && hasSchedule
+                            ? "border-green-500/50 bg-green-900/40 text-green-400"
+                            : isNextPreview
+                              ? "border-yellow-800/50 bg-yellow-950/30 text-yellow-600"
+                              : isLocked
+                                ? "border-green-900/30 bg-green-950/30 text-green-800"
+                                : "border-green-800/50 bg-green-950/50 text-green-400"
+                        }`}
+                      >
+                        {isLocked ? (
+                          <svg
+                            className="h-4 w-4"
+                            fill="none"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <rect
+                              x="3"
+                              y="11"
+                              width="18"
+                              height="11"
+                              rx="2"
+                              ry="2"
+                            />
+                            <path d="M7 11V7a5 5 0 0110 0v4" />
+                          </svg>
+                        ) : (
+                          mod.module_index
+                        )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold text-green-400">
+                        {/* Status badges */}
+                        {isEnrolled && hasSchedule && schedule && (
+                          <div className="flex items-center gap-2 mb-1">
+                            {isCurrent && (
+                              <span className="text-xs font-mono text-green-400 border border-green-500/40 rounded px-1.5 py-0.5 bg-green-900/30">
+                                CURRENT
+                              </span>
+                            )}
+                            {isNextPreview && (
+                              <span className="text-xs font-mono text-yellow-600 border border-yellow-800/40 rounded px-1.5 py-0.5 bg-yellow-950/30">
+                                UP NEXT
+                              </span>
+                            )}
+                            {status === "LOCKED" && (
+                              <span className="text-xs font-mono text-green-800 border border-green-900/40 rounded px-1.5 py-0.5">
+                                LOCKED
+                              </span>
+                            )}
+                            <span className="text-xs text-green-700">
+                              {isCurrent
+                                ? `Due ${formatDate(schedule.dueDate)}`
+                                : `Unlocks ${formatDate(schedule.unlockDate)}`}
+                            </span>
+                          </div>
+                        )}
+                        <h4
+                          className={`font-semibold ${
+                            isLocked ? "text-green-700" : "text-green-400"
+                          }`}
+                        >
                           {mod.title}
                         </h4>
-                        {isEnrolled && (
+                        {isEnrolled && !isLocked && (
                           <p className="text-sm text-green-700 mt-1">
                             {mod.description}
                           </p>
                         )}
+                        {isNextPreview && (
+                          <p className="text-sm text-green-800 mt-1">
+                            {mod.description}
+                          </p>
+                        )}
                       </div>
-                      {isEnrolled && (
+                      {isEnrolled && !isLocked && (
                         <svg
                           className={`h-5 w-5 text-green-600 flex-shrink-0 mt-1 transition-transform ${
                             isExpanded ? "rotate-180" : ""
@@ -366,8 +622,9 @@ export default function CoursePage({
                       )}
                     </button>
 
-                    {/* Projects (expanded) — only for enrolled users */}
+                    {/* Projects (expanded) — only for enrolled, unlocked modules */}
                     {isEnrolled &&
+                      !isLocked &&
                       isExpanded &&
                       mod.projects.length > 0 && (
                         <div className="border-t border-green-900/40 px-4 py-3 space-y-3">
@@ -442,7 +699,7 @@ export default function CoursePage({
             </h3>
             <p className="text-green-500 text-sm leading-relaxed mb-6">
               You&apos;ve been doing so well! Are you sure you want to unenroll
-              from this course? Your progress won&apos;t be saved.
+              from this course? Your progress and schedule won&apos;t be saved.
             </p>
 
             {unenrollError && (
