@@ -11,16 +11,13 @@ export async function register() {
           "\n"
       );
 
-      // In production, refuse to start with broken encryption
-      if (process.env.NODE_ENV === "production") {
-        throw new Error(
-          "Encryption misconfigured — server cannot start. See errors above."
-        );
-      }
-
-      // In development, warn but allow startup so devs can work on non-encryption features
+      // Log a warning but allow the server to start. Endpoints that don't
+      // require encryption (e.g. /api/user, /api/courses GET, /api/logout)
+      // will continue to work. Endpoints that call encrypt()/decrypt() will
+      // return proper error responses when invoked — the crypto module
+      // already validates the config on each call.
       console.warn(
-        "[STARTUP] Continuing in development mode despite encryption misconfiguration.\n" +
+        "[STARTUP] Server starting despite encryption misconfiguration.\n" +
           "  API key encryption/decryption will fail until this is resolved.\n"
       );
     } else {
