@@ -134,11 +134,26 @@ export async function GET() {
       }
     }
 
-    // Build the list of incomplete projects.
-    // For each module that isn't completed:
-    // - If a project is selected, show that project
-    // - If no project is selected, show the first project in the module
-    const incompleteProjects: Array<{
+    // Build the list of active projects — one per course.
+    // The "active" module for a course is the earliest incomplete module
+    // (lowest module_index that hasn't been completed).
+    // Group projects by module
+    const projectsByModule = new Map<string, typeof projects>();
+    for (const p of projects) {
+      const existing = projectsByModule.get(p.module_id) || [];
+      existing.push(p);
+      projectsByModule.set(p.module_id, existing);
+    }
+
+    // Group modules by course (already sorted by module_index from query)
+    const modulesByCourse = new Map<string, typeof modules>();
+    for (const mod of modules) {
+      const existing = modulesByCourse.get(mod.course_id) || [];
+      existing.push(mod);
+      modulesByCourse.set(mod.course_id, existing);
+    }
+
+    const activeProjects: Array<{
       id: string;
       title: string;
       projectIndex: number;
@@ -148,48 +163,45 @@ export async function GET() {
       courseId: string;
       courseName: string;
       dueDate: string | null;
+      totalModules: number;
     }> = [];
 
-    // Group projects by module
-    const projectsByModule = new Map<string, typeof projects>();
-    for (const p of projects) {
-      const existing = projectsByModule.get(p.module_id) || [];
-      existing.push(p);
-      projectsByModule.set(p.module_id, existing);
-    }
+    // For each course, find the first incomplete module
+    for (const [courseId, courseModules] of modulesByCourse) {
+      const activeModule = courseModules.find(
+        (mod) => !completedModuleIds.has(mod.id)
+      );
+      if (!activeModule) continue; // All modules completed for this course
 
-    for (const mod of modules) {
-      // Skip completed modules
-      if (completedModuleIds.has(mod.id)) continue;
-
-      const moduleProjects = projectsByModule.get(mod.id);
+      const moduleProjects = projectsByModule.get(activeModule.id);
       if (!moduleProjects || moduleProjects.length === 0) continue;
 
       // Determine which project to show
-      const selectedProjectId = selectedProjectByModule.get(mod.id);
+      const selectedProjectId = selectedProjectByModule.get(activeModule.id);
       const projectToShow = selectedProjectId
         ? moduleProjects.find((p) => p.id === selectedProjectId) || moduleProjects[0]
         : moduleProjects[0];
 
-      const courseName = courseMap.get(mod.course_id) || "Unknown Course";
-      const dueDate = scheduleByModuleId.get(mod.id) || null;
+      const courseName = courseMap.get(courseId) || "Unknown Course";
+      const dueDate = scheduleByModuleId.get(activeModule.id) || null;
 
-      incompleteProjects.push({
+      activeProjects.push({
         id: projectToShow.id,
         title: projectToShow.title,
         projectIndex: projectToShow.project_index,
-        moduleId: mod.id,
-        moduleName: mod.title,
-        moduleIndex: mod.module_index,
-        courseId: mod.course_id,
+        moduleId: activeModule.id,
+        moduleName: activeModule.title,
+        moduleIndex: activeModule.module_index,
+        courseId,
         courseName,
         dueDate,
+        totalModules: courseModules.length,
       });
     }
 
     // Sort by due date (soonest first), nulls at the end
     // Secondary sort by course name, then project title
-    incompleteProjects.sort((a, b) => {
+    activeProjects.sort((a, b) => {
       if (a.dueDate && b.dueDate) {
         const cmp = a.dueDate.localeCompare(b.dueDate);
         if (cmp !== 0) return cmp;
@@ -203,7 +215,7 @@ export async function GET() {
       return a.title.localeCompare(b.title);
     });
 
-    return NextResponse.json({ success: true, projects: incompleteProjects });
+    return NextResponse.json({ success: true, projects: activeProjects });
   } catch (error) {
     console.error("Upcoming projects fetch error:", error);
     return NextResponse.json(
