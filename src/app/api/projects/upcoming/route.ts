@@ -94,20 +94,23 @@ export async function GET() {
       }
     }
 
-    // Fetch schedule data for due dates
+    // Fetch schedule data for due dates and unlock dates
     const ownedCourseIds = (ownedCourses || []).map((c) => c.id);
-    const scheduleByModuleId = new Map<string, string>();
+    const scheduleByModuleId = new Map<string, { dueDate: string; unlockDate: string }>();
 
     if (ownedCourseIds.length > 0) {
       const { data: ownerSchedules } = await supabase
         .from("owner_module_schedules")
-        .select("module_id, due_date")
+        .select("module_id, due_date, unlock_date")
         .eq("user_id", user.id)
         .in("course_id", ownedCourseIds);
 
       if (ownerSchedules) {
         for (const s of ownerSchedules) {
-          scheduleByModuleId.set(s.module_id, s.due_date);
+          scheduleByModuleId.set(s.module_id, {
+            dueDate: s.due_date,
+            unlockDate: s.unlock_date,
+          });
         }
       }
     }
@@ -123,12 +126,15 @@ export async function GET() {
         const enrollmentIds = enrollmentRows.map((e) => e.id);
         const { data: moduleSchedules } = await supabase
           .from("module_schedules")
-          .select("module_id, due_date")
+          .select("module_id, due_date, unlock_date")
           .in("enrollment_id", enrollmentIds);
 
         if (moduleSchedules) {
           for (const s of moduleSchedules) {
-            scheduleByModuleId.set(s.module_id, s.due_date);
+            scheduleByModuleId.set(s.module_id, {
+              dueDate: s.due_date,
+              unlockDate: s.unlock_date,
+            });
           }
         }
       }
@@ -166,12 +172,21 @@ export async function GET() {
       totalModules: number;
     }> = [];
 
-    // For each course, find the first incomplete module
+    // For each course, find the first incomplete AND unlocked module.
+    // A module is considered unlocked if today >= its unlock_date.
+    const today = new Date().toISOString().slice(0, 10);
+
     for (const [courseId, courseModules] of modulesByCourse) {
-      const activeModule = courseModules.find(
-        (mod) => !completedModuleIds.has(mod.id)
-      );
-      if (!activeModule) continue; // All modules completed for this course
+      const activeModule = courseModules.find((mod) => {
+        if (completedModuleIds.has(mod.id)) return false;
+
+        // Check unlock status from schedule data
+        const schedule = scheduleByModuleId.get(mod.id);
+        if (schedule && schedule.unlockDate > today) return false; // Still locked
+
+        return true;
+      });
+      if (!activeModule) continue; // All modules completed or locked
 
       const moduleProjects = projectsByModule.get(activeModule.id);
       if (!moduleProjects || moduleProjects.length === 0) continue;
@@ -183,7 +198,8 @@ export async function GET() {
         : moduleProjects[0];
 
       const courseName = courseMap.get(courseId) || "Unknown Course";
-      const dueDate = scheduleByModuleId.get(activeModule.id) || null;
+      const schedule = scheduleByModuleId.get(activeModule.id);
+      const dueDate = schedule?.dueDate || null;
 
       activeProjects.push({
         id: projectToShow.id,
