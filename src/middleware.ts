@@ -5,6 +5,9 @@ import { updateSession } from "@/lib/supabase/middleware";
 const PUBLIC_PATHS = ["/login", "/api/login", "/signup", "/api/signup", "/api/logout", "/auth/callback"];
 const AUTH_PAGES = ["/login", "/signup"];
 
+// Paths that are publicly accessible (no auth required) but not login/signup pages
+const PUBLIC_CONTENT_PATTERNS = [/^\/course\/[^/]+$/, /^\/api\/courses\/[^/]+$/];
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -31,6 +34,11 @@ export async function middleware(request: NextRequest) {
 
   // Allow public paths without authentication
   if (PUBLIC_PATHS.some((path) => pathname.startsWith(path))) {
+    return supabaseResponse;
+  }
+
+  // Allow public content paths (course overview pages, course detail API)
+  if (PUBLIC_CONTENT_PATTERNS.some((pattern) => pattern.test(pathname))) {
     return supabaseResponse;
   }
 
