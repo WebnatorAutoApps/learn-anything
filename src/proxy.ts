@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
 
-const PUBLIC_PATHS = ["/login", "/api/login", "/signup", "/api/signup", "/api/logout", "/auth/callback"];
+const PUBLIC_PATHS = ["/login", "/api/login", "/signup", "/api/signup", "/api/logout", "/auth/callback", "/landing", "/privacy-policy", "/terms-and-conditions"];
 const AUTH_PAGES = ["/login", "/signup"];
 
 // Paths that are publicly accessible (no auth required) but not login/signup pages
