@@ -32,8 +32,12 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
       await saveMutation.mutateAsync({ gemini_api_key: apiKey.trim() });
       setApiKey("");
       setMessage({ type: "success", text: "API key saved successfully." });
-    } catch {
-      setMessage({ type: "error", text: "Failed to save API key." });
+    } catch (err) {
+      const text =
+        err instanceof Error && err.message
+          ? err.message
+          : "Failed to save API key.";
+      setMessage({ type: "error", text });
     }
   }
 
@@ -44,8 +48,12 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
       await saveMutation.mutateAsync({ gemini_api_key: "" });
       setApiKey("");
       setMessage({ type: "success", text: "API key cleared." });
-    } catch {
-      setMessage({ type: "error", text: "Failed to clear API key." });
+    } catch (err) {
+      const text =
+        err instanceof Error && err.message
+          ? err.message
+          : "Failed to clear API key.";
+      setMessage({ type: "error", text });
     }
   }
 
