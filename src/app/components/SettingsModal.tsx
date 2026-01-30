@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useProfile, useSaveSettings } from "@/lib/hooks/queries";
+import ApiKeySecurityModal from "./ApiKeySecurityModal";
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -13,6 +14,7 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
     type: "success" | "error";
     text: string;
   } | null>(null);
+  const [showSecurityInfo, setShowSecurityInfo] = useState(false);
 
   // Use profile query for initial settings data (uses cached data)
   const { data: profile, isLoading, isError } = useProfile();
@@ -58,6 +60,7 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
   }
 
   return (
+    <>
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop — not dismissable */}
       <div className="absolute inset-0 bg-black/70" />
@@ -102,9 +105,29 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
             <>
               {/* Gemini API Key Section */}
               <div className="space-y-3">
-                <label className="block text-sm font-medium text-green-400">
-                  Gemini API Key
-                </label>
+                <div className="flex items-center gap-2">
+                  <label className="text-sm font-medium text-green-400">
+                    Gemini API Key
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowSecurityInfo(true)}
+                    className="flex h-5 w-5 items-center justify-center rounded-full text-green-700 hover:text-green-400 hover:bg-green-900/40 transition-colors"
+                    aria-label="API key security information"
+                  >
+                    <svg
+                      className="h-4 w-4"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </button>
+                </div>
 
                 <p className="text-xs text-green-700">
                   This key is used to generate learning plans and communicate
@@ -181,5 +204,10 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
         </div>
       </div>
     </div>
+
+    {showSecurityInfo && (
+      <ApiKeySecurityModal onClose={() => setShowSecurityInfo(false)} />
+    )}
+    </>
   );
 }
