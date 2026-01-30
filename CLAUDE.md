@@ -104,7 +104,7 @@ src/
       client.ts                 # Browser Supabase client
       server.ts                 # Server Supabase client
       middleware.ts             # Session refresh logic
-  middleware.ts                 # Route protection
+  proxy.ts                     # Route protection (Next.js 16 proxy)
 supabase/
   config.toml                   # Local Supabase config
   migrations/                   # Database migrations (ordered by timestamp)
@@ -114,9 +114,22 @@ supabase/
 
 1. User logs in via email/password or Google OAuth
 2. Supabase sets session cookies
-3. Middleware (`src/middleware.ts`) validates session on every request
+3. Proxy (`src/proxy.ts`) validates session on every request
 4. Protected routes redirect to `/login` if no session
 5. `/api/user` fetches profile from `profiles` table (auto-creates if missing)
+
+## Local Verification (Required Before Every Push)
+
+Every change **must** be verified locally before committing or pushing. This prevents broken deployments and production outages.
+
+1. **Build**: Run `npm run build` and confirm it completes with zero errors and no deprecation warnings.
+2. **Lint**: Run `npm run lint` and confirm zero errors (warnings are acceptable only if pre-existing).
+3. **Tests**: Run `npm run test` and confirm all tests pass.
+4. **Dev smoke-test**: Run `npm run dev`, open `http://localhost:3000`, and verify:
+   - The home page loads without errors
+   - Login/signup pages render correctly
+   - API routes return expected responses (not 500)
+5. **No skipping**: Do not push code that fails any of the above checks, even for "quick fixes."
 
 ## Conventions
 

@@ -8,7 +8,7 @@ const AUTH_PAGES = ["/login", "/signup"];
 // Paths that are publicly accessible (no auth required) but not login/signup pages
 const PUBLIC_CONTENT_PATTERNS = [/^\/course\/[^/]+$/, /^\/api\/courses\/[^/]+$/];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Check if Supabase is configured

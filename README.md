@@ -146,7 +146,7 @@ For Phase 1 testing only:
 | `src/app/page.tsx` | Home page with topic selection |
 | `src/app/login/page.tsx` | Authentication UI |
 | `src/app/api/login/route.ts` | Authentication endpoint |
-| `src/middleware.ts` | Route protection, session validation |
+| `src/proxy.ts` | Route protection, session validation |
 | `src/app/globals.css` | Terminal-effect styling |
 
 ---
