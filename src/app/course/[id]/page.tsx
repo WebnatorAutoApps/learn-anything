@@ -6,8 +6,10 @@ import {
   useCourseDetail,
   useEnrollCourse,
   useUnenrollCourse,
+  useSelectProject,
+  useCompleteProject,
 } from "@/lib/hooks/queries";
-import type { ModuleSchedule } from "@/lib/hooks/queries";
+import type { ModuleSchedule, Module, Project } from "@/lib/hooks/queries";
 import { CourseDetailSkeleton } from "../../components/PageLoader";
 
 const CADENCE_OPTIONS = [
@@ -26,6 +28,222 @@ function formatDate(dateStr: string): string {
     year: "numeric",
     timeZone: "UTC",
   });
+}
+
+function ProjectSelectionArea({
+  mod,
+  courseId,
+}: {
+  mod: Module;
+  courseId: string;
+}) {
+  const selectMutation = useSelectProject();
+  const completeMutation = useCompleteProject();
+
+  const selection = mod.selectedProject;
+  const hasSelection = !!selection;
+  const selectedProjectId = selection?.projectId ?? null;
+  const isCompleted = selection?.completed ?? false;
+
+  async function handleSelect(project: Project) {
+    await selectMutation.mutateAsync({
+      courseId,
+      moduleId: mod.id,
+      projectId: project.id,
+    });
+  }
+
+  async function handleComplete() {
+    await completeMutation.mutateAsync({
+      courseId,
+      moduleId: mod.id,
+    });
+  }
+
+  if (mod.projects.length === 0) {
+    return (
+      <p className="text-sm text-green-700 italic">
+        No projects available for this module.
+      </p>
+    );
+  }
+
+  // No project selected — show prompt + all project cards (title + objective only)
+  if (!hasSelection) {
+    return (
+      <div className="space-y-3">
+        <div className="rounded border border-yellow-800/40 bg-yellow-950/20 px-4 py-3">
+          <p className="text-sm text-yellow-600 font-medium">
+            <span className="text-yellow-700 mr-1">{"> "}</span>
+            Choose a project to work on
+          </p>
+        </div>
+        {mod.projects.map((project) => (
+          <div
+            key={project.id}
+            className="rounded border border-green-900/40 bg-green-950/30 p-4"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-xs font-mono text-green-700 border border-green-900/40 rounded px-1.5 py-0.5">
+                    Option {project.project_index}
+                  </span>
+                  <h5 className="font-semibold text-green-400 text-sm">
+                    {project.title}
+                  </h5>
+                </div>
+                <p className="text-sm text-green-500 leading-relaxed">
+                  {project.objective}
+                </p>
+              </div>
+              <button
+                onClick={() => handleSelect(project)}
+                disabled={selectMutation.isPending}
+                className="flex-shrink-0 px-3 py-1.5 rounded border border-green-500/50 bg-green-900/30 text-green-400 text-xs font-medium hover:bg-green-900/50 hover:border-green-400/60 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {selectMutation.isPending ? "..." : "Select"}
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // Project selected — show selected project prominently, others greyed out
+  const selectedProject = mod.projects.find(
+    (p) => p.id === selectedProjectId
+  );
+
+  return (
+    <div className="space-y-3">
+      {/* Selected project — full details with instructions */}
+      {selectedProject && (
+        <div
+          className={`rounded border-2 p-4 ${
+            isCompleted
+              ? "border-green-600/50 bg-green-950/40"
+              : "border-green-500/50 bg-green-950/30"
+          }`}
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-xs font-mono text-green-400 border border-green-500/40 rounded px-1.5 py-0.5 bg-green-900/30">
+              {isCompleted ? "COMPLETED" : "SELECTED"}
+            </span>
+            <h5 className="font-semibold text-green-400 text-sm">
+              {selectedProject.title}
+            </h5>
+          </div>
+          <div className="space-y-2">
+            <div>
+              <p className="text-xs text-green-700 uppercase tracking-wider mb-1">
+                Objective
+              </p>
+              <p className="text-sm text-green-500 leading-relaxed">
+                {selectedProject.objective}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-green-700 uppercase tracking-wider mb-1">
+                Instructions
+              </p>
+              <p className="text-sm text-green-600 leading-relaxed">
+                {selectedProject.instructions}
+              </p>
+            </div>
+          </div>
+
+          {/* Completion button or completed status */}
+          <div className="mt-4">
+            {isCompleted ? (
+              <div className="flex items-center gap-2 text-green-500 text-sm">
+                <svg
+                  className="h-5 w-5"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span className="font-medium">
+                  Project completed
+                  {selection?.completedAt && (
+                    <span className="text-green-700 font-normal ml-1">
+                      — {new Date(selection.completedAt).toLocaleDateString(undefined, {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                        timeZone: "UTC",
+                      })}
+                    </span>
+                  )}
+                </span>
+              </div>
+            ) : (
+              <button
+                onClick={handleComplete}
+                disabled={completeMutation.isPending}
+                className="w-full py-2.5 px-4 rounded-lg border border-green-500/50 bg-green-900/30 text-green-400 font-medium text-sm hover:bg-green-900/50 hover:border-green-400/60 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {completeMutation.isPending ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <svg
+                      className="animate-spin h-4 w-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      />
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                      />
+                    </svg>
+                    Marking...
+                  </span>
+                ) : (
+                  "Mark as Completed"
+                )}
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Non-selected projects — greyed out, title + objective only */}
+      {mod.projects
+        .filter((p) => p.id !== selectedProjectId)
+        .map((project) => (
+          <div
+            key={project.id}
+            className="rounded border border-green-900/20 bg-green-950/10 p-4 opacity-40"
+          >
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-xs font-mono text-green-800 border border-green-900/30 rounded px-1.5 py-0.5">
+                Option {project.project_index}
+              </span>
+              <h5 className="font-semibold text-green-700 text-sm">
+                {project.title}
+              </h5>
+            </div>
+            <p className="text-sm text-green-800 leading-relaxed">
+              {project.objective}
+            </p>
+          </div>
+        ))}
+    </div>
+  );
 }
 
 export default function CoursePage({
@@ -434,43 +652,14 @@ export default function CoursePage({
               {/* Projects (expanded) */}
               {expandedModules.has(currentModule.module_index) &&
                 currentModule.projects.length > 0 && (
-                  <div className="border-t border-green-500/30 px-5 py-4 space-y-3">
-                    <p className="text-xs text-green-700 uppercase tracking-wider">
-                      Project Options
+                  <div className="border-t border-green-500/30 px-5 py-4">
+                    <p className="text-xs text-green-700 uppercase tracking-wider mb-3">
+                      Projects
                     </p>
-                    {currentModule.projects.map((project) => (
-                      <div
-                        key={project.id}
-                        className="rounded border border-green-900/40 bg-green-950/30 p-4"
-                      >
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-xs font-mono text-green-700 border border-green-900/40 rounded px-1.5 py-0.5">
-                            Option {project.project_index}
-                          </span>
-                          <h5 className="font-semibold text-green-400 text-sm">
-                            {project.title}
-                          </h5>
-                        </div>
-                        <div className="space-y-2">
-                          <div>
-                            <p className="text-xs text-green-700 uppercase tracking-wider mb-1">
-                              Objective
-                            </p>
-                            <p className="text-sm text-green-500 leading-relaxed">
-                              {project.objective}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="text-xs text-green-700 uppercase tracking-wider mb-1">
-                              Instructions
-                            </p>
-                            <p className="text-sm text-green-600 leading-relaxed">
-                              {project.instructions}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+                    <ProjectSelectionArea
+                      mod={currentModule}
+                      courseId={id}
+                    />
                   </div>
                 )}
             </div>
@@ -498,10 +687,6 @@ export default function CoursePage({
                 const isCurrent = status === "CURRENT";
                 const isNextPreview = status === "NEXT_PREVIEW";
                 const isExpanded = expandedModules.has(mod.module_index);
-
-                // Skip rendering current module in the main list when
-                // it's already highlighted above — unless there's no schedule
-                // (Note: we still show it in the list but not as highlighted)
 
                 return (
                   <div
@@ -627,43 +812,14 @@ export default function CoursePage({
                       !isLocked &&
                       isExpanded &&
                       mod.projects.length > 0 && (
-                        <div className="border-t border-green-900/40 px-4 py-3 space-y-3">
-                          <p className="text-xs text-green-700 uppercase tracking-wider">
-                            Project Options
+                        <div className="border-t border-green-900/40 px-4 py-3">
+                          <p className="text-xs text-green-700 uppercase tracking-wider mb-3">
+                            Projects
                           </p>
-                          {mod.projects.map((project) => (
-                            <div
-                              key={project.id}
-                              className="rounded border border-green-900/40 bg-green-950/30 p-4"
-                            >
-                              <div className="flex items-center gap-2 mb-2">
-                                <span className="text-xs font-mono text-green-700 border border-green-900/40 rounded px-1.5 py-0.5">
-                                  Option {project.project_index}
-                                </span>
-                                <h5 className="font-semibold text-green-400 text-sm">
-                                  {project.title}
-                                </h5>
-                              </div>
-                              <div className="space-y-2">
-                                <div>
-                                  <p className="text-xs text-green-700 uppercase tracking-wider mb-1">
-                                    Objective
-                                  </p>
-                                  <p className="text-sm text-green-500 leading-relaxed">
-                                    {project.objective}
-                                  </p>
-                                </div>
-                                <div>
-                                  <p className="text-xs text-green-700 uppercase tracking-wider mb-1">
-                                    Instructions
-                                  </p>
-                                  <p className="text-sm text-green-600 leading-relaxed">
-                                    {project.instructions}
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
+                          <ProjectSelectionArea
+                            mod={mod}
+                            courseId={id}
+                          />
                         </div>
                       )}
                   </div>

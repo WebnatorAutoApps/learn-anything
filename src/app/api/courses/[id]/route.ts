@@ -154,6 +154,12 @@ export async function GET(
         objective: string;
       }> = [];
 
+      // Fetch user's project selections for all modules in this course
+      const projectSelectionsMap: Map<
+        string,
+        { projectId: string; completed: boolean; completedAt: string | null }
+      > = new Map();
+
       if (moduleIds.length > 0) {
         const { data: projectsData, error: projectsError } = await supabase
           .from("projects")
@@ -171,10 +177,30 @@ export async function GET(
         }
 
         projects = projectsData || [];
+
+        // Fetch user's project selections
+        if (user) {
+          const { data: selections } = await supabase
+            .from("user_module_projects")
+            .select("module_id, project_id, completed, completed_at")
+            .eq("user_id", user.id)
+            .in("module_id", moduleIds);
+
+          if (selections) {
+            for (const sel of selections) {
+              projectSelectionsMap.set(sel.module_id, {
+                projectId: sel.project_id,
+                completed: sel.completed,
+                completedAt: sel.completed_at,
+              });
+            }
+          }
+        }
       }
 
       modulesWithProjects = (modules || []).map((mod) => {
         const schedule = statusMap.get(mod.id);
+        const selection = projectSelectionsMap.get(mod.id) ?? null;
         return {
           ...mod,
           projects: projects.filter((p) => p.module_id === mod.id),
@@ -185,6 +211,7 @@ export async function GET(
                 dueDate: schedule.dueDate,
               }
             : null,
+          selectedProject: selection,
         };
       });
     } else {
@@ -193,6 +220,7 @@ export async function GET(
         ...mod,
         projects: [],
         schedule: null,
+        selectedProject: null,
       }));
     }
 
