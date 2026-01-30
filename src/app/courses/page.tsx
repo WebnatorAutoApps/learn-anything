@@ -7,7 +7,7 @@ import { CourseGridSkeleton } from "../components/PageLoader";
 
 export default function CoursesPage() {
   const router = useRouter();
-  const { data: courses = [], isLoading } = useCourses("created");
+  const { data: courses = [], isLoading } = useCourses("all");
   const enrollMutation = useEnrollCourse();
   const [enrollingId, setEnrollingId] = useState<string | null>(null);
 
@@ -58,11 +58,11 @@ export default function CoursesPage() {
       <main className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-8">
           <h2 className="text-2xl font-semibold text-green-400 mb-2 tracking-wide">
-            <span className="text-green-600">{">"}</span> Created Courses
+            <span className="text-green-600">{">"}</span> My Courses
             <span className="inline-block w-2.5 h-5 bg-green-400 ml-1 animate-pulse align-middle" />
           </h2>
           <p className="text-green-600">
-            Courses you&apos;ve created but haven&apos;t started yet. Enroll to begin learning.
+            All courses you&apos;ve created. Enroll to begin learning.
           </p>
         </div>
 
@@ -71,8 +71,7 @@ export default function CoursesPage() {
         ) : courses.length === 0 ? (
           <div className="rounded-lg border border-green-900/60 bg-green-950/20 p-8 text-center">
             <p className="text-green-600 mb-4">
-              No created courses yet. All your courses are either started or you
-              haven&apos;t created any.
+              No courses yet. Create your first course from the Dashboard.
             </p>
             <button
               onClick={() => router.push("/")}
@@ -108,15 +107,24 @@ export default function CoursesPage() {
                     </div>
                   </div>
                 </button>
-                <button
-                  onClick={() => handleEnroll(course.id)}
-                  disabled={enrollingId === course.id}
-                  className="w-full px-4 py-2 rounded-lg bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-                >
-                  {enrollingId === course.id
-                    ? "Starting..."
-                    : "Start Course"}
-                </button>
+                {course.isEnrolled ? (
+                  <button
+                    disabled
+                    className="w-full px-4 py-2 rounded-lg border border-green-900/60 bg-green-950/30 text-green-600 font-semibold text-sm cursor-default opacity-70"
+                  >
+                    Already Enrolled
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleEnroll(course.id)}
+                    disabled={enrollingId === course.id}
+                    className="w-full px-4 py-2 rounded-lg bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                  >
+                    {enrollingId === course.id
+                      ? "Starting..."
+                      : "Start Course"}
+                  </button>
+                )}
               </div>
             ))}
           </div>

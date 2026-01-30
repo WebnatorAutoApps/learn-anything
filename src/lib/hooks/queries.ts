@@ -42,6 +42,7 @@ export interface CourseListItem {
   total_modules: number;
   status: string;
   created_at: string;
+  isEnrolled: boolean;
 }
 
 interface Project {
