@@ -45,7 +45,7 @@ export interface CourseListItem {
   isEnrolled: boolean;
 }
 
-interface Project {
+export interface Project {
   id: string;
   module_id: string;
   project_index: number;
@@ -60,13 +60,20 @@ export interface ModuleSchedule {
   dueDate: string;
 }
 
-interface Module {
+export interface SelectedProject {
+  projectId: string;
+  completed: boolean;
+  completedAt: string | null;
+}
+
+export interface Module {
   id: string;
   module_index: number;
   title: string;
   description: string;
   projects: Project[];
   schedule: ModuleSchedule | null;
+  selectedProject: SelectedProject | null;
 }
 
 export interface CourseDetail {
@@ -217,6 +224,56 @@ export function useSaveSettings() {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.profile });
+    },
+  });
+}
+
+export function useSelectProject() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      courseId,
+      moduleId,
+      projectId,
+    }: {
+      courseId: string;
+      moduleId: string;
+      projectId: string;
+    }) =>
+      fetchJSON<{ success: boolean }>(`/api/courses/${courseId}/projects`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ moduleId, projectId }),
+      }),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.course(variables.courseId),
+      });
+    },
+  });
+}
+
+export function useCompleteProject() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      courseId,
+      moduleId,
+    }: {
+      courseId: string;
+      moduleId: string;
+    }) =>
+      fetchJSON<{ success: boolean }>(`/api/courses/${courseId}/projects`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ moduleId }),
+      }),
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.course(variables.courseId),
+      });
     },
   });
 }
