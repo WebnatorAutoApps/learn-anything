@@ -145,3 +145,8 @@ body {
     border-width: 3px;
   }
 }
+
+/* Hide scrollbar for carousel */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

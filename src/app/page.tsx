@@ -6,7 +6,7 @@ import LearnModal from "./components/LearnModal";
 import type { LearningPlanData } from "./components/LearnModal";
 import SettingsModal from "./components/SettingsModal";
 import ProgramCreationLoader from "./components/ProgramCreationLoader";
-import UpcomingProjectsBanner from "./components/UpcomingProjectsBanner";
+import ActiveModuleCarousel from "./components/ActiveModuleCarousel";
 import { CourseGridSkeleton } from "./components/PageLoader";
 import { useProfile, useCourses } from "@/lib/hooks/queries";
 
@@ -346,7 +346,7 @@ export default function Home() {
           </button>
         </div>
 
-        <UpcomingProjectsBanner />
+        <ActiveModuleCarousel />
 
         {coursesLoading ? (
           <CourseGridSkeleton count={3} />

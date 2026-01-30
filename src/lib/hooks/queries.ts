@@ -110,6 +110,7 @@ export interface UpcomingProject {
   courseId: string;
   courseName: string;
   dueDate: string | null;
+  totalModules: number;
 }
 
 // ── Queries ────────────────────────────────────────────────────────────────
