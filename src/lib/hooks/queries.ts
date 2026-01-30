@@ -6,6 +6,7 @@ export const queryKeys = {
   profile: ["profile"] as const,
   courses: (status: string) => ["courses", status] as const,
   course: (id: string) => ["course", id] as const,
+  upcomingProjects: ["upcomingProjects"] as const,
 };
 
 // ── Fetch helpers ──────────────────────────────────────────────────────────
@@ -99,6 +100,18 @@ interface CourseDetailResponse {
   isAuthenticated: boolean;
 }
 
+export interface UpcomingProject {
+  id: string;
+  title: string;
+  projectIndex: number;
+  moduleId: string;
+  moduleName: string;
+  moduleIndex: number;
+  courseId: string;
+  courseName: string;
+  dueDate: string | null;
+}
+
 // ── Queries ────────────────────────────────────────────────────────────────
 
 export function useProfile() {
@@ -124,6 +137,16 @@ export function useCourseDetail(id: string) {
     queryKey: queryKeys.course(id),
     queryFn: () =>
       fetchJSON<CourseDetailResponse>(`/api/courses/${id}`),
+  });
+}
+
+export function useUpcomingProjects() {
+  return useQuery({
+    queryKey: queryKeys.upcomingProjects,
+    queryFn: () =>
+      fetchJSON<{ projects: UpcomingProject[] }>("/api/projects/upcoming").then(
+        (d) => d.projects
+      ),
   });
 }
 
@@ -273,6 +296,9 @@ export function useCompleteProject() {
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.course(variables.courseId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.upcomingProjects,
       });
     },
   });
