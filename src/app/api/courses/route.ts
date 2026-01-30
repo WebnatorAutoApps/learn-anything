@@ -74,7 +74,7 @@ export async function POST(request: Request) {
       });
     }
 
-    // Store course in database
+    // Store course in database with 'created' enrollment status
     const { data: course, error: courseError } = await supabase
       .from("courses")
       .insert({
@@ -87,6 +87,7 @@ export async function POST(request: Request) {
         expected_skill_level: llmResponse.expected_skill_level,
         likelihood_of_learning: llmResponse.likelihood_of_learning,
         total_modules: totalModules,
+        status: "created",
       })
       .select("id")
       .single();
@@ -174,7 +175,7 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const supabase = await createClient();
 
@@ -190,11 +191,20 @@ export async function GET() {
       );
     }
 
-    const { data: courses, error: coursesError } = await supabase
+    // Optional status filter: ?status=created or ?status=started
+    const { searchParams } = new URL(request.url);
+    const statusFilter = searchParams.get("status");
+
+    let query = supabase
       .from("courses")
       .select("id, normalized_title, expected_skill_level, likelihood_of_learning, total_modules, status, created_at")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
+      .eq("user_id", user.id);
+
+    if (statusFilter === "created" || statusFilter === "started") {
+      query = query.eq("status", statusFilter);
+    }
+
+    const { data: courses, error: coursesError } = await query.order("created_at", { ascending: false });
 
     if (coursesError) {
       console.error("Courses fetch error:", coursesError);

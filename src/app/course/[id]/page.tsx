@@ -48,6 +48,7 @@ export default function CoursePage({
   const [expandedModules, setExpandedModules] = useState<Set<number>>(
     new Set()
   );
+  const [enrolling, setEnrolling] = useState(false);
 
   useEffect(() => {
     async function fetchCourse() {
@@ -86,6 +87,27 @@ export default function CoursePage({
       }
       return next;
     });
+  }
+
+  async function handleEnrollmentToggle() {
+    if (!course || enrolling) return;
+    setEnrolling(true);
+    const action = course.status === "started" ? "unenroll" : "enroll";
+    try {
+      const res = await fetch(`/api/courses/${id}/enroll`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setCourse((prev) => (prev ? { ...prev, status: data.status } : prev));
+      }
+    } catch {
+      // Non-critical
+    } finally {
+      setEnrolling(false);
+    }
   }
 
   if (loading) {
@@ -161,10 +183,38 @@ export default function CoursePage({
       <main className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-8">
         {/* Course Header */}
         <div className="mb-8">
-          <h2 className="text-2xl font-semibold text-green-400 mb-2 tracking-wide">
-            <span className="text-green-600">{">"}</span>{" "}
-            {course.normalized_title}
-          </h2>
+          <div className="flex items-start justify-between gap-4 mb-2">
+            <h2 className="text-2xl font-semibold text-green-400 tracking-wide">
+              <span className="text-green-600">{">"}</span>{" "}
+              {course.normalized_title}
+            </h2>
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <span
+                className={`text-xs font-mono px-2 py-1 rounded border ${
+                  course.status === "started"
+                    ? "border-green-500/50 text-green-400 bg-green-950/40"
+                    : "border-green-900/60 text-green-700 bg-green-950/20"
+                }`}
+              >
+                {course.status === "started" ? "Started" : "Not Started"}
+              </span>
+              <button
+                onClick={handleEnrollmentToggle}
+                disabled={enrolling}
+                className={`px-4 py-2 rounded-lg font-semibold text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                  course.status === "started"
+                    ? "border border-green-900/60 text-green-400 hover:bg-green-900/30"
+                    : "bg-green-600 text-black hover:bg-green-500"
+                }`}
+              >
+                {enrolling
+                  ? "Updating..."
+                  : course.status === "started"
+                    ? "Stop Course"
+                    : "Start Course"}
+              </button>
+            </div>
+          </div>
           <p className="text-green-500 text-lg mb-4">
             {course.learning_goal}
           </p>

@@ -63,7 +63,7 @@ export default function Home() {
 
   async function fetchCourses() {
     try {
-      const res = await fetch("/api/courses");
+      const res = await fetch("/api/courses?status=started");
       if (res.ok) {
         const data = await res.json();
         setCourses(data.courses || []);
@@ -244,6 +244,26 @@ export default function Home() {
                   className="absolute right-0 top-full mt-2 w-48 rounded-lg border border-green-900/60 bg-green-950/95 shadow-lg shadow-green-900/20 overflow-hidden"
                 >
                   <button
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      router.push("/courses");
+                    }}
+                    className="w-full px-4 py-3 text-left text-green-400 hover:bg-green-900/50 transition-colors flex items-center gap-2"
+                  >
+                    <svg
+                      className="h-4 w-4"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                    My Courses
+                  </button>
+                  <button
                     onClick={handleSettingsClick}
                     className="w-full px-4 py-3 text-left text-green-400 hover:bg-green-900/50 transition-colors flex items-center gap-2"
                   >
@@ -317,15 +337,34 @@ export default function Home() {
 
       {/* Body */}
       <main className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold text-green-400 mb-2 tracking-wide">
-            <span className="text-green-600">{">"}</span> What do you want to
-            learn today?
-            <span className="inline-block w-2.5 h-5 bg-green-400 ml-1 animate-pulse align-middle" />
-          </h2>
-          <p className="text-green-600">
-            Choose a topic to continue your learning journey
-          </p>
+        <div className="mb-8 flex items-start justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-semibold text-green-400 mb-2 tracking-wide">
+              <span className="text-green-600">{">"}</span> What do you want to
+              learn today?
+              <span className="inline-block w-2.5 h-5 bg-green-400 ml-1 animate-pulse align-middle" />
+            </h2>
+            <p className="text-green-600">
+              Your active courses. Continue where you left off.
+            </p>
+          </div>
+          <button
+            onClick={() => router.push("/courses")}
+            className="flex-shrink-0 px-4 py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/30 transition-colors text-sm flex items-center gap-2"
+          >
+            <svg
+              className="h-4 w-4"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            My Courses
+          </button>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
