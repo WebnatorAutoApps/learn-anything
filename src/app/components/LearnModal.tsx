@@ -99,10 +99,6 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
   // Tracks whether we're waiting for the next question to appear
   const [isTyping, setIsTyping] = useState(false);
 
-  // Confirmation dialog state
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const [planData, setPlanData] = useState<LearningPlanData | null>(null);
-
   // Tracks the message index where each step's system question lives.
   // This allows us to truncate the chat correctly when editing, even if
   // extra messages were inserted (e.g. module-count validation re-prompts).
@@ -299,19 +295,13 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
       duration as number
     );
 
-    setPlanData({
+    onSubmit({
       whatToLearn: topic,
       openDetail: details,
       currentExpertise: expertise as ExpertiseLevel,
       expertiseDetail: expertiseDetails || "(none)",
       totalModules: modules,
     });
-    setShowConfirmation(true);
-  }
-
-  function handleConfirmSubmit() {
-    if (!planData) return;
-    onSubmit(planData);
   }
 
   // Determine what input to show for the current step
@@ -475,7 +465,6 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
   }
 
   return (
-    <>
       <div className="fixed inset-0 z-50 flex items-center justify-center">
         {/* Backdrop */}
         <div className="absolute inset-0 bg-black/70" />
@@ -617,112 +606,5 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
           </div>
         </div>
       </div>
-
-      {/* Confirmation dialog */}
-      {showConfirmation && planData && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center">
-          <div
-            className="absolute inset-0 bg-black/80"
-            onClick={() => setShowConfirmation(false)}
-          />
-          <div className="relative z-10 w-full max-w-lg mx-4 rounded-lg border border-green-900/60 bg-green-950/95 shadow-lg shadow-green-900/30">
-            {/* Header */}
-            <div className="flex items-center justify-between border-b border-green-900/40 px-6 py-4">
-              <h3 className="text-lg font-semibold text-green-400 tracking-wide">
-                <span className="text-green-600">{">"}</span> Learning Plan
-                Summary
-              </h3>
-              <button
-                onClick={() => setShowConfirmation(false)}
-                className="flex h-8 w-8 items-center justify-center rounded-md text-green-600 hover:text-green-400 hover:bg-green-900/40 transition-colors"
-                aria-label="Close"
-              >
-                <svg
-                  className="h-5 w-5"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-
-            {/* Plan data */}
-            <div className="px-6 py-5 space-y-4">
-              <p className="text-green-500 text-sm mb-4">
-                This data will be sent to the LLM to generate your learning
-                plan:
-              </p>
-
-              <div className="space-y-3">
-                <div className="rounded border border-green-900/40 bg-green-900/20 px-4 py-3">
-                  <span className="text-green-600 text-xs uppercase tracking-wider font-semibold">
-                    What to learn
-                  </span>
-                  <p className="text-green-300 mt-1">{planData.whatToLearn}</p>
-                </div>
-
-                <div className="rounded border border-green-900/40 bg-green-900/20 px-4 py-3">
-                  <span className="text-green-600 text-xs uppercase tracking-wider font-semibold">
-                    Details
-                  </span>
-                  <p className="text-green-300 mt-1">{planData.openDetail}</p>
-                </div>
-
-                <div className="rounded border border-green-900/40 bg-green-900/20 px-4 py-3">
-                  <span className="text-green-600 text-xs uppercase tracking-wider font-semibold">
-                    Current expertise
-                  </span>
-                  <p className="text-green-300 mt-1">
-                    {planData.currentExpertise}
-                  </p>
-                </div>
-
-                <div className="rounded border border-green-900/40 bg-green-900/20 px-4 py-3">
-                  <span className="text-green-600 text-xs uppercase tracking-wider font-semibold">
-                    More about expertise
-                  </span>
-                  <p className="text-green-300 mt-1">
-                    {planData.expertiseDetail}
-                  </p>
-                </div>
-
-                <div className="rounded border border-green-900/40 bg-green-900/20 px-4 py-3">
-                  <span className="text-green-600 text-xs uppercase tracking-wider font-semibold">
-                    Total modules
-                  </span>
-                  <p className="text-green-300 mt-1">
-                    {planData.totalModules}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Footer */}
-            <div className="flex justify-end gap-3 border-t border-green-900/40 px-6 py-4">
-              <button
-                type="button"
-                onClick={() => setShowConfirmation(false)}
-                className="px-4 py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/30 transition-colors text-sm"
-              >
-                Go Back
-              </button>
-              <button
-                type="button"
-                onClick={handleConfirmSubmit}
-                className="px-6 py-2 rounded-lg bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors"
-              >
-                Confirm
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-    </>
   );
 }
