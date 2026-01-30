@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { encrypt, extractLast4 } from "@/lib/crypto";
 
 export async function PUT(request: Request) {
   try {
@@ -27,9 +28,21 @@ export async function PUT(request: Request) {
       );
     }
 
+    // Determine values to store
+    const keyValue =
+      typeof gemini_api_key === "string" ? gemini_api_key.trim() : null;
+    const isClearing = !keyValue;
+
+    const updateData = isClearing
+      ? { encrypted_api_key: null, api_key_last4: null }
+      : {
+          encrypted_api_key: encrypt(keyValue),
+          api_key_last4: extractLast4(keyValue),
+        };
+
     const { error: updateError } = await supabase
       .from("profiles")
-      .update({ gemini_api_key: gemini_api_key ?? null })
+      .update(updateData)
       .eq("id", user.id);
 
     if (updateError) {
@@ -40,7 +53,10 @@ export async function PUT(request: Request) {
       );
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({
+      success: true,
+      api_key_last4: isClearing ? null : updateData.api_key_last4,
+    });
   } catch (error) {
     console.error("Settings update error:", error);
     return NextResponse.json(

@@ -74,6 +74,12 @@ Required in `.env.local`:
 ```
 NEXT_PUBLIC_SUPABASE_URL=<supabase-project-url>
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<supabase-anon-key>
+GEMINI_KEY_ENCRYPTION_SECRET=<64-char-hex-string>
+```
+
+Generate the encryption secret with:
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
 ## Project Structure
@@ -92,10 +98,12 @@ src/
       signup/route.ts           # POST signup
       logout/route.ts           # POST logout
     auth/callback/route.ts      # OAuth callback
-  lib/supabase/
-    client.ts                   # Browser Supabase client
-    server.ts                   # Server Supabase client
-    middleware.ts               # Session refresh logic
+  lib/
+    crypto.ts                   # AES-256-GCM encrypt/decrypt for API keys
+    supabase/
+      client.ts                 # Browser Supabase client
+      server.ts                 # Server Supabase client
+      middleware.ts             # Session refresh logic
   middleware.ts                 # Route protection
 supabase/
   config.toml                   # Local Supabase config

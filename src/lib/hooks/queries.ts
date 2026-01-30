@@ -31,7 +31,7 @@ export interface Profile {
   email: string;
   avatar_url: string | null;
   has_gemini_api_key: boolean;
-  gemini_api_key: string | null;
+  api_key_last4: string | null;
 }
 
 export interface CourseListItem {

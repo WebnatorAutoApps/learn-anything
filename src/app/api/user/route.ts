@@ -17,7 +17,8 @@ export async function GET() {
       );
     }
 
-    const profileSelect = "id, full_name, email, avatar_url, gemini_api_key, created_at, updated_at";
+    // Only select non-sensitive columns — encrypted_api_key is never fetched
+    const profileSelect = "id, full_name, email, avatar_url, api_key_last4, created_at, updated_at";
     const meta = user.user_metadata ?? {};
 
     let { data: profile, error: profileError } = await supabase
@@ -61,7 +62,7 @@ export async function GET() {
           full_name: meta.full_name || meta.name || null,
           email: user.email || null,
           avatar_url: meta.avatar_url || meta.picture || null,
-          gemini_api_key: null,
+          api_key_last4: null,
           has_gemini_api_key: false,
           created_at: null,
           updated_at: null,
@@ -76,17 +77,14 @@ export async function GET() {
       user.user_metadata?.picture ||
       null;
 
-    // Mask the API key before returning — only show last 4 characters
-    const maskedProfile = {
-      ...profile,
-      avatar_url: avatarUrl,
-      gemini_api_key: profile.gemini_api_key
-        ? "••••••••" + profile.gemini_api_key.slice(-4)
-        : null,
-      has_gemini_api_key: !!profile.gemini_api_key,
-    };
-
-    return NextResponse.json({ success: true, profile: maskedProfile });
+    return NextResponse.json({
+      success: true,
+      profile: {
+        ...profile,
+        avatar_url: avatarUrl,
+        has_gemini_api_key: !!profile.api_key_last4,
+      },
+    });
   } catch (error) {
     console.error("User fetch error:", error);
     return NextResponse.json(

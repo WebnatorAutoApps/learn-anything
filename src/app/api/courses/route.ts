@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createLLMProvider, LIKELIHOOD_THRESHOLD } from "@/lib/llm";
+import { decrypt } from "@/lib/crypto";
 
 export async function POST(request: Request) {
   try {
@@ -34,14 +35,14 @@ export async function POST(request: Request) {
       );
     }
 
-    // Fetch the user's Gemini API key from their profile
+    // Fetch the user's encrypted Gemini API key from their profile
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("gemini_api_key")
+      .select("encrypted_api_key")
       .eq("id", user.id)
       .single();
 
-    if (profileError || !profile?.gemini_api_key) {
+    if (profileError || !profile?.encrypted_api_key) {
       return NextResponse.json(
         {
           success: false,
@@ -52,8 +53,11 @@ export async function POST(request: Request) {
       );
     }
 
+    // Decrypt the key server-side only for the Gemini API call
+    const apiKey = decrypt(profile.encrypted_api_key);
+
     // Call Gemini via the LLM provider abstraction
-    const provider = createLLMProvider("gemini", profile.gemini_api_key);
+    const provider = createLLMProvider("gemini", apiKey);
 
     const llmResponse = await provider.generateCourse({
       learning_goal_short: whatToLearn,

@@ -19,7 +19,9 @@ export default function SettingsModal({ onClose }: SettingsModalProps) {
   const saveMutation = useSaveSettings();
 
   const hasExistingKey = profile?.has_gemini_api_key ?? false;
-  const maskedKey = profile?.gemini_api_key ?? null;
+  const maskedKey = profile?.api_key_last4
+    ? "••••••••" + profile.api_key_last4
+    : null;
 
   async function handleSave() {
     if (!apiKey.trim()) return;
