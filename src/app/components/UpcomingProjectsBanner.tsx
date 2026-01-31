@@ -95,7 +95,7 @@ function ProjectRow({
         </div>
         <div className="flex items-center gap-2 mt-0.5">
           <span className="text-xs text-green-800">
-            Module {project.moduleIndex} &middot; Project {project.projectIndex}
+            Step {project.moduleIndex} &middot; Project {project.projectIndex}
           </span>
           {project.dueDate ? (
             <span

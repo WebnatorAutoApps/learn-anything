@@ -49,7 +49,7 @@ export default function CoursesPage() {
             </button>
             <div className="h-6 w-px bg-green-900/50" />
             <h1 className="text-xl font-semibold text-green-400 tracking-wider">
-              My Courses
+              My Learning Paths
             </h1>
           </div>
         </div>
@@ -58,11 +58,11 @@ export default function CoursesPage() {
       <main className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-8">
           <h2 className="text-2xl font-semibold text-green-400 mb-2 tracking-wide">
-            <span className="text-green-600">{">"}</span> My Courses
+            <span className="text-green-600">{">"}</span> My Learning Paths
             <span className="inline-block w-2.5 h-5 bg-green-400 ml-1 animate-pulse align-middle" />
           </h2>
           <p className="text-green-600">
-            All courses you&apos;ve created. Enroll to begin learning.
+            All learning paths you&apos;ve created. Enroll to begin learning.
           </p>
         </div>
 
@@ -71,7 +71,7 @@ export default function CoursesPage() {
         ) : courses.length === 0 ? (
           <div className="rounded-lg border border-green-900/60 bg-green-950/20 p-8 text-center">
             <p className="text-green-600 mb-4">
-              No courses yet. Create your first course from the Dashboard.
+              No learning paths yet. Create your first learning path from the Dashboard.
             </p>
             <button
               onClick={() => router.push("/")}
@@ -102,7 +102,7 @@ export default function CoursesPage() {
                         {course.normalized_title}
                       </h3>
                       <p className="text-sm text-green-700">
-                        {course.total_modules} modules
+                        {course.total_modules} steps
                       </p>
                     </div>
                   </div>
@@ -122,7 +122,7 @@ export default function CoursesPage() {
                   >
                     {enrollingId === course.id
                       ? "Starting..."
-                      : "Start Course"}
+                      : "Start Learning Path"}
                   </button>
                 )}
               </div>

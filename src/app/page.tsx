@@ -240,7 +240,7 @@ export default function Home() {
                     >
                       <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
-                    My Courses
+                    My Learning Paths
                   </button>
                   <button
                     onClick={handleSettingsClick}
@@ -324,7 +324,7 @@ export default function Home() {
               <span className="inline-block w-2.5 h-5 bg-green-400 ml-1 animate-pulse align-middle" />
             </h2>
             <p className="text-green-600">
-              Your active courses. Continue where you left off.
+              Your active learning paths. Continue where you left off.
             </p>
           </div>
           <button
@@ -342,7 +342,7 @@ export default function Home() {
             >
               <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
             </svg>
-            My Courses
+            My Learning Paths
           </button>
         </div>
 
@@ -369,7 +369,7 @@ export default function Home() {
                       {course.normalized_title}
                     </h3>
                     <p className="text-sm text-green-700">
-                      {course.total_modules} modules
+                      {course.total_modules} steps
                     </p>
                   </div>
                 </div>

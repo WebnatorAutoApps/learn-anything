@@ -207,7 +207,7 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
               ...prev,
               {
                 role: "system" as const,
-                text: `That combination only gives ${modules} module${modules === 1 ? "" : "s"}, but we need at least ${MIN_MODULES} for the program to work. Let's try again — how often can you dedicate time to this?`,
+                text: `That combination only gives ${modules} step${modules === 1 ? "" : "s"}, but we need at least ${MIN_MODULES} for the program to work. Let's try again — how often can you dedicate time to this?`,
               },
             ];
             // Update the commitment step's message index to this re-prompt

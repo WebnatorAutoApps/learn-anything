@@ -133,7 +133,7 @@ function ProjectSelectionArea({
   if (mod.projects.length === 0) {
     return (
       <p className="text-sm text-green-700 italic">
-        No projects available for this module.
+        No projects available for this step.
       </p>
     );
   }
@@ -532,7 +532,7 @@ export default function CoursePage({
   if (isError || !course) {
     const errorMessage =
       (queryError as Error & { status?: number })?.status === 404
-        ? "Course not found"
+        ? "Learning path not found"
         : (queryError as Error)?.message || "Failed to load course";
 
     return (
@@ -655,7 +655,7 @@ export default function CoursePage({
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
           <div className="rounded-lg border border-green-900/60 bg-green-950/20 p-4">
             <p className="text-xs text-green-700 uppercase tracking-wider mb-1">
-              Modules
+              Steps
             </p>
             <p className="text-xl font-bold text-green-400">
               {course.total_modules}
@@ -780,7 +780,7 @@ export default function CoursePage({
         {isEnrolled && hasSchedule && currentModule && (
           <div className="mb-8">
             <h3 className="text-lg font-semibold text-green-400 mb-4 tracking-wide">
-              <span className="text-green-600">{">"}</span> Current Module
+              <span className="text-green-600">{">"}</span> Current Step
             </h3>
             <div className="rounded-lg border-2 border-green-500/60 bg-green-950/30 overflow-hidden shadow-lg shadow-green-900/20">
               <button
@@ -849,9 +849,9 @@ export default function CoursePage({
           <div className="mb-8">
             <h3 className="text-lg font-semibold text-green-400 mb-4 tracking-wide">
               <span className="text-green-600">{">"}</span>{" "}
-              {isEnrolled && hasSchedule ? "All Modules" : "Course Modules"}
+              {isEnrolled && hasSchedule ? "All Steps" : "Learning Path Steps"}
               <span className="text-sm font-normal text-green-700 ml-2">
-                ({course.modules.length} module
+                ({course.modules.length} step
                 {course.modules.length !== 1 ? "s" : ""})
               </span>
             </h3>
@@ -1008,7 +1008,7 @@ export default function CoursePage({
             {/* Hint for unenrolled users */}
             {!isEnrolled && (
               <p className="text-sm text-green-700 mt-4 text-center">
-                Enroll to unlock module details and project options.
+                Enroll to unlock step details and project options.
               </p>
             )}
           </div>
@@ -1033,7 +1033,7 @@ export default function CoursePage({
             </h3>
             <p className="text-green-500 text-sm leading-relaxed mb-6">
               You&apos;ve been doing so well! Are you sure you want to unenroll
-              from this course? Your progress and schedule won&apos;t be saved.
+              from this learning path? Your progress and schedule won&apos;t be saved.
             </p>
 
             {unenrollError && (
