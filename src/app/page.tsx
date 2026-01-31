@@ -324,7 +324,7 @@ export default function Home() {
 
       {/* Body */}
       <main className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-        <div className="mb-8 flex items-start justify-between gap-4">
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h2 className="text-2xl font-semibold text-green-400 mb-2 tracking-wide">
               <span className="text-green-600">{">"}</span> What do you want to
@@ -337,7 +337,7 @@ export default function Home() {
           </div>
           <button
             onClick={() => router.push("/courses")}
-            className="flex-shrink-0 px-4 py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/30 transition-colors text-sm flex items-center gap-2"
+            className="w-full sm:w-auto sm:flex-shrink-0 px-4 py-3 sm:py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/30 transition-colors text-sm flex items-center justify-center sm:justify-start gap-2"
           >
             <svg
               className="h-4 w-4"
