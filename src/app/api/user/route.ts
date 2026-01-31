@@ -57,6 +57,9 @@ export async function GET() {
       console.error("Profile fetch error:", profileError);
     }
 
+    // Determine auth provider (email vs OAuth)
+    const authProvider = user.app_metadata?.provider || "email";
+
     // If we still don't have a profile (DB down, RLS issue, etc.),
     // return auth metadata so the frontend isn't left with nothing.
     if (!profile) {
@@ -70,6 +73,7 @@ export async function GET() {
           api_key_last4: null,
           has_gemini_api_key: false,
           username: null,
+          auth_provider: authProvider,
           created_at: null,
           updated_at: null,
         },
@@ -89,6 +93,7 @@ export async function GET() {
         ...profile,
         avatar_url: avatarUrl,
         has_gemini_api_key: !!profile.api_key_last4,
+        auth_provider: authProvider,
       },
     });
   } catch (error) {

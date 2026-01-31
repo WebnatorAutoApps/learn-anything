@@ -34,6 +34,7 @@ export interface Profile {
   has_gemini_api_key: boolean;
   api_key_last4: string | null;
   username: string | null;
+  auth_provider: string;
 }
 
 export interface CourseListItem {
@@ -331,5 +332,70 @@ export function useUploadCompletionImage() {
       const data: { success: boolean; url: string } = await res.json();
       return data.url;
     },
+  });
+}
+
+export function useUpdateProfile() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: { full_name: string }) =>
+      fetchJSON<{ success: boolean }>("/api/user/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.profile });
+    },
+  });
+}
+
+export function useUploadAvatar() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/user/avatar", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error || `Upload failed (${res.status})`);
+      }
+
+      const data: { success: boolean; avatar_url: string } = await res.json();
+      return data.avatar_url;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.profile });
+    },
+  });
+}
+
+export function useUpdateEmail() {
+  return useMutation({
+    mutationFn: (data: { email: string }) =>
+      fetchJSON<{ success: boolean; message: string }>("/api/user/email", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      }),
+  });
+}
+
+export function useUpdatePassword() {
+  return useMutation({
+    mutationFn: (data: { current_password: string; new_password: string }) =>
+      fetchJSON<{ success: boolean }>("/api/user/password", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      }),
   });
 }
