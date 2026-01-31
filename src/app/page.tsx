@@ -17,7 +17,7 @@ export default function Home() {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [showLearnModal, setShowLearnModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
-  const [settingsInitialTab, setSettingsInitialTab] = useState<"general" | "api-keys">("general");
+  const [settingsInitialTab, setSettingsInitialTab] = useState<"general" | "api-keys" | "customization">("general");
   const [showApiKeyWarning, setShowApiKeyWarning] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [creationError, setCreationError] = useState<string | null>(null);

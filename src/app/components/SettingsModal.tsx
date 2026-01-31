@@ -5,8 +5,9 @@ import { useProfile } from "@/lib/hooks/queries";
 import GeneralSettings from "./settings/GeneralSettings";
 import ApiKeysSettings from "./settings/ApiKeysSettings";
 import ToneSettings from "./settings/ToneSettings";
+import ThemeSettings from "./settings/ThemeSettings";
 
-type SettingsTab = "general" | "api-keys" | "ai-tone";
+type SettingsTab = "general" | "api-keys" | "customization";
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -16,7 +17,7 @@ interface SettingsModalProps {
 const TABS: { id: SettingsTab; label: string }[] = [
   { id: "general", label: "General" },
   { id: "api-keys", label: "API Keys" },
-  { id: "ai-tone", label: "AI Tone" },
+  { id: "customization", label: "Customization" },
 ];
 
 export default function SettingsModal({ onClose, initialTab = "general" }: SettingsModalProps) {
@@ -29,15 +30,15 @@ export default function SettingsModal({ onClose, initialTab = "general" }: Setti
       <div className="absolute inset-0 bg-black/70" />
 
       {/* Modal */}
-      <div className="relative z-10 w-full max-w-3xl mx-4 rounded-lg border border-green-900/60 bg-green-950/95 shadow-lg shadow-green-900/30 max-h-[85vh] flex flex-col">
+      <div className="relative z-10 w-full max-w-3xl mx-4 rounded-lg border border-theme-border-strong bg-theme-surface shadow-lg max-h-[85vh] flex flex-col" style={{ boxShadow: `0 10px 25px -5px var(--t-glow)` }}>
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-green-900/40 px-6 py-4 shrink-0">
-          <h3 className="text-lg font-semibold text-green-400 tracking-wide">
-            <span className="text-green-600">{">"}</span> Settings
+        <div className="flex items-center justify-between border-b border-theme-border px-6 py-4 shrink-0">
+          <h3 className="text-lg font-semibold text-theme-primary tracking-wide">
+            <span className="text-theme-secondary">{">"}</span> Settings
           </h3>
           <button
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-md text-green-600 hover:text-green-400 hover:bg-green-900/40 transition-colors"
+            className="flex h-8 w-8 items-center justify-center rounded-md text-theme-secondary hover:text-theme-primary hover:bg-theme-surface-hover transition-colors"
             aria-label="Close"
           >
             <svg
@@ -57,15 +58,15 @@ export default function SettingsModal({ onClose, initialTab = "general" }: Setti
         {/* Body: Sidebar + Content */}
         <div className="flex flex-1 overflow-hidden">
           {/* Sidebar */}
-          <nav className="w-44 shrink-0 border-r border-green-900/40 py-3">
+          <nav className="w-44 shrink-0 border-r border-theme-border py-3">
             {TABS.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`w-full px-5 py-2.5 text-left text-sm transition-colors ${
                   activeTab === tab.id
-                    ? "text-green-400 bg-green-900/30 border-r-2 border-green-400"
-                    : "text-green-600 hover:text-green-400 hover:bg-green-900/20"
+                    ? "text-theme-primary bg-theme-surface-hover border-r-2 border-theme-primary"
+                    : "text-theme-secondary hover:text-theme-primary hover:bg-theme-surface-hover"
                 }`}
               >
                 {tab.label}
@@ -77,7 +78,7 @@ export default function SettingsModal({ onClose, initialTab = "general" }: Setti
           <div className="flex-1 overflow-y-auto px-6 py-5">
             {isLoading ? (
               <div className="flex items-center justify-center py-8">
-                <span className="text-green-600">Loading settings...</span>
+                <span className="text-theme-secondary">Loading settings...</span>
               </div>
             ) : isError ? (
               <div className="flex items-center justify-center py-8">
@@ -87,7 +88,13 @@ export default function SettingsModal({ onClose, initialTab = "general" }: Setti
               <>
                 {activeTab === "general" && <GeneralSettings profile={profile!} />}
                 {activeTab === "api-keys" && <ApiKeysSettings profile={profile!} />}
-                {activeTab === "ai-tone" && <ToneSettings profile={profile!} />}
+                {activeTab === "customization" && (
+                  <div className="space-y-10">
+                    <ToneSettings profile={profile!} />
+                    <div className="border-t border-theme-border" />
+                    <ThemeSettings />
+                  </div>
+                )}
               </>
             )}
           </div>

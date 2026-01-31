@@ -142,8 +142,8 @@ export default function ToneSettings({ profile }: ToneSettingsProps) {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h4 className="text-sm font-medium text-green-400">AI Tone</h4>
-        <p className="text-xs text-green-700">
+        <h4 className="text-sm font-medium text-theme-primary">AI Tone</h4>
+        <p className="text-xs text-theme-muted">
           Choose how the AI communicates with you when building learning plans.
           This takes effect on your next interaction.
         </p>
@@ -158,8 +158,8 @@ export default function ToneSettings({ profile }: ToneSettingsProps) {
             onClick={() => setSelectedPreset(preset.label)}
             className={`w-full text-left rounded-lg border px-4 py-3 transition-colors ${
               selectedPreset === preset.label
-                ? "border-green-500 bg-green-900/30 text-green-300"
-                : "border-green-900/40 bg-green-950/40 text-green-600 hover:border-green-700 hover:text-green-400"
+                ? "border-theme-primary bg-theme-surface-hover text-theme-primary"
+                : "border-theme-border bg-theme-surface text-theme-secondary hover:border-theme-primary-dim hover:text-theme-primary"
             }`}
           >
             <span className="text-sm font-medium">{preset.label}</span>
@@ -173,8 +173,8 @@ export default function ToneSettings({ profile }: ToneSettingsProps) {
           onClick={() => setSelectedPreset("custom")}
           className={`w-full text-left rounded-lg border px-4 py-3 transition-colors ${
             selectedPreset === "custom"
-              ? "border-green-500 bg-green-900/30 text-green-300"
-              : "border-green-900/40 bg-green-950/40 text-green-600 hover:border-green-700 hover:text-green-400"
+              ? "border-theme-primary bg-theme-surface-hover text-theme-primary"
+              : "border-theme-border bg-theme-surface text-theme-secondary hover:border-theme-primary-dim hover:text-theme-primary"
           }`}
         >
           <span className="text-sm font-medium">Custom</span>
@@ -193,9 +193,9 @@ export default function ToneSettings({ profile }: ToneSettingsProps) {
             placeholder="Describe how you want the AI to communicate with you..."
             maxLength={MAX_TONE_LENGTH}
             rows={3}
-            className="w-full rounded-lg border border-green-900/60 bg-green-950/40 px-3 py-2 text-green-300 placeholder-green-800 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500 transition-colors text-sm resize-none"
+            className="w-full rounded-lg border border-theme-border-strong bg-theme-surface px-3 py-2 text-theme-primary placeholder-theme-muted focus:border-theme-primary focus:outline-none focus:ring-1 focus:ring-theme-primary transition-colors text-sm resize-none"
           />
-          <p className="text-xs text-green-700 text-right">
+          <p className="text-xs text-theme-muted text-right">
             {customTone.length}/{MAX_TONE_LENGTH}
           </p>
         </div>
@@ -205,7 +205,7 @@ export default function ToneSettings({ profile }: ToneSettingsProps) {
       {message && (
         <p
           className={`text-sm ${
-            message.type === "success" ? "text-green-400" : "text-red-400"
+            message.type === "success" ? "text-theme-primary" : "text-red-400"
           }`}
         >
           {message.text}
@@ -218,7 +218,7 @@ export default function ToneSettings({ profile }: ToneSettingsProps) {
           type="button"
           onClick={handleReset}
           disabled={saveToneMutation.isPending}
-          className="px-4 py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/30 transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
+          className="px-4 py-2 rounded-lg border border-theme-border-strong text-theme-primary hover:bg-theme-surface-hover transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
         >
           {saveToneMutation.isPending ? "Resetting..." : "Reset to Default"}
         </button>
@@ -230,7 +230,7 @@ export default function ToneSettings({ profile }: ToneSettingsProps) {
             saveToneMutation.isPending ||
             (selectedPreset === "custom" && !customTone.trim())
           }
-          className="px-4 py-2 rounded-lg bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
+          className="px-4 py-2 rounded-lg bg-theme-accent text-theme-text-on-accent font-semibold hover:bg-theme-primary-hover transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
         >
           {saveToneMutation.isPending ? "Saving..." : "Save"}
         </button>
