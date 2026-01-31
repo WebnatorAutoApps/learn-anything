@@ -1,5 +1,5 @@
 import { LLMProvider, LearningRequest, LLMResponse } from "./types";
-import { SYSTEM_PROMPT, buildUserPrompt } from "./prompt";
+import { buildSystemPrompt, buildUserPrompt } from "./prompt";
 
 const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent";
 
@@ -12,13 +12,14 @@ export class GeminiProvider implements LLMProvider {
 
   async generateCourse(request: LearningRequest): Promise<LLMResponse> {
     const userPrompt = buildUserPrompt(request);
+    const systemPrompt = buildSystemPrompt(request.tone);
 
     const response = await fetch(`${GEMINI_API_URL}?key=${this.apiKey}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         system_instruction: {
-          parts: [{ text: SYSTEM_PROMPT }],
+          parts: [{ text: systemPrompt }],
         },
         contents: [
           {

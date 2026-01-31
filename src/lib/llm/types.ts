@@ -4,6 +4,7 @@ export interface LearningRequest {
   expertise_level: string;
   expertise_details: string;
   number_of_modules: number;
+  tone?: string | null;
 }
 
 export interface LLMProject {

@@ -35,10 +35,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // Fetch the user's encrypted Gemini API key from their profile
+    // Fetch the user's encrypted Gemini API key and tone preference from their profile
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("encrypted_api_key")
+      .select("encrypted_api_key, tone")
       .eq("id", user.id)
       .single();
 
@@ -74,6 +74,7 @@ export async function POST(request: Request) {
       expertise_level: currentExpertise,
       expertise_details: expertiseDetail || "",
       number_of_modules: totalModules,
+      tone: profile.tone,
     });
 
     // Check likelihood threshold — don't store courses unlikely to succeed

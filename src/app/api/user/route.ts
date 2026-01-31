@@ -19,7 +19,7 @@ export async function GET() {
     }
 
     // Only select non-sensitive columns — encrypted_api_key is never fetched
-    const profileSelect = "id, full_name, email, avatar_url, api_key_last4, username, created_at, updated_at";
+    const profileSelect = "id, full_name, email, avatar_url, api_key_last4, username, tone, created_at, updated_at";
     const meta = user.user_metadata ?? {};
 
     let { data: profile, error: profileError } = await supabase
@@ -73,6 +73,7 @@ export async function GET() {
           api_key_last4: null,
           has_gemini_api_key: false,
           username: null,
+          tone: null,
           auth_provider: authProvider,
           created_at: null,
           updated_at: null,

@@ -35,6 +35,7 @@ export interface Profile {
   api_key_last4: string | null;
   username: string | null;
   auth_provider: string;
+  tone: string | null;
 }
 
 export interface CourseListItem {
@@ -249,6 +250,22 @@ export function useSaveSettings() {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(settings),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.profile });
+    },
+  });
+}
+
+export function useSaveTone() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (tone: string) =>
+      fetchJSON<{ success: boolean }>("/api/user/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tone }),
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.profile });
