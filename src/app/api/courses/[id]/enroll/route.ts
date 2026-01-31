@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { generateModuleSchedule, todayUTC } from "@/lib/schedule";
+import { generateModuleSchedule, todayUTC, validateCommitment } from "@/lib/schedule";
 
 export async function DELETE(
   _request: Request,
@@ -151,10 +151,10 @@ export async function POST(
       // No body or invalid JSON — use default
     }
 
-    // Verify the course exists
+    // Verify the course exists and get total_modules for validation
     const { data: course, error: courseError } = await supabase
       .from("courses")
-      .select("id")
+      .select("id, total_modules")
       .eq("id", id)
       .single();
 
@@ -162,6 +162,25 @@ export async function POST(
       return NextResponse.json(
         { success: false, error: "Course not found" },
         { status: 404 }
+      );
+    }
+
+    // Validate commitment duration (must fit within 1 year)
+    const validation = validateCommitment(
+      course.total_modules,
+      commitmentIntervalDays
+    );
+    if (!validation.valid) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "commitment_too_long",
+          projectedDays: validation.projectedDays,
+          projectedYears: validation.projectedYears,
+          suggestedIntervalDays: validation.suggestedIntervalDays,
+          stepCount: course.total_modules,
+        },
+        { status: 422 }
       );
     }
 
@@ -275,7 +294,7 @@ export async function PATCH(
     // Verify the course exists and belongs to the user
     const { data: course, error: courseError } = await supabase
       .from("courses")
-      .select("id, status")
+      .select("id, status, total_modules")
       .eq("id", id)
       .eq("user_id", user.id)
       .single();
@@ -307,6 +326,24 @@ export async function PATCH(
       typeof commitmentIntervalDays === "number" && commitmentIntervalDays >= 1
         ? commitmentIntervalDays
         : 3;
+
+    // Validate commitment duration for enrollment (must fit within 1 year)
+    if (action === "enroll") {
+      const validation = validateCommitment(course.total_modules, intervalDays);
+      if (!validation.valid) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "commitment_too_long",
+            projectedDays: validation.projectedDays,
+            projectedYears: validation.projectedYears,
+            suggestedIntervalDays: validation.suggestedIntervalDays,
+            stepCount: course.total_modules,
+          },
+          { status: 422 }
+        );
+      }
+    }
 
     const updateData: Record<string, unknown> = { status: newStatus };
     if (action === "enroll") {

@@ -2,6 +2,9 @@ import { describe, it, expect } from "vitest";
 import {
   generateModuleSchedule,
   resolveModuleStatuses,
+  calculateProjectedDays,
+  validateCommitment,
+  MAX_ENROLLMENT_DAYS,
   type ModuleScheduleEntry,
 } from "./schedule";
 
@@ -274,5 +277,122 @@ describe("resolveModuleStatuses", () => {
       "CURRENT",
       "CURRENT",
     ]);
+  });
+});
+
+// ── calculateProjectedDays ────────────────────────────────────────────────
+
+describe("calculateProjectedDays", () => {
+  it("calculates days as stepCount * intervalDays", () => {
+    expect(calculateProjectedDays(10, 3)).toBe(30);
+    expect(calculateProjectedDays(5, 7)).toBe(35);
+    expect(calculateProjectedDays(365, 1)).toBe(365);
+  });
+
+  it("returns 0 for zero or negative steps", () => {
+    expect(calculateProjectedDays(0, 3)).toBe(0);
+    expect(calculateProjectedDays(-1, 3)).toBe(0);
+  });
+
+  it("returns 0 for intervalDays < 1", () => {
+    expect(calculateProjectedDays(10, 0)).toBe(0);
+    expect(calculateProjectedDays(10, -1)).toBe(0);
+  });
+
+  it("handles single step", () => {
+    expect(calculateProjectedDays(1, 30)).toBe(30);
+    expect(calculateProjectedDays(1, 1)).toBe(1);
+  });
+
+  it("handles large step counts", () => {
+    expect(calculateProjectedDays(500, 1)).toBe(500);
+    expect(calculateProjectedDays(100, 30)).toBe(3000);
+  });
+});
+
+// ── validateCommitment ────────────────────────────────────────────────────
+
+describe("validateCommitment", () => {
+  it("allows commitment that fits within 365 days", () => {
+    // 50 steps * 7 days = 350 days
+    const result = validateCommitment(50, 7);
+    expect(result.valid).toBe(true);
+    expect(result.projectedDays).toBe(350);
+    expect(result.suggestedIntervalDays).toBeNull();
+  });
+
+  it("allows exactly 365 days (boundary)", () => {
+    // 365 steps * 1 day = 365 days
+    const result = validateCommitment(365, 1);
+    expect(result.valid).toBe(true);
+    expect(result.projectedDays).toBe(365);
+  });
+
+  it("rejects 366 days (just over boundary)", () => {
+    // 366 steps * 1 day = 366 days
+    const result = validateCommitment(366, 1);
+    expect(result.valid).toBe(false);
+    expect(result.projectedDays).toBe(366);
+    expect(result.suggestedIntervalDays).toBeNull(); // even daily doesn't fit
+  });
+
+  it("rejects commitment exceeding 365 days with suggestion", () => {
+    // 20 steps * 30 days = 600 days
+    const result = validateCommitment(20, 30);
+    expect(result.valid).toBe(false);
+    expect(result.projectedDays).toBe(600);
+    // 365 / 20 = 18.25 -> floor to 18
+    expect(result.suggestedIntervalDays).toBe(18);
+  });
+
+  it("suggests null when even daily commitment exceeds limit", () => {
+    // 400 steps * 1 day = 400 days
+    const result = validateCommitment(400, 1);
+    expect(result.valid).toBe(false);
+    expect(result.suggestedIntervalDays).toBeNull();
+  });
+
+  it("calculates projectedYears correctly", () => {
+    // 12 steps * 30 days = 360 days -> 1.0 years
+    const result1 = validateCommitment(12, 30);
+    expect(result1.projectedYears).toBe(1);
+
+    // 20 steps * 30 days = 600 days -> 1.6 years
+    const result2 = validateCommitment(20, 30);
+    expect(result2.projectedYears).toBe(1.6);
+
+    // 40 steps * 30 days = 1200 days -> 3.3 years
+    const result3 = validateCommitment(40, 30);
+    expect(result3.projectedYears).toBe(3.3);
+  });
+
+  it("handles trivial case of 1 step", () => {
+    // 1 step * 30 = 30 days — always valid
+    const result = validateCommitment(1, 30);
+    expect(result.valid).toBe(true);
+    expect(result.projectedDays).toBe(30);
+  });
+
+  it("handles zero steps", () => {
+    const result = validateCommitment(0, 7);
+    expect(result.valid).toBe(true);
+    expect(result.projectedDays).toBe(0);
+  });
+
+  it("validates common cadence options for a 50-step course", () => {
+    // Daily: 50 * 1 = 50 ✓
+    expect(validateCommitment(50, 1).valid).toBe(true);
+    // Every 3 days: 50 * 3 = 150 ✓
+    expect(validateCommitment(50, 3).valid).toBe(true);
+    // Weekly: 50 * 7 = 350 ✓
+    expect(validateCommitment(50, 7).valid).toBe(true);
+    // Biweekly: 50 * 14 = 700 ✗
+    expect(validateCommitment(50, 14).valid).toBe(false);
+    // Monthly: 50 * 30 = 1500 ✗
+    expect(validateCommitment(50, 30).valid).toBe(false);
+  });
+
+  it("uses MAX_ENROLLMENT_DAYS constant (365)", () => {
+    expect(MAX_ENROLLMENT_DAYS).toBe(365);
   });
 });

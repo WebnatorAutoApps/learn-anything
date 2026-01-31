@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, use } from "react";
+import { useState, useEffect, useRef, useMemo, use } from "react";
 import { useRouter } from "next/navigation";
 import {
   useCourseDetail,
@@ -12,6 +12,7 @@ import {
 } from "@/lib/hooks/queries";
 import type { ModuleSchedule, Module, Project } from "@/lib/hooks/queries";
 import { CourseDetailSkeleton } from "../../components/PageLoader";
+import { validateCommitment } from "@/lib/schedule";
 
 const MAX_COMMENT_LENGTH = 2000;
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
@@ -22,7 +23,9 @@ const CADENCE_OPTIONS = [
   { value: 2, label: "Every 2 days" },
   { value: 3, label: "Every 3 days" },
   { value: 5, label: "Every 5 days" },
-  { value: 7, label: "Every 7 days" },
+  { value: 7, label: "Weekly" },
+  { value: 14, label: "Biweekly" },
+  { value: 30, label: "Monthly" },
 ];
 
 function formatDate(dateStr: string): string {
@@ -438,6 +441,7 @@ export default function CoursePage({
   const [showUnenrollDialog, setShowUnenrollDialog] = useState(false);
   const [unenrollError, setUnenrollError] = useState<string | null>(null);
   const [commitmentIntervalDays, setCommitmentIntervalDays] = useState(3);
+  const [enrollError, setEnrollError] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   // TanStack Query hooks
@@ -456,11 +460,19 @@ export default function CoursePage({
   const isOwner = courseData?.isOwner ?? false;
   const isAuthenticated = courseData?.isAuthenticated ?? false;
 
+  // Client-side validation of the selected commitment
+  const commitmentValidation = useMemo(() => {
+    if (!course) return null;
+    return validateCommitment(course.total_modules, commitmentIntervalDays);
+  }, [course, commitmentIntervalDays]);
+
   async function handleEnroll() {
     if (!isAuthenticated) {
       router.push("/login");
       return;
     }
+
+    setEnrollError(null);
 
     try {
       await enrollMutation.mutateAsync({
@@ -474,7 +486,17 @@ export default function CoursePage({
         router.push("/login");
         return;
       }
-      // 409 means already enrolled — the cache will refresh via invalidation
+      if (status === 422) {
+        // Server-side validation caught the same issue — already shown client-side
+        return;
+      }
+      if (status === 409) {
+        // Already enrolled — the cache will refresh via invalidation
+        return;
+      }
+      setEnrollError(
+        (err as Error)?.message || "Failed to enroll. Please try again."
+      );
     }
   }
 
@@ -702,19 +724,29 @@ export default function CoursePage({
         {/* Enrollment CTA */}
         <div className="mb-8">
           {isEnrolled ? (
-            <div>
-              <button
-                disabled
-                className="w-full py-3 px-6 rounded-lg border border-green-900/60 bg-green-950/30 text-green-700 font-semibold tracking-wider cursor-not-allowed"
-              >
-                Already Enrolled
-                {course.commitment_interval_days && (
-                  <span className="text-green-800 font-normal ml-2">
-                    — every {course.commitment_interval_days} day
-                    {course.commitment_interval_days !== 1 ? "s" : ""}
-                  </span>
-                )}
-              </button>
+            <div className="rounded-lg border border-green-900/60 bg-green-950/20 p-4">
+              <div className="flex items-center gap-3">
+                <svg
+                  className="h-5 w-5 text-green-500 flex-shrink-0"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div>
+                  <p className="text-green-400 font-semibold">Enrolled</p>
+                  {course.commitment_interval_days && (
+                    <p className="text-sm text-green-600">
+                      Studying every {course.commitment_interval_days} day
+                      {course.commitment_interval_days !== 1 ? "s" : ""}
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
           ) : (
             <div className="space-y-4">
@@ -724,25 +756,86 @@ export default function CoursePage({
                   How often will you study?
                 </label>
                 <div className="flex flex-wrap gap-2">
-                  {CADENCE_OPTIONS.map((opt) => (
-                    <button
-                      key={opt.value}
-                      onClick={() => setCommitmentIntervalDays(opt.value)}
-                      className={`px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
-                        commitmentIntervalDays === opt.value
-                          ? "border-green-500/60 bg-green-900/40 text-green-400"
-                          : "border-green-900/60 bg-green-950/30 text-green-700 hover:bg-green-900/20 hover:text-green-500"
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
+                  {CADENCE_OPTIONS.map((opt) => {
+                    const optValidation = validateCommitment(
+                      course.total_modules,
+                      opt.value
+                    );
+                    const isSelected = commitmentIntervalDays === opt.value;
+                    const isTooLong = !optValidation.valid;
+
+                    return (
+                      <button
+                        key={opt.value}
+                        onClick={() => {
+                          setCommitmentIntervalDays(opt.value);
+                          setEnrollError(null);
+                        }}
+                        className={`px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
+                          isSelected
+                            ? isTooLong
+                              ? "border-red-500/60 bg-red-950/40 text-red-400"
+                              : "border-green-500/60 bg-green-900/40 text-green-400"
+                            : isTooLong
+                              ? "border-red-900/40 bg-red-950/20 text-red-700 hover:bg-red-950/30 hover:text-red-500"
+                              : "border-green-900/60 bg-green-950/30 text-green-700 hover:bg-green-900/20 hover:text-green-500"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    );
+                  })}
                 </div>
+
+                {/* Duration projection */}
+                {commitmentValidation && (
+                  <div className="mt-3">
+                    {commitmentValidation.valid ? (
+                      <p className="text-xs text-green-600">
+                        Estimated completion: ~{commitmentValidation.projectedDays} days
+                        ({course.total_modules} steps)
+                      </p>
+                    ) : commitmentValidation.suggestedIntervalDays !== null ? (
+                      <div className="rounded border border-red-900/40 bg-red-950/20 px-3 py-2.5 mt-1">
+                        <p className="text-sm text-red-400 font-medium mb-1">
+                          This pace would take ~{commitmentValidation.projectedYears} years
+                        </p>
+                        <p className="text-xs text-red-500/80 leading-relaxed">
+                          Commitments over 1 year rarely lead to completion.
+                          Choose a pace of every {commitmentValidation.suggestedIntervalDays} day
+                          {commitmentValidation.suggestedIntervalDays !== 1 ? "s" : ""}{" "}
+                          or more frequent to enroll.
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="rounded border border-red-900/40 bg-red-950/20 px-3 py-2.5 mt-1">
+                        <p className="text-sm text-red-400 font-medium mb-1">
+                          This learning path has too many steps
+                        </p>
+                        <p className="text-xs text-red-500/80 leading-relaxed">
+                          With {course.total_modules} steps, even a daily
+                          commitment would take ~{commitmentValidation.projectedYears} years.
+                          This path cannot be completed within 1 year at any pace.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
+
+              {/* Enroll error */}
+              {enrollError && (
+                <p className="text-red-400 text-sm px-3 py-2 rounded border border-red-900/40 bg-red-950/30">
+                  {enrollError}
+                </p>
+              )}
 
               <button
                 onClick={handleEnroll}
-                disabled={enrollMutation.isPending}
+                disabled={
+                  enrollMutation.isPending ||
+                  (commitmentValidation !== null && !commitmentValidation.valid)
+                }
                 className="w-full py-3 px-6 rounded-lg border border-green-500/60 bg-green-900/40 text-green-400 font-semibold tracking-wider hover:bg-green-900/60 hover:border-green-400/60 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {enrollMutation.isPending ? (
@@ -769,7 +862,7 @@ export default function CoursePage({
                     Enrolling...
                   </span>
                 ) : (
-                  `Start Now — Every ${commitmentIntervalDays} Day${commitmentIntervalDays !== 1 ? "s" : ""}`
+                  `Start Now — ${CADENCE_OPTIONS.find((o) => o.value === commitmentIntervalDays)?.label ?? `Every ${commitmentIntervalDays} Day${commitmentIntervalDays !== 1 ? "s" : ""}`}`
                 )}
               </button>
             </div>
