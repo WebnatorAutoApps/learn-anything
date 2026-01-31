@@ -1,6 +1,15 @@
 import { LearningRequest } from "./types";
 
-export const SYSTEM_PROMPT = `You are an expert learning program designer. You create practical, project-based learning programs tailored to the learner's goals and expertise level. You always respond with valid JSON only, no explanations or additional text.`;
+export const DEFAULT_TONE = "You are fun, supportive, motivational, and upbeat. Encourage the user and keep the energy high.";
+
+export function buildSystemPrompt(tone?: string | null): string {
+  const toneInstruction = (tone && tone.trim()) ? tone.trim() : DEFAULT_TONE;
+  return `You are an expert learning program designer. You create practical, project-based learning programs tailored to the learner's goals and expertise level. You always respond with valid JSON only, no explanations or additional text.
+
+Communication style: ${toneInstruction}`;
+}
+
+export const SYSTEM_PROMPT = buildSystemPrompt();
 
 export function buildUserPrompt(request: LearningRequest): string {
   return `You will receive information about a person who wants to learn something.

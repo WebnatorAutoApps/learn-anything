@@ -4,8 +4,9 @@ import { useState } from "react";
 import { useProfile } from "@/lib/hooks/queries";
 import GeneralSettings from "./settings/GeneralSettings";
 import ApiKeysSettings from "./settings/ApiKeysSettings";
+import ToneSettings from "./settings/ToneSettings";
 
-type SettingsTab = "general" | "api-keys";
+type SettingsTab = "general" | "api-keys" | "ai-tone";
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -15,6 +16,7 @@ interface SettingsModalProps {
 const TABS: { id: SettingsTab; label: string }[] = [
   { id: "general", label: "General" },
   { id: "api-keys", label: "API Keys" },
+  { id: "ai-tone", label: "AI Tone" },
 ];
 
 export default function SettingsModal({ onClose, initialTab = "general" }: SettingsModalProps) {
@@ -85,6 +87,7 @@ export default function SettingsModal({ onClose, initialTab = "general" }: Setti
               <>
                 {activeTab === "general" && <GeneralSettings profile={profile!} />}
                 {activeTab === "api-keys" && <ApiKeysSettings profile={profile!} />}
+                {activeTab === "ai-tone" && <ToneSettings profile={profile!} />}
               </>
             )}
           </div>

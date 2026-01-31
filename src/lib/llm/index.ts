@@ -1,6 +1,7 @@
 import { GeminiProvider } from "./gemini";
 import { LLMProvider } from "./types";
 
+export { DEFAULT_TONE } from "./prompt";
 export type { LearningRequest, LLMResponse, LLMModule, LLMProject, LLMProvider } from "./types";
 
 /**

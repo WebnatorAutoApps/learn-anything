@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { encrypt, extractLast4 } from "@/lib/crypto";
 
+const MAX_TONE_LENGTH = 500;
+
 export async function PUT(request: Request) {
   try {
     const supabase = await createClient();
@@ -19,7 +21,7 @@ export async function PUT(request: Request) {
     }
 
     const body = await request.json();
-    const { gemini_api_key } = body;
+    const { gemini_api_key, tone } = body;
 
     // Username changes are handled by the dedicated /api/user/username endpoint
     if ("username" in body) {
@@ -36,35 +38,65 @@ export async function PUT(request: Request) {
       );
     }
 
-    // Determine values to store
-    const keyValue =
-      typeof gemini_api_key === "string" ? gemini_api_key.trim() : null;
-    const isClearing = !keyValue;
+    if (tone !== undefined && typeof tone !== "string") {
+      return NextResponse.json(
+        { success: false, error: "Invalid tone format" },
+        { status: 400 }
+      );
+    }
 
-    let updateData: { encrypted_api_key: string | null; api_key_last4: string | null };
+    if (typeof tone === "string" && tone.length > MAX_TONE_LENGTH) {
+      return NextResponse.json(
+        { success: false, error: `Tone must be ${MAX_TONE_LENGTH} characters or less` },
+        { status: 400 }
+      );
+    }
 
-    if (isClearing) {
-      updateData = { encrypted_api_key: null, api_key_last4: null };
-    } else {
-      try {
-        updateData = {
-          encrypted_api_key: encrypt(keyValue),
-          api_key_last4: extractLast4(keyValue),
-        };
-      } catch (encryptError) {
-        console.error("Encryption error:", encryptError);
-        const detail =
-          encryptError instanceof Error ? encryptError.message : undefined;
-        return NextResponse.json(
-          {
-            success: false,
-            error: detail
-              ? `Server configuration error: ${detail}`
-              : "Server configuration error — unable to encrypt API key",
-          },
-          { status: 500 }
-        );
+    // Build update data from provided fields
+    const updateData: Record<string, string | null> = {};
+
+    // Handle API key
+    if (gemini_api_key !== undefined) {
+      const keyValue = typeof gemini_api_key === "string" ? gemini_api_key.trim() : null;
+      const isClearing = !keyValue;
+
+      if (isClearing) {
+        updateData.encrypted_api_key = null;
+        updateData.api_key_last4 = null;
+      } else {
+        try {
+          updateData.encrypted_api_key = encrypt(keyValue);
+          updateData.api_key_last4 = extractLast4(keyValue);
+        } catch (encryptError) {
+          console.error("Encryption error:", encryptError);
+          const detail =
+            encryptError instanceof Error ? encryptError.message : undefined;
+          return NextResponse.json(
+            {
+              success: false,
+              error: detail
+                ? `Server configuration error: ${detail}`
+                : "Server configuration error — unable to encrypt API key",
+            },
+            { status: 500 }
+          );
+        }
       }
+    }
+
+    // Handle tone
+    if (tone !== undefined) {
+      const trimmed = typeof tone === "string" ? tone.trim() : "";
+      // Empty/whitespace-only tone clears the field (falls back to default in app)
+      updateData.tone = trimmed || null;
+    }
+
+    // Nothing to update
+    if (Object.keys(updateData).length === 0) {
+      return NextResponse.json(
+        { success: false, error: "No valid fields to update" },
+        { status: 400 }
+      );
     }
 
     const { data: updated, error: updateError } = await supabase
@@ -91,7 +123,9 @@ export async function PUT(request: Request) {
 
     return NextResponse.json({
       success: true,
-      api_key_last4: isClearing ? null : updateData.api_key_last4,
+      ...(gemini_api_key !== undefined && {
+        api_key_last4: !gemini_api_key?.trim() ? null : updateData.api_key_last4,
+      }),
     });
   } catch (error) {
     console.error("Settings update error:", error);
