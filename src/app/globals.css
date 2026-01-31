@@ -221,6 +221,19 @@ body {
   }
 }
 
+/* ───────── Hero Ken Burns effect ───────── */
+
+@keyframes hero-ken-burns {
+  0% { transform: scale(1) translate(0, 0); }
+  50% { transform: scale(1.08) translate(-1%, -1%); }
+  100% { transform: scale(1) translate(0, 0); }
+}
+
+.hero-ken-burns {
+  animation: hero-ken-burns 30s ease-in-out infinite;
+  will-change: transform;
+}
+
 /* Respect prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   .scroll-reveal,
@@ -235,5 +248,9 @@ body {
   .typewriter-cursor {
     animation: none;
     opacity: 1;
+  }
+
+  .hero-ken-burns {
+    animation: none;
   }
 }
