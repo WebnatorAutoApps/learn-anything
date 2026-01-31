@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { generateUsername } from "@/lib/username";
 
 export async function GET() {
   try {
@@ -18,7 +19,7 @@ export async function GET() {
     }
 
     // Only select non-sensitive columns — encrypted_api_key is never fetched
-    const profileSelect = "id, full_name, email, avatar_url, api_key_last4, created_at, updated_at";
+    const profileSelect = "id, full_name, email, avatar_url, api_key_last4, username, created_at, updated_at";
     const meta = user.user_metadata ?? {};
 
     let { data: profile, error: profileError } = await supabase
@@ -31,13 +32,17 @@ export async function GET() {
     // This handles cases where the handle_new_user trigger didn't fire
     // (e.g., user created before trigger existed, or trigger failed).
     if (profileError && profileError.code === "PGRST116") {
+      const fullName = meta.full_name || meta.name || null;
+      const username = await generateUniqueUsername(supabase, fullName);
+
       const { data: newProfile, error: upsertError } = await supabase
         .from("profiles")
         .upsert({
           id: user.id,
-          full_name: meta.full_name || meta.name || null,
+          full_name: fullName,
           email: user.email || null,
           avatar_url: meta.avatar_url || meta.picture || null,
+          username,
         })
         .select(profileSelect)
         .single();
@@ -64,6 +69,7 @@ export async function GET() {
           avatar_url: meta.avatar_url || meta.picture || null,
           api_key_last4: null,
           has_gemini_api_key: false,
+          username: null,
           created_at: null,
           updated_at: null,
         },
@@ -92,4 +98,37 @@ export async function GET() {
       { status: 500 }
     );
   }
+}
+
+/**
+ * Generate a unique username with retry logic.
+ * Checks for existence in the database and retries on collision.
+ */
+async function generateUniqueUsername(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  fullName: string | null
+): Promise<string> {
+  const maxAttempts = 10;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const candidate = generateUsername(fullName);
+
+    const { data: existing } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("username", candidate)
+      .maybeSingle();
+
+    if (!existing) {
+      return candidate;
+    }
+
+    console.warn(
+      `Username collision: "${candidate}" already exists (attempt ${attempt}/${maxAttempts})`
+    );
+  }
+
+  throw new Error(
+    `Failed to generate unique username after ${maxAttempts} attempts`
+  );
 }

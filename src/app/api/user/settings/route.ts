@@ -21,6 +21,14 @@ export async function PUT(request: Request) {
     const body = await request.json();
     const { gemini_api_key } = body;
 
+    // Username is system-generated and cannot be changed via settings
+    if ("username" in body) {
+      return NextResponse.json(
+        { success: false, error: "Username cannot be modified" },
+        { status: 400 }
+      );
+    }
+
     if (gemini_api_key !== undefined && typeof gemini_api_key !== "string") {
       return NextResponse.json(
         { success: false, error: "Invalid API key format" },
