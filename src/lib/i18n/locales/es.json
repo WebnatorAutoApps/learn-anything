@@ -1,0 +1,126 @@
+{
+  "nav": {
+    "howItWorks": "Cómo Funciona",
+    "examples": "Ejemplos",
+    "testimonials": "Testimonios",
+    "pricing": "Precios",
+    "logIn": "Iniciar sesión",
+    "signUpFree": "Regístrate Gratis",
+    "toggleMenu": "Alternar menú"
+  },
+  "hero": {
+    "learn": "Aprende",
+    "anything": "Cualquier cosa",
+    "tagline": "Deja de mirar. Empieza a hacer. Domina habilidades reales a través de proyectos prácticos — completamente gratis.",
+    "ctaStart": "Empieza a Aprender Gratis",
+    "ctaSeeHow": "Mira Cómo Funciona",
+    "scroll": "Desplázate",
+    "ariaLabel": "Aprende cualquier cosa — cocina, programación, música y más",
+    "skillWords": {
+      "cooking": "cocina",
+      "coding": "programación",
+      "music": "música",
+      "saxophone": "saxofón",
+      "woodworking": "carpintería",
+      "electronics": "electrónica",
+      "crafts": "manualidades",
+      "photography": "fotografía",
+      "languages": "idiomas",
+      "pottery": "cerámica",
+      "chess": "ajedrez",
+      "filmmaking": "cinematografía",
+      "robotics": "robótica",
+      "calligraphy": "caligrafía",
+      "gardening": "jardinería",
+      "animation": "animación",
+      "astronomy": "astronomía"
+    }
+  },
+  "howItWorks": {
+    "title": "Cómo Funciona",
+    "description": "Esto no es Udemy. Esto no es Coursera. No eliges del catálogo de otra persona — le dices a nuestra IA lo que quieres aprender, y construye un camino que no existe en ningún otro lugar del mundo.",
+    "step1Title": "Dinos Qué Quieres Aprender",
+    "step1Desc": "Física cuántica, guitarra clásica, cocina coreana, diseño de videojuegos — literalmente cualquier cosa que puedas imaginar. Solo escríbelo.",
+    "step2Title": "Nuestra IA Crea Tu Camino",
+    "step2Desc": "Instructores de IA expertos generan un camino de aprendizaje personalizado y práctico creado solo para ti. Sin cursos prediseñados.",
+    "step3Title": "Aprende Haciendo Proyectos Reales",
+    "step3Desc": "Sin videos pasivos. Construyes cosas reales desde el primer día — guiado paso a paso por una IA que se adapta a tu ritmo.",
+    "step4Title": "Domina Habilidades Que Te Importan",
+    "step4Desc": "Sigue tu progreso, supera hitos y sal con habilidades que nadie más tiene — porque este camino fue hecho para ti."
+  },
+  "valueProposition": {
+    "title": "¿Por Qué LearnAnything?",
+    "description": "El futuro de la educación no es una biblioteca de videos pregrabados. Es una IA que sabe exactamente lo que necesitas y lo construye sobre la marcha.",
+    "value1Title": "Instructores de IA Expertos",
+    "value1Desc": "Cada camino de aprendizaje es generado por IA avanzada que entiende tus objetivos, tu nivel y cómo llevarte allí. Es como tener un tutor de clase mundial para cada materia que existe.",
+    "value2Title": "100% Personalizado, 0% Genérico",
+    "value2Desc": "Olvídate de los cursos genéricos hechos para las masas. Tu camino de aprendizaje se construye a medida de tu experiencia, tus objetivos y tu ritmo. No hay dos caminos iguales.",
+    "value3Title": "Posibilidades Infinitas",
+    "value3Desc": "No hay catálogo que explorar. No hay límite. Desde computación cuántica hasta cerámica, desde producción de hip-hop hasta sumerio antiguo — si puedes nombrarlo, podemos enseñarlo."
+  },
+  "cta": {
+    "headline1": "La Primera Plataforma de Aprendizaje Verdaderamente Personalizada del Mundo",
+    "subtext1": "Sin catálogos. Sin listas de espera. Solo dinos lo que quieres aprender y nuestra IA hace el resto.",
+    "headline2": "Tu Próxima Obsesión Comienza Ahora",
+    "subtext2": "Lo que siempre quisiste aprender — este es el momento. Completamente gratis, impulsado por IA, hecho para ti.",
+    "getStarted": "Comienza — Es Gratis"
+  },
+  "examples": {
+    "title": "Si Puedes Soñarlo, Puedes Aprenderlo",
+    "description": "Sin catálogo prediseñado. Sin límites. Nuestra IA genera un camino de aprendizaje personalizado para cualquier cosa que puedas imaginar — aquí van algunas ideas.",
+    "aiTitle": "Crea Apps de IA",
+    "aiDesc": "Pasa de cero a desplegar tus propias aplicaciones con IA. Crea chatbots, generadores de imágenes y automatización inteligente — sin necesidad de título universitario.",
+    "musicTitle": "Domina un Instrumento",
+    "musicDesc": "Aprende guitarra flamenca, piano jazz, producción de música electrónica o el theremin. Tu instructor de IA te encuentra en tu nivel y te lleva más lejos.",
+    "astroTitle": "Astrofotografía",
+    "astroDesc": "Captura imágenes impresionantes de nebulosas y galaxias desde tu jardín. Aprende configuración de telescopios, técnicas de larga exposición y procesamiento de imágenes del espacio profundo.",
+    "fermentTitle": "Fermentación y Cervecería",
+    "fermentDesc": "Elabora tu propia kombucha, masa madre, salsa picante o cerveza artesanal. Domina la ciencia de la fermentación con experimentos prácticos.",
+    "screenTitle": "Guionismo",
+    "screenDesc": "Escribe tu primer cortometraje, episodio piloto o guion de largometraje. Aprende estructura narrativa, diálogos y construcción de mundos guiado por IA.",
+    "dreamTitle": "Lo Que Puedas Soñar",
+    "dreamDesc": "Apicultura urbana, computación cuántica, caligrafía, carreras de drones, marroquinería, griego antiguo — si puedes pensarlo, puedes aprenderlo."
+  },
+  "testimonials": {
+    "title": "Amado por los Estudiantes",
+    "description": "Historias reales de personas que transformaron sus habilidades.",
+    "learned": "Aprendió",
+    "t1Name": "Alex R.",
+    "t1Skill": "Guitarra",
+    "t1Quote": "Siempre quise tocar guitarra pero las clases tradicionales nunca funcionaron. LearnAnything me tuvo tocando canciones en una semana porque cada lección involucraba tocar de verdad.",
+    "t2Name": "Priya M.",
+    "t2Skill": "Programación Python",
+    "t2Quote": "Pasé de cero conocimiento de programación a construir mi primera aplicación web en un mes. El enfoque basado en proyectos hizo que sintiera que estaba creando algo real desde el primer día.",
+    "t3Name": "Jordan K.",
+    "t3Skill": "Pan de Masa Madre",
+    "t3Quote": "Los proyectos de panadería paso a paso fueron increíbles. Ahora hago pan de masa madre de calidad de panadería en casa, y realmente entiendo la ciencia detrás de cada fermentación.",
+    "t4Name": "Sam T.",
+    "t4Skill": "Carpintería",
+    "t4Quote": "Construí mi primera estantería siguiendo un proyecto de LearnAnything. ¡Todavía está en pie! El enfoque práctico me dio confianza para abordar proyectos más grandes."
+  },
+  "pricing": {
+    "title": "Precios Simples",
+    "description": "Sin tarifas ocultas. Sin pruebas. Sin tarjeta de crédito.",
+    "freePlan": "Plan Gratuito",
+    "price": "$0",
+    "forever": "/ para siempre",
+    "feature1": "Caminos de aprendizaje ilimitados",
+    "feature2": "Lecciones prácticas basadas en proyectos",
+    "feature3": "Caminos de aprendizaje personalizados con IA",
+    "feature4": "Seguimiento de progreso e hitos",
+    "feature5": "Acceso a la comunidad",
+    "signUp": "Regístrate Gratis"
+  },
+  "footer": {
+    "tagline": "Caminos de aprendizaje personalizados con IA para cualquier cosa que puedas imaginar. Completamente gratis, para siempre.",
+    "privacyPolicy": "Política de Privacidad",
+    "termsConditions": "Términos y Condiciones",
+    "copyright": "LearnAnything. Todos los derechos reservados.",
+    "twitter": "Twitter",
+    "github": "GitHub"
+  },
+  "languageSwitcher": {
+    "label": "Seleccionar idioma",
+    "currentLanguage": "Idioma actual"
+  }
+}

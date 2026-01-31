@@ -1,0 +1,126 @@
+{
+  "nav": {
+    "howItWorks": "使用方法",
+    "examples": "学习示例",
+    "testimonials": "用户评价",
+    "pricing": "价格",
+    "logIn": "登录",
+    "signUpFree": "免费注册",
+    "toggleMenu": "切换菜单"
+  },
+  "hero": {
+    "learn": "学习",
+    "anything": "任何事物",
+    "tagline": "别再只是看了。开始动手吧。通过实践项目掌握真正的技能——完全免费。",
+    "ctaStart": "免费开始学习",
+    "ctaSeeHow": "了解使用方法",
+    "scroll": "向下滚动",
+    "ariaLabel": "学习任何事物——烹饪、编程、音乐等等",
+    "skillWords": {
+      "cooking": "烹饪",
+      "coding": "编程",
+      "music": "音乐",
+      "saxophone": "萨克斯",
+      "woodworking": "木工",
+      "electronics": "电子学",
+      "crafts": "手工艺",
+      "photography": "摄影",
+      "languages": "语言",
+      "pottery": "陶艺",
+      "chess": "国际象棋",
+      "filmmaking": "影视制作",
+      "robotics": "机器人学",
+      "calligraphy": "书法",
+      "gardening": "园艺",
+      "animation": "动画",
+      "astronomy": "天文学"
+    }
+  },
+  "howItWorks": {
+    "title": "使用方法",
+    "description": "这不是Udemy。这不是Coursera。你不需要从别人的课程目录中选择——你只需告诉我们的AI你想学什么，它就会为你打造一条独一无二的学习路径。",
+    "step1Title": "告诉我们你想学什么",
+    "step1Desc": "量子物理、古典吉他、韩国料理、游戏设计——你能想到的任何东西。只需输入即可。",
+    "step2Title": "我们的AI为你规划路径",
+    "step2Desc": "专家级AI导师为你生成个性化的实践学习路径。没有千篇一律的课程。",
+    "step3Title": "通过真实项目学习",
+    "step3Desc": "没有被动观看视频。从第一天起你就开始构建真实的东西——AI会根据你的节奏逐步指导。",
+    "step4Title": "掌握对你重要的技能",
+    "step4Desc": "追踪你的进度，突破里程碑，获得独一无二的技能——因为这条路径是专为你打造的。"
+  },
+  "valueProposition": {
+    "title": "为什么选择LearnAnything？",
+    "description": "教育的未来不是一个预录视频的图书馆。而是一个了解你需求并即时构建内容的AI。",
+    "value1Title": "专家级AI导师",
+    "value1Desc": "每条学习路径都由先进的AI生成，它了解你的目标、你的水平以及如何帮助你达成目标。就像拥有一位针对每个学科的世界级导师。",
+    "value2Title": "100%个性化，0%通用",
+    "value2Desc": "忘掉那些为大众制作的通用课程吧。你的学习路径是围绕你的经验、目标和节奏量身定制的。没有两条路径是相同的。",
+    "value3Title": "无限可能",
+    "value3Desc": "没有目录可以浏览。没有限制。从量子计算到陶艺，从嘻哈音乐制作到古苏美尔语——只要你能说出来，我们就能教。"
+  },
+  "cta": {
+    "headline1": "全球首个真正个性化的学习平台",
+    "subtext1": "没有课程目录。没有等待名单。只需告诉我们你想学什么，我们的AI会完成其余的工作。",
+    "headline2": "你的下一个热情从现在开始",
+    "subtext2": "无论你一直想学什么——现在就是时候。完全免费，AI驱动，为你而建。",
+    "getStarted": "开始使用——完全免费"
+  },
+  "examples": {
+    "title": "如果你能梦想到，你就能学会它",
+    "description": "没有预制的课程目录。没有限制。我们的AI为你能想到的任何事物生成定制学习路径——以下只是一些想法。",
+    "aiTitle": "构建AI应用",
+    "aiDesc": "从零开始部署你自己的AI应用。构建聊天机器人、图像生成器和智能自动化——不需要计算机科学学位。",
+    "musicTitle": "掌握一种乐器",
+    "musicDesc": "学习弗拉门戈吉他、爵士钢琴、电子音乐制作或特雷门琴。你的AI导师会根据你的水平进行教学并推动你进步。",
+    "astroTitle": "天文摄影",
+    "astroDesc": "在你的后院拍摄令人惊叹的星云和星系图像。学习望远镜设置、长曝光技术和深空图像处理。",
+    "fermentTitle": "发酵与酿造",
+    "fermentDesc": "制作你自己的康普茶、酸面团、辣酱或精酿啤酒。通过实践实验掌握发酵科学。",
+    "screenTitle": "编剧",
+    "screenDesc": "写你的第一部短片、试播集或长片剧本。在AI指导下学习故事结构、对话和世界观构建。",
+    "dreamTitle": "你能想到的任何事物",
+    "dreamDesc": "城市养蜂、量子计算、书法、无人机竞速、皮革工艺、古希腊语——只要你能想到，你就能学会。"
+  },
+  "testimonials": {
+    "title": "深受学习者喜爱",
+    "description": "来自改变了自己能力的真实用户故事。",
+    "learned": "学习了",
+    "t1Name": "Alex R.",
+    "t1Skill": "吉他",
+    "t1Quote": "我一直想弹吉他，但传统课堂教学从来不适合我。LearnAnything让我在一周内就能弹奏歌曲，因为每节课都涉及真正的演奏。",
+    "t2Name": "Priya M.",
+    "t2Skill": "Python编程",
+    "t2Quote": "我从零编程知识到在一个月内构建了我的第一个Web应用。基于项目的方法让我感觉从第一天就在创造真实的东西。",
+    "t3Name": "Jordan K.",
+    "t3Skill": "酸面包烘焙",
+    "t3Quote": "循序渐进的烘焙项目太棒了。我现在在家就能做出面包店级别的酸面包，而且我真正理解了每次发酵背后的科学。",
+    "t4Name": "Sam T.",
+    "t4Skill": "木工",
+    "t4Quote": "我按照LearnAnything的项目做了我的第一个书架。它至今还立着！实践方法给了我信心去挑战更大的项目。"
+  },
+  "pricing": {
+    "title": "简单定价",
+    "description": "没有隐藏费用。没有试用期。不需要信用卡。",
+    "freePlan": "免费计划",
+    "price": "¥0",
+    "forever": "/ 永久免费",
+    "feature1": "无限学习路径",
+    "feature2": "基于项目的实践课程",
+    "feature3": "AI驱动的个性化学习路径",
+    "feature4": "进度跟踪和里程碑",
+    "feature5": "社区访问",
+    "signUp": "免费注册"
+  },
+  "footer": {
+    "tagline": "AI驱动的个性化学习路径，适用于你能想到的任何事物。完全免费，永久免费。",
+    "privacyPolicy": "隐私政策",
+    "termsConditions": "服务条款",
+    "copyright": "LearnAnything. 保留所有权利。",
+    "twitter": "Twitter",
+    "github": "GitHub"
+  },
+  "languageSwitcher": {
+    "label": "选择语言",
+    "currentLanguage": "当前语言"
+  }
+}
