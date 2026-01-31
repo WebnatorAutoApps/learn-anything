@@ -6,6 +6,7 @@ import {
   useUploadAvatar,
   useUpdateEmail,
   useUpdatePassword,
+  useUpdateUsername,
   type Profile,
 } from "@/lib/hooks/queries";
 
@@ -17,6 +18,11 @@ type FeedbackMessage = { type: "success" | "error"; text: string } | null;
 
 export default function GeneralSettings({ profile }: GeneralSettingsProps) {
   const isOAuth = profile.auth_provider !== "email";
+
+  // Username
+  const [username, setUsername] = useState(profile.username || "");
+  const [usernameMessage, setUsernameMessage] = useState<FeedbackMessage>(null);
+  const updateUsernameMutation = useUpdateUsername();
 
   // Display name
   const [displayName, setDisplayName] = useState(profile.full_name || "");
@@ -41,6 +47,48 @@ export default function GeneralSettings({ profile }: GeneralSettingsProps) {
   const updatePasswordMutation = useUpdatePassword();
 
   const userInitial = (profile.full_name || profile.email || "").charAt(0).toUpperCase();
+
+  function validateUsernameFormat(value: string): string | null {
+    if (value.length < 3) return "Username must be at least 3 characters.";
+    if (value.length > 39) return "Username must be 39 characters or less.";
+    if (!/^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/.test(value))
+      return "Username can only contain lowercase letters, numbers, and hyphens, and cannot start or end with a hyphen.";
+    if (value.includes("--")) return "Username cannot contain consecutive hyphens.";
+    return null;
+  }
+
+  async function handleUsernameSave() {
+    const trimmed = username.trim().toLowerCase();
+
+    if (!trimmed) {
+      setUsernameMessage({ type: "error", text: "Username cannot be empty." });
+      return;
+    }
+
+    if (trimmed === profile.username?.toLowerCase()) {
+      setUsernameMessage(null);
+      return;
+    }
+
+    const formatError = validateUsernameFormat(trimmed);
+    if (formatError) {
+      setUsernameMessage({ type: "error", text: formatError });
+      return;
+    }
+
+    setUsernameMessage(null);
+
+    try {
+      await updateUsernameMutation.mutateAsync({ username: trimmed });
+      setUsername(trimmed);
+      setUsernameMessage({ type: "success", text: "Username updated." });
+    } catch (err) {
+      setUsernameMessage({
+        type: "error",
+        text: err instanceof Error ? err.message : "Failed to update username.",
+      });
+    }
+  }
 
   async function handleNameSave() {
     if (!displayName.trim()) return;
@@ -191,6 +239,40 @@ export default function GeneralSettings({ profile }: GeneralSettingsProps) {
         {avatarMessage && (
           <p className={`text-sm ${avatarMessage.type === "success" ? "text-green-400" : "text-red-400"}`}>
             {avatarMessage.text}
+          </p>
+        )}
+      </section>
+
+      {/* Change Username */}
+      <section className="space-y-3">
+        <label className="text-sm font-medium text-green-400 block">Change Username</label>
+        <div className="flex gap-3">
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value.toLowerCase())}
+            placeholder="your-username"
+            maxLength={39}
+            className="flex-1 rounded-lg border border-green-900/60 bg-green-950/40 px-3 py-2 text-green-300 placeholder-green-800 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500 transition-colors text-sm"
+          />
+          <button
+            onClick={handleUsernameSave}
+            disabled={
+              !username.trim() ||
+              username.trim().toLowerCase() === profile.username?.toLowerCase() ||
+              updateUsernameMutation.isPending
+            }
+            className="px-4 py-2 rounded-lg bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            {updateUsernameMutation.isPending ? "Saving..." : "Change Username"}
+          </button>
+        </div>
+        <p className="text-xs text-green-700">
+          3–39 characters. Lowercase letters, numbers, and hyphens only.
+        </p>
+        {usernameMessage && (
+          <p className={`text-sm ${usernameMessage.type === "success" ? "text-green-400" : "text-red-400"}`}>
+            {usernameMessage.text}
           </p>
         )}
       </section>

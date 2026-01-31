@@ -21,10 +21,10 @@ export async function PUT(request: Request) {
     const body = await request.json();
     const { gemini_api_key } = body;
 
-    // Username is system-generated and cannot be changed via settings
+    // Username changes are handled by the dedicated /api/user/username endpoint
     if ("username" in body) {
       return NextResponse.json(
-        { success: false, error: "Username cannot be modified" },
+        { success: false, error: "Use PUT /api/user/username to change your username" },
         { status: 400 }
       );
     }

@@ -399,3 +399,19 @@ export function useUpdatePassword() {
       }),
   });
 }
+
+export function useUpdateUsername() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: { username: string }) =>
+      fetchJSON<{ success: boolean; username: string }>("/api/user/username", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.profile });
+    },
+  });
+}
