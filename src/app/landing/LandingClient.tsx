@@ -168,16 +168,17 @@ function HeroSection() {
           }`}
         >
           <span className="inline-block rounded-full bg-green-100 px-4 py-1.5 text-sm font-semibold text-green-700 mb-6">
-            100% Free — Forever
+            AI-Powered Learning — 100% Free Forever
           </span>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 leading-tight">
-            Unlock Your{" "}
-            <span className="text-green-600">True Potential</span>
+            Learn{" "}
+            <span className="text-green-600">Literally Anything</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg sm:text-xl text-gray-600 leading-relaxed">
-            Stop watching. Start doing. LearnAnything guides you through
-            hands-on projects so you master real skills — from music to
-            programming, cooking to woodworking.
+            Tell our expert AI instructors what you want to learn, answer a few
+            questions, and get a personalized hands-on learning path built just
+            for you — from astrophotography to salsa dancing, 3D printing to
+            ancient philosophy, anything you can imagine.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
@@ -204,8 +205,8 @@ function HeroSection() {
           }`}
         >
           {[
-            { number: "1,000+", label: "Skills Available" },
-            { number: "100%", label: "Hands-On Learning" },
+            { number: "\u221E", label: "Possible Topics" },
+            { number: "100%", label: "Personalized by AI" },
             { number: "$0", label: "Always Free" },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
@@ -227,22 +228,22 @@ const steps = [
   {
     icon: (
       <svg className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
       </svg>
     ),
-    title: "Pick a Skill",
+    title: "Tell Us What You Want to Learn",
     description:
-      "Choose from hundreds of skills — programming, cooking, music, woodworking, and more.",
+      "Quantum physics, classical guitar, Korean cooking, game design — literally anything you can imagine. Just type it in.",
   },
   {
     icon: (
       <svg className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
       </svg>
     ),
-    title: "Follow Hands-On Lessons",
+    title: "Our AI Builds Your Path",
     description:
-      "Learn by doing with guided, project-based lessons tailored to your level.",
+      "Expert AI instructors generate a personalized, hands-on learning path crafted just for you. No cookie-cutter courses.",
   },
   {
     icon: (
@@ -250,19 +251,19 @@ const steps = [
         <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17l-5.384-3.073A1.5 1.5 0 005 13.5v5.25a1.5 1.5 0 001.036 1.427l5.384 1.795a1.5 1.5 0 00.928 0l5.384-1.795A1.5 1.5 0 0019 18.75V13.5a1.5 1.5 0 00-1.036-1.403L12.58 9.024a1.5 1.5 0 00-.928 0L6.268 10.82" />
       </svg>
     ),
-    title: "Build Real Projects",
+    title: "Learn by Doing Real Projects",
     description:
-      "Apply what you learn by building tangible projects you can be proud of.",
+      "No passive videos. You build real things from day one — guided step by step by AI that adapts to your pace.",
   },
   {
     icon: (
       <svg className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.841m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
       </svg>
     ),
-    title: "Master It",
+    title: "Master Skills That Matter to You",
     description:
-      "Track your progress, earn completion milestones, and truly master new skills.",
+      "Track your progress, crush milestones, and walk away with skills nobody else has — because this path was made for you.",
   },
 ];
 
@@ -276,8 +277,9 @@ function HowItWorksSection() {
               How It Works
             </h2>
             <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-              Four simple steps to go from curious beginner to confident
-              practitioner.
+              This isn&apos;t Udemy. This isn&apos;t Coursera. You don&apos;t pick
+              from someone else&apos;s catalog — you tell our AI what you want to
+              learn, and it builds a path that exists nowhere else on Earth.
             </p>
           </div>
         </ScrollReveal>
@@ -314,22 +316,22 @@ const values = [
   {
     icon: (
       <svg className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
       </svg>
     ),
-    title: "Learning by Doing Works",
+    title: "Expert AI Instructors",
     description:
-      "Research shows hands-on practice is the most effective way to retain knowledge. We built every lesson around this principle.",
+      "Every learning path is generated by advanced AI that understands your goals, your level, and how to get you there. It\u2019s like having a world-class tutor for every subject that exists.",
   },
   {
     icon: (
       <svg className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.841m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
       </svg>
     ),
-    title: "Unlock Your True Potential",
+    title: "100% Personalized, 0% Generic",
     description:
-      "Everyone has untapped abilities. Our personalized learning paths adapt to your pace and help you achieve what you never thought possible.",
+      "Forget one-size-fits-all courses made for the masses. Your learning path is custom-built around your experience, your goals, and your pace. No two paths are the same.",
   },
   {
     icon: (
@@ -337,9 +339,9 @@ const values = [
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" />
       </svg>
     ),
-    title: "Learn Anything You Imagine",
+    title: "Infinite Possibilities",
     description:
-      "From coding to cooking, music to mechanics — if you can dream it, you can learn it. Our AI-powered platform creates custom learning paths for any topic.",
+      "There is no catalog to browse. There is no limit. From quantum computing to pottery, from hip-hop production to ancient Sumerian — if you can name it, we can teach it.",
   },
 ];
 
@@ -353,8 +355,9 @@ function ValuePropositionSection() {
               Why LearnAnything?
             </h2>
             <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-              We believe everyone deserves access to high-quality, practical
-              education — no barriers, no limits.
+              The future of education isn&apos;t a library of pre-recorded
+              videos. It&apos;s an AI that knows exactly what you need and
+              builds it on the fly.
             </p>
           </div>
         </ScrollReveal>
@@ -416,34 +419,50 @@ function CTABanner({
 
 const examples = [
   {
-    emoji: "\uD83C\uDFB5",
-    title: "Music",
+    emoji: "\uD83E\uDD16",
+    title: "Build AI Apps",
     description:
-      "Learn guitar chords, music theory, piano basics, or songwriting through guided practice sessions and real compositions.",
-    color: "bg-purple-50 border-purple-100",
-    iconColor: "text-purple-600",
-  },
-  {
-    emoji: "\uD83C\uDF73",
-    title: "Cooking",
-    description:
-      "Master knife skills, explore world cuisines, bake artisan bread, or prep healthy meals — one recipe at a time.",
-    color: "bg-orange-50 border-orange-100",
-    iconColor: "text-orange-600",
-  },
-  {
-    emoji: "\uD83D\uDCBB",
-    title: "Programming",
-    description:
-      "Build websites, apps, and tools by writing real code from day one. Learn Python, JavaScript, Rust, and more.",
+      "Go from zero to deploying your own AI-powered applications. Build chatbots, image generators, and intelligent automation — no CS degree required.",
     color: "bg-blue-50 border-blue-100",
     iconColor: "text-blue-600",
   },
   {
-    emoji: "\uD83E\uDEB5",
-    title: "Woodworking",
+    emoji: "\uD83C\uDFB8",
+    title: "Master an Instrument",
     description:
-      "Start with simple joins, then progress to shelves, furniture, and fine craftsmanship through project-based lessons.",
+      "Learn flamenco guitar, jazz piano, electronic music production, or the theremin. Your AI instructor meets you at your level and pushes you further.",
+    color: "bg-purple-50 border-purple-100",
+    iconColor: "text-purple-600",
+  },
+  {
+    emoji: "\uD83D\uDE80",
+    title: "Astrophotography",
+    description:
+      "Capture stunning images of nebulae and galaxies from your backyard. Learn telescope setup, long-exposure techniques, and deep-sky image processing.",
+    color: "bg-indigo-50 border-indigo-100",
+    iconColor: "text-indigo-600",
+  },
+  {
+    emoji: "\uD83C\uDF7C",
+    title: "Fermentation & Brewing",
+    description:
+      "Craft your own kombucha, sourdough, hot sauce, or home-brewed beer. Master the science of fermentation through hands-on experiments.",
+    color: "bg-orange-50 border-orange-100",
+    iconColor: "text-orange-600",
+  },
+  {
+    emoji: "\uD83C\uDFAD",
+    title: "Screenwriting",
+    description:
+      "Write your first short film, pilot episode, or feature screenplay. Learn story structure, dialogue, and world-building guided by AI.",
+    color: "bg-pink-50 border-pink-100",
+    iconColor: "text-pink-600",
+  },
+  {
+    emoji: "\uD83E\uDDE0",
+    title: "Anything You Dream Up",
+    description:
+      "Urban beekeeping, quantum computing, calligraphy, drone racing, leather crafting, ancient Greek — if you can think it, you can learn it.",
     color: "bg-amber-50 border-amber-100",
     iconColor: "text-amber-700",
   },
@@ -456,16 +475,17 @@ function ExamplesSection() {
         <ScrollReveal>
           <div className="text-center">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-              Learn Anything You Can Imagine
+              If You Can Dream It, You Can Learn It
             </h2>
             <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-              Whether creative, technical, or hands-on — we&apos;ve got you
-              covered.
+              No pre-made catalog. No limits. Our AI generates a custom
+              learning path for anything you can imagine — here are just a
+              few ideas.
             </p>
           </div>
         </ScrollReveal>
 
-        <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {examples.map((ex, i) => (
             <ScrollReveal key={ex.title} variant="scale" delay={i * 100}>
               <div
@@ -659,8 +679,8 @@ function Footer() {
               LearnAnything
             </div>
             <p className="mt-2 text-sm text-gray-400 max-w-xs">
-              Master any skill through hands-on, project-based learning.
-              Completely free, forever.
+              AI-powered personalized learning paths for anything you can
+              imagine. Completely free, forever.
             </p>
           </div>
 
@@ -747,15 +767,15 @@ export default function LandingClient() {
       <HowItWorksSection />
       <ValuePropositionSection />
       <CTABanner
-        headline="Ready to Start Your Journey?"
-        subtext="Join thousands of learners who are mastering new skills every day."
+        headline="The World's First Truly Personalized Learning Platform"
+        subtext="No catalogs. No waiting lists. Just tell us what you want to learn and our AI does the rest."
       />
       <ExamplesSection />
       <TestimonialsSection />
       <CTABanner
         id="cta-final"
-        headline="Your Next Skill Is Waiting"
-        subtext="Stop thinking about it. Start doing it — completely free."
+        headline="Your Next Obsession Starts Now"
+        subtext="Whatever you've always wanted to learn — this is the moment. Completely free, powered by AI, built for you."
       />
       <PricingSection />
       <Footer />
