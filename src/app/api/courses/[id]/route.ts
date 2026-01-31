@@ -35,19 +35,22 @@ export async function GET(
     let isEnrolled = isOwner && courseRow.status === "started";
     let enrollmentId: string | null = null;
 
+    let enrollmentCommitmentDays: number | null = null;
     if (user && !isOwner) {
       const { data: enrollment } = await supabase
         .from("enrollments")
-        .select("id")
+        .select("id, commitment_interval_days")
         .eq("user_id", user.id)
         .eq("course_id", id)
         .single();
 
       isEnrolled = !!enrollment;
       enrollmentId = enrollment?.id ?? null;
+      enrollmentCommitmentDays = enrollment?.commitment_interval_days ?? null;
     }
 
     // Build course response object without user_id
+    // For non-owners, use the enrollment's commitment_interval_days
     const course = {
       id: courseRow.id,
       normalized_title: courseRow.normalized_title,
@@ -59,7 +62,9 @@ export async function GET(
       likelihood_of_learning: courseRow.likelihood_of_learning,
       total_modules: courseRow.total_modules,
       status: courseRow.status,
-      commitment_interval_days: courseRow.commitment_interval_days,
+      commitment_interval_days: isOwner
+        ? courseRow.commitment_interval_days
+        : enrollmentCommitmentDays ?? courseRow.commitment_interval_days,
       created_at: courseRow.created_at,
     };
 
