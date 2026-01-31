@@ -46,19 +46,19 @@ export default function ApiKeySecurityModal({
       <div
         ref={modalRef}
         tabIndex={-1}
-        className="relative z-10 w-full max-w-lg mx-4 rounded-lg border border-green-900/60 bg-green-950/95 shadow-lg shadow-green-900/30 max-h-[85vh] flex flex-col outline-none"
+        className="relative z-10 w-full max-w-lg mx-4 rounded-lg border border-theme-border bg-theme-surface shadow-lg shadow-[color:var(--t-glow)] max-h-[85vh] flex flex-col outline-none"
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-green-900/40 px-6 py-4 shrink-0">
+        <div className="flex items-center justify-between border-b border-theme-border px-6 py-4 shrink-0">
           <h3
             id="security-modal-title"
-            className="text-lg font-semibold text-green-400 tracking-wide"
+            className="text-lg font-semibold text-theme-primary tracking-wide"
           >
-            <span className="text-green-600">{">"}</span> API Key Security
+            <span className="text-theme-secondary">{">"}</span> API Key Security
           </h3>
           <button
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-md text-green-600 hover:text-green-400 hover:bg-green-900/40 transition-colors"
+            className="flex h-8 w-8 items-center justify-center rounded-md text-theme-muted hover:text-theme-primary hover:bg-theme-surface-hover transition-colors"
             aria-label="Close"
           >
             <svg
@@ -79,10 +79,10 @@ export default function ApiKeySecurityModal({
         <div className="px-6 py-5 space-y-5 overflow-y-auto">
           {API_KEY_SECURITY_SECTIONS.map((section) => (
             <div key={section.title} className="space-y-1.5">
-              <h4 className="text-sm font-semibold text-green-400">
+              <h4 className="text-sm font-semibold text-theme-primary">
                 {section.title}
               </h4>
-              <p className="text-xs leading-relaxed text-green-600">
+              <p className="text-xs leading-relaxed text-theme-muted">
                 {section.body}
               </p>
             </div>

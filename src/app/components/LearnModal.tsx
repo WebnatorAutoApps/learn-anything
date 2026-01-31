@@ -319,13 +319,13 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder='e.g. "Guitar", "Spanish", "Machine Learning"'
-              className="flex-1 rounded-lg border border-green-900/60 bg-green-950/40 px-3 py-2 text-green-300 placeholder-green-800 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500 transition-colors"
+              className="flex-1 rounded-lg border border-theme-border bg-theme-surface px-3 py-2 text-theme-primary placeholder-theme-primary-faint focus:border-theme-primary focus:outline-none focus:ring-1 focus:ring-theme-primary transition-colors"
             />
             <button
               type="button"
               onClick={handleTextSubmit}
               disabled={!inputValue.trim()}
-              className="px-4 py-2 rounded-lg bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              className="px-4 py-2 rounded-lg bg-theme-accent text-theme-text-on-accent font-semibold hover:bg-theme-primary-hover transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             >
               <svg
                 className="h-5 w-5"
@@ -352,13 +352,13 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
               onKeyDown={handleKeyDown}
               placeholder="Describe your goals..."
               rows={2}
-              className="flex-1 rounded-lg border border-green-900/60 bg-green-950/40 px-3 py-2 text-green-300 placeholder-green-800 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500 transition-colors resize-none"
+              className="flex-1 rounded-lg border border-theme-border bg-theme-surface px-3 py-2 text-theme-primary placeholder-theme-primary-faint focus:border-theme-primary focus:outline-none focus:ring-1 focus:ring-theme-primary transition-colors resize-none"
             />
             <button
               type="button"
               onClick={handleTextSubmit}
               disabled={!inputValue.trim()}
-              className="self-end px-4 py-2 rounded-lg bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              className="self-end px-4 py-2 rounded-lg bg-theme-accent text-theme-text-on-accent font-semibold hover:bg-theme-primary-hover transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             >
               <svg
                 className="h-5 w-5"
@@ -383,7 +383,7 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
                 key={level}
                 type="button"
                 onClick={() => handleExpertiseSelect(level)}
-                className="px-4 py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/40 hover:border-green-500 transition-colors"
+                className="px-4 py-2 rounded-lg border border-theme-border text-theme-primary hover:bg-theme-surface-hover hover:border-theme-primary transition-colors"
               >
                 {level}
               </button>
@@ -401,12 +401,12 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder='e.g. "I built a small to-do app"'
-              className="flex-1 rounded-lg border border-green-900/60 bg-green-950/40 px-3 py-2 text-green-300 placeholder-green-800 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500 transition-colors"
+              className="flex-1 rounded-lg border border-theme-border bg-theme-surface px-3 py-2 text-theme-primary placeholder-theme-primary-faint focus:border-theme-primary focus:outline-none focus:ring-1 focus:ring-theme-primary transition-colors"
             />
             <button
               type="button"
               onClick={handleTextSubmit}
-              className="px-4 py-2 rounded-lg bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors"
+              className="px-4 py-2 rounded-lg bg-theme-accent text-theme-text-on-accent font-semibold hover:bg-theme-primary-hover transition-colors"
             >
               {inputValue.trim() ? (
                 <svg
@@ -435,7 +435,7 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
                 key={freq}
                 type="button"
                 onClick={() => handleCommitmentSelect(freq)}
-                className="px-4 py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/40 hover:border-green-500 transition-colors"
+                className="px-4 py-2 rounded-lg border border-theme-border text-theme-primary hover:bg-theme-surface-hover hover:border-theme-primary transition-colors"
               >
                 {freq}
               </button>
@@ -451,7 +451,7 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
                 key={m}
                 type="button"
                 onClick={() => handleDurationSelect(m)}
-                className="px-3 py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/40 hover:border-green-500 transition-colors min-w-[4rem]"
+                className="px-3 py-2 rounded-lg border border-theme-border text-theme-primary hover:bg-theme-surface-hover hover:border-theme-primary transition-colors min-w-[4rem]"
               >
                 {m} {m === 1 ? "mo" : "mo"}
               </button>
@@ -470,16 +470,16 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
         <div className="absolute inset-0 bg-black/70" />
 
         {/* Modal */}
-        <div className="relative z-10 w-full max-w-2xl mx-4 flex flex-col max-h-[90vh] rounded-lg border border-green-900/60 bg-green-950/95 shadow-lg shadow-green-900/30">
+        <div className="relative z-10 w-full max-w-2xl mx-4 flex flex-col max-h-[90vh] rounded-lg border border-theme-border bg-theme-surface shadow-lg shadow-[color:var(--t-glow)]">
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-green-900/40 px-6 py-4">
-            <h3 className="text-lg font-semibold text-green-400 tracking-wide">
-              <span className="text-green-600">{">"}</span> Start a New Learning
+          <div className="flex items-center justify-between border-b border-theme-border px-6 py-4">
+            <h3 className="text-lg font-semibold text-theme-primary tracking-wide">
+              <span className="text-theme-secondary">{">"}</span> Start a New Learning
               Path
             </h3>
             <button
               onClick={onClose}
-              className="flex h-8 w-8 items-center justify-center rounded-md text-green-600 hover:text-green-400 hover:bg-green-900/40 transition-colors"
+              className="flex h-8 w-8 items-center justify-center rounded-md text-theme-secondary hover:text-theme-primary hover:bg-theme-surface-hover transition-colors"
               aria-label="Close"
             >
               <svg
@@ -508,8 +508,8 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
                 <div
                   className={`max-w-[80%] rounded-lg px-4 py-2.5 ${
                     msg.role === "system"
-                      ? "bg-green-900/30 text-green-300 border border-green-900/40"
-                      : "bg-green-600/20 text-green-400 border border-green-600/30"
+                      ? "bg-theme-surface-hover text-theme-primary border border-theme-border"
+                      : "bg-theme-accent/20 text-theme-primary border border-theme-border-strong"
                   }`}
                 >
                   {msg.text}
@@ -520,7 +520,7 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
             {/* Typing indicator */}
             {isTyping && (
               <div className="flex justify-start">
-                <div className="bg-green-900/30 text-green-500 border border-green-900/40 rounded-lg px-4 py-2.5">
+                <div className="bg-theme-surface-hover text-theme-secondary border border-theme-border rounded-lg px-4 py-2.5">
                   <span className="typing-dots">
                     <span className="dot">.</span>
                     <span className="dot">.</span>
@@ -533,7 +533,7 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
             {/* Summary and Begin when conversation is complete */}
             {step === "done" && (
               <div className="chat-message flex flex-col gap-4 pt-4">
-                <p className="text-green-500 text-sm text-center">
+                <p className="text-theme-secondary text-sm text-center">
                   All set! Review your answers below — click any to edit.
                 </p>
 
@@ -550,15 +550,15 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
                       key={item.targetStep}
                       type="button"
                       onClick={() => handleEditStep(item.targetStep)}
-                      className="w-full text-left rounded border border-green-900/40 bg-green-900/20 px-4 py-2.5 hover:bg-green-900/40 hover:border-green-500 transition-colors group"
+                      className="w-full text-left rounded border border-theme-border bg-theme-surface-hover px-4 py-2.5 hover:bg-theme-surface-hover hover:border-theme-primary transition-colors group"
                     >
-                      <span className="text-green-600 text-xs uppercase tracking-wider font-semibold">
+                      <span className="text-theme-muted text-xs uppercase tracking-wider font-semibold">
                         {item.label}
                       </span>
                       <div className="flex items-center justify-between mt-0.5">
-                        <span className="text-green-300 text-sm">{item.value}</span>
+                        <span className="text-theme-primary text-sm">{item.value}</span>
                         <svg
-                          className="h-4 w-4 text-green-700 group-hover:text-green-400 transition-colors shrink-0 ml-2"
+                          className="h-4 w-4 text-theme-muted group-hover:text-theme-primary transition-colors shrink-0 ml-2"
                           fill="none"
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -577,7 +577,7 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
                   <button
                     type="button"
                     onClick={handleBegin}
-                    className="px-8 py-3 rounded-lg bg-green-600 text-black font-semibold text-lg hover:bg-green-500 transition-colors shadow-lg shadow-green-900/40"
+                    className="px-8 py-3 rounded-lg bg-theme-accent text-theme-text-on-accent font-semibold text-lg hover:bg-theme-primary-hover transition-colors shadow-lg shadow-[color:var(--t-glow)]"
                   >
                     Begin
                   </button>
@@ -589,7 +589,7 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
           </div>
 
           {/* Input area */}
-          <div className="border-t border-green-900/40 px-6 py-4">
+          <div className="border-t border-theme-border px-6 py-4">
             {step !== "done" && !isTyping ? (
               renderInput()
             ) : step === "done" ? (
@@ -597,7 +597,7 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/30 transition-colors text-sm"
+                  className="px-4 py-2 rounded-lg border border-theme-border text-theme-primary hover:bg-theme-surface-hover transition-colors text-sm"
                 >
                   Cancel
                 </button>

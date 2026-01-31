@@ -70,14 +70,14 @@ function PathDetailModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/70" onClick={onClose} />
-      <div className="relative z-10 w-full max-w-lg mx-4 max-h-[85vh] rounded-lg border border-green-900/60 bg-green-950 shadow-xl flex flex-col">
-        <div className="flex items-center justify-between p-5 border-b border-green-900/50">
-          <h3 className="text-lg font-semibold text-green-400 tracking-wide">
+      <div className="relative z-10 w-full max-w-lg mx-4 max-h-[85vh] rounded-lg border border-theme-border bg-theme-surface shadow-xl flex flex-col">
+        <div className="flex items-center justify-between p-5 border-b border-theme-border">
+          <h3 className="text-lg font-semibold text-theme-primary tracking-wide">
             Path Details
           </h3>
           <button
             onClick={onClose}
-            className="p-1.5 text-green-600 hover:text-green-400 hover:bg-green-900/30 rounded transition-colors"
+            className="p-1.5 text-theme-secondary hover:text-theme-primary hover:bg-theme-surface-hover rounded transition-colors"
             aria-label="Close"
           >
             <svg className="h-5 w-5" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
@@ -88,53 +88,53 @@ function PathDetailModal({
 
         <div className="overflow-y-auto p-5 space-y-5">
           <div>
-            <h4 className="text-xl font-semibold text-green-400 mb-2">
+            <h4 className="text-xl font-semibold text-theme-primary mb-2">
               {course.normalized_title}
             </h4>
-            <p className="text-green-500 leading-relaxed">
+            <p className="text-theme-secondary leading-relaxed">
               {course.learning_goal}
             </p>
           </div>
 
           <div>
-            <p className="text-xs text-green-700 uppercase tracking-wider mb-1.5">
+            <p className="text-xs text-theme-muted uppercase tracking-wider mb-1.5">
               About This Path
             </p>
-            <p className="text-green-600 text-sm leading-relaxed">
+            <p className="text-theme-muted text-sm leading-relaxed">
               {course.learning_goal_details}
             </p>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <div className="rounded border border-green-900/50 bg-green-950/30 p-3">
-              <p className="text-xs text-green-700 uppercase tracking-wider mb-1">
+            <div className="rounded border border-theme-border bg-theme-surface p-3">
+              <p className="text-xs text-theme-muted uppercase tracking-wider mb-1">
                 Steps
               </p>
-              <p className="text-lg font-bold text-green-400">
+              <p className="text-lg font-bold text-theme-primary">
                 {course.total_modules}
               </p>
             </div>
-            <div className="rounded border border-green-900/50 bg-green-950/30 p-3">
-              <p className="text-xs text-green-700 uppercase tracking-wider mb-1">
+            <div className="rounded border border-theme-border bg-theme-surface p-3">
+              <p className="text-xs text-theme-muted uppercase tracking-wider mb-1">
                 Success Rate
               </p>
-              <p className="text-lg font-bold text-green-400">
+              <p className="text-lg font-bold text-theme-primary">
                 {course.likelihood_of_learning}%
               </p>
             </div>
-            <div className="rounded border border-green-900/50 bg-green-950/30 p-3">
-              <p className="text-xs text-green-700 uppercase tracking-wider mb-1">
+            <div className="rounded border border-theme-border bg-theme-surface p-3">
+              <p className="text-xs text-theme-muted uppercase tracking-wider mb-1">
                 Your Level
               </p>
-              <p className="text-sm font-semibold text-green-400">
+              <p className="text-sm font-semibold text-theme-primary">
                 {course.expertise_level}
               </p>
             </div>
-            <div className="rounded border border-green-900/50 bg-green-950/30 p-3">
-              <p className="text-xs text-green-700 uppercase tracking-wider mb-1">
+            <div className="rounded border border-theme-border bg-theme-surface p-3">
+              <p className="text-xs text-theme-muted uppercase tracking-wider mb-1">
                 Target Level
               </p>
-              <p className="text-sm font-semibold text-green-400">
+              <p className="text-sm font-semibold text-theme-primary">
                 {course.expected_skill_level}
               </p>
             </div>
@@ -142,10 +142,10 @@ function PathDetailModal({
 
           {course.expertise_details && (
             <div>
-              <p className="text-xs text-green-700 uppercase tracking-wider mb-1.5">
+              <p className="text-xs text-theme-muted uppercase tracking-wider mb-1.5">
                 Your Background
               </p>
-              <p className="text-green-500 text-sm leading-relaxed">
+              <p className="text-theme-secondary text-sm leading-relaxed">
                 {course.expertise_details}
               </p>
             </div>
@@ -153,10 +153,10 @@ function PathDetailModal({
 
           {course.commitment_interval_days && (
             <div>
-              <p className="text-xs text-green-700 uppercase tracking-wider mb-1.5">
+              <p className="text-xs text-theme-muted uppercase tracking-wider mb-1.5">
                 Study Cadence
               </p>
-              <p className="text-green-500 text-sm">
+              <p className="text-theme-secondary text-sm">
                 Every {course.commitment_interval_days} day
                 {course.commitment_interval_days !== 1 ? "s" : ""}
               </p>
@@ -181,25 +181,25 @@ function ProgressBar({
   const message = getMotivationalMessage(percent, completedCount);
 
   return (
-    <div className="rounded-lg border border-green-900/60 bg-green-950/20 p-5">
+    <div className="rounded-lg border border-theme-border bg-theme-surface p-5">
       <div className="flex items-end justify-between mb-3">
         <div>
-          <p className="text-2xl font-bold text-green-400">
+          <p className="text-2xl font-bold text-theme-primary">
             {percent}%
           </p>
-          <p className="text-sm text-green-600">
+          <p className="text-sm text-theme-muted">
             {completedCount} of {totalCount} step{totalCount !== 1 ? "s" : ""} completed
           </p>
         </div>
         {message && (
-          <p className="text-sm text-green-500 italic text-right max-w-[50%]">
+          <p className="text-sm text-theme-secondary italic text-right max-w-[50%]">
             {message}
           </p>
         )}
       </div>
-      <div className="h-3 rounded-full bg-green-950/60 border border-green-900/40 overflow-hidden">
+      <div className="h-3 rounded-full bg-theme-surface border border-theme-border overflow-hidden">
         <div
-          className="h-full rounded-full bg-green-500 transition-all duration-700 ease-out"
+          className="h-full rounded-full bg-theme-secondary transition-all duration-700 ease-out"
           style={{ width: `${percent}%` }}
         />
       </div>
@@ -211,18 +211,18 @@ function ProgressBar({
 
 function CompletionCelebration({ pathTitle }: { pathTitle: string }) {
   return (
-    <div className="rounded-lg border-2 border-green-500/60 bg-green-950/30 p-8 text-center">
+    <div className="rounded-lg border-2 border-theme-primary bg-theme-surface p-8 text-center">
       <div className="text-5xl mb-4">*</div>
-      <h3 className="text-2xl font-bold text-green-400 mb-2">
+      <h3 className="text-2xl font-bold text-theme-primary mb-2">
         Path Complete!
       </h3>
-      <p className="text-green-500 mb-1">
+      <p className="text-theme-secondary mb-1">
         You&apos;ve completed every step in
       </p>
-      <p className="text-green-400 font-semibold text-lg mb-4">
+      <p className="text-theme-primary font-semibold text-lg mb-4">
         {pathTitle}
       </p>
-      <p className="text-green-600 text-sm leading-relaxed max-w-md mx-auto">
+      <p className="text-theme-muted text-sm leading-relaxed max-w-md mx-auto">
         Every step you took brought you closer to mastery.
         The skills you&apos;ve built are yours to keep. Well done.
       </p>
@@ -255,19 +255,19 @@ function HeroProjectCard({
       : "READY TO START";
 
   const statusColors = isCompleted
-    ? "text-green-500 border-green-600/40 bg-green-900/20"
+    ? "text-theme-secondary border-theme-border-strong bg-theme-surface-hover"
     : hasSelection
       ? "text-yellow-500 border-yellow-700/40 bg-yellow-950/20"
       : "text-blue-400 border-blue-700/40 bg-blue-950/20";
 
   return (
     <div className="space-y-4">
-      <div className="rounded-lg border-2 border-green-500/60 bg-green-950/30 overflow-hidden shadow-lg shadow-green-900/20">
+      <div className="rounded-lg border-2 border-theme-primary bg-theme-surface overflow-hidden shadow-lg shadow-[color:var(--t-glow)]">
         <button
           onClick={() => setExpanded((e) => !e)}
-          className="w-full p-5 text-left flex items-start gap-4 hover:bg-green-950/40 transition-colors"
+          className="w-full p-5 text-left flex items-start gap-4 hover:bg-theme-surface-hover transition-colors"
         >
-          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg border border-green-500/50 bg-green-900/40 text-lg font-bold text-green-400">
+          <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg border border-theme-primary bg-theme-surface-hover text-lg font-bold text-theme-primary">
             {mod.module_index}
           </div>
           <div className="flex-1 min-w-0">
@@ -279,20 +279,20 @@ function HeroProjectCard({
                 {projectStatus}
               </span>
               {mod.schedule && (
-                <span className="text-xs text-green-700">
+                <span className="text-xs text-theme-muted">
                   Due {formatDate(mod.schedule.dueDate)}
                 </span>
               )}
             </div>
-            <h4 className="font-semibold text-green-400 text-lg">
+            <h4 className="font-semibold text-theme-primary text-lg">
               Step {mod.module_index}: {mod.title}
             </h4>
-            <p className="text-sm text-green-600 mt-1">
+            <p className="text-sm text-theme-muted mt-1">
               {mod.description}
             </p>
           </div>
           <svg
-            className={`h-5 w-5 text-green-500 flex-shrink-0 mt-3 transition-transform ${
+            className={`h-5 w-5 text-theme-secondary flex-shrink-0 mt-3 transition-transform ${
               expanded ? "rotate-180" : ""
             }`}
             fill="none"
@@ -307,8 +307,8 @@ function HeroProjectCard({
         </button>
 
         {expanded && mod.projects.length > 0 && (
-          <div className="border-t border-green-500/30 px-5 py-4">
-            <p className="text-xs text-green-700 uppercase tracking-wider mb-3">
+          <div className="border-t border-theme-primary px-5 py-4">
+            <p className="text-xs text-theme-muted uppercase tracking-wider mb-3">
               Projects
             </p>
             <ProjectSelectionArea mod={mod} courseId={courseId} />
@@ -318,16 +318,16 @@ function HeroProjectCard({
 
       {/* CTA to move to next step when current is completed */}
       {isLastCompleted && isCompleted && nextModule && (
-        <div className="rounded-lg border border-green-500/40 bg-green-950/20 p-4 flex items-center justify-between">
+        <div className="rounded-lg border border-theme-primary bg-theme-surface p-4 flex items-center justify-between">
           <div>
-            <p className="text-green-400 font-medium text-sm">
+            <p className="text-theme-primary font-medium text-sm">
               Ready for the next step?
             </p>
-            <p className="text-green-600 text-xs mt-0.5">
+            <p className="text-theme-muted text-xs mt-0.5">
               Step {nextModule.module_index}: {nextModule.title}
             </p>
           </div>
-          <span className="text-xs text-green-700 font-mono border border-green-900/40 rounded px-2 py-1">
+          <span className="text-xs text-theme-muted font-mono border border-theme-border rounded px-2 py-1">
             {nextModule.schedule?.status === "CURRENT"
               ? "UNLOCKED"
               : nextModule.schedule?.status === "NEXT_PREVIEW"
@@ -367,9 +367,9 @@ function ModuleTimeline({
       {/* Upcoming Steps */}
       {upcomingModules.length > 0 && (
         <div>
-          <h3 className="text-sm font-semibold text-green-400 mb-3 tracking-wide uppercase">
+          <h3 className="text-sm font-semibold text-theme-primary mb-3 tracking-wide uppercase">
             Upcoming Steps
-            <span className="text-green-700 font-normal ml-2">
+            <span className="text-theme-muted font-normal ml-2">
               ({upcomingModules.length})
             </span>
           </h3>
@@ -391,9 +391,9 @@ function ModuleTimeline({
       {/* Completed Steps */}
       {completedModules.length > 0 && (
         <div>
-          <h3 className="text-sm font-semibold text-green-400 mb-3 tracking-wide uppercase">
+          <h3 className="text-sm font-semibold text-theme-primary mb-3 tracking-wide uppercase">
             Completed Steps
-            <span className="text-green-700 font-normal ml-2">
+            <span className="text-theme-muted font-normal ml-2">
               ({completedModules.length})
             </span>
           </h3>
@@ -438,21 +438,21 @@ function TimelineItem({
     <div
       className={`rounded-lg border overflow-hidden transition-colors ${
         isCompleted
-          ? "border-green-900/30 bg-green-950/10 opacity-70"
+          ? "border-theme-border bg-theme-surface opacity-70"
           : isNextPreview
-            ? "border-yellow-900/40 bg-green-950/15"
+            ? "border-yellow-900/40 bg-theme-surface"
             : isLocked
-              ? "border-green-900/30 bg-green-950/10 opacity-50"
-              : "border-green-900/60 bg-green-950/20"
+              ? "border-theme-border bg-theme-surface opacity-50"
+              : "border-theme-border bg-theme-surface"
       }`}
     >
       <button
         onClick={onToggle}
         className={`w-full p-4 text-left flex items-center gap-3 transition-colors ${
           !isLocked && !isCompleted
-            ? "hover:bg-green-950/40 cursor-pointer"
+            ? "hover:bg-theme-surface-hover cursor-pointer"
             : isCompleted
-              ? "hover:bg-green-950/20 cursor-pointer"
+              ? "hover:bg-theme-surface-hover cursor-pointer"
               : "cursor-default"
         }`}
         disabled={isLocked}
@@ -460,12 +460,12 @@ function TimelineItem({
         <div
           className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded border text-sm font-bold ${
             isCompleted
-              ? "border-green-700/40 bg-green-900/20 text-green-600"
+              ? "border-theme-border bg-theme-surface-hover text-theme-secondary"
               : isNextPreview
                 ? "border-yellow-800/50 bg-yellow-950/30 text-yellow-600"
                 : isLocked
-                  ? "border-green-900/30 bg-green-950/30 text-green-800"
-                  : "border-green-800/50 bg-green-950/50 text-green-400"
+                  ? "border-theme-border bg-theme-surface text-theme-primary-faint"
+                  : "border-theme-border bg-theme-surface text-theme-primary"
           }`}
         >
           {isCompleted ? (
@@ -485,7 +485,7 @@ function TimelineItem({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">
             {isCompleted && (
-              <span className="text-xs font-mono text-green-700 border border-green-900/30 rounded px-1.5 py-0.5">
+              <span className="text-xs font-mono text-theme-muted border border-theme-border rounded px-1.5 py-0.5">
                 DONE
               </span>
             )}
@@ -495,12 +495,12 @@ function TimelineItem({
               </span>
             )}
             {status === "LOCKED" && !isNextPreview && (
-              <span className="text-xs font-mono text-green-800 border border-green-900/40 rounded px-1.5 py-0.5">
+              <span className="text-xs font-mono text-theme-primary-faint border border-theme-border rounded px-1.5 py-0.5">
                 LOCKED
               </span>
             )}
             {schedule && (
-              <span className="text-xs text-green-700">
+              <span className="text-xs text-theme-muted">
                 {isCompleted && mod.selectedProject?.completedAt
                   ? `Completed ${formatDate(mod.selectedProject.completedAt.slice(0, 10))}`
                   : status === "CURRENT"
@@ -509,14 +509,14 @@ function TimelineItem({
               </span>
             )}
           </div>
-          <h4 className={`font-semibold text-sm ${isCompleted ? "text-green-600" : isLocked ? "text-green-700" : "text-green-400"}`}>
+          <h4 className={`font-semibold text-sm ${isCompleted ? "text-theme-secondary" : isLocked ? "text-theme-muted" : "text-theme-primary"}`}>
             {mod.title}
           </h4>
         </div>
 
         {!isLocked && (
           <svg
-            className={`h-4 w-4 text-green-600 flex-shrink-0 transition-transform ${
+            className={`h-4 w-4 text-theme-secondary flex-shrink-0 transition-transform ${
               isExpanded ? "rotate-180" : ""
             }`}
             fill="none"
@@ -532,8 +532,8 @@ function TimelineItem({
       </button>
 
       {!isLocked && isExpanded && mod.projects.length > 0 && (
-        <div className="border-t border-green-900/40 px-4 py-3">
-          <p className="text-xs text-green-700 uppercase tracking-wider mb-3">
+        <div className="border-t border-theme-border px-4 py-3">
+          <p className="text-xs text-theme-muted uppercase tracking-wider mb-3">
             Projects
           </p>
           <ProjectSelectionArea mod={mod} courseId={courseId} />
@@ -639,7 +639,7 @@ function ProjectSelectionArea({
 
   if (mod.projects.length === 0) {
     return (
-      <p className="text-sm text-green-700 italic">
+      <p className="text-sm text-theme-muted italic">
         No projects available for this step.
       </p>
     );
@@ -657,26 +657,26 @@ function ProjectSelectionArea({
         {mod.projects.map((project) => (
           <div
             key={project.id}
-            className="rounded border border-green-900/40 bg-green-950/30 p-4"
+            className="rounded border border-theme-border bg-theme-surface p-4"
           >
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xs font-mono text-green-700 border border-green-900/40 rounded px-1.5 py-0.5">
+                  <span className="text-xs font-mono text-theme-muted border border-theme-border rounded px-1.5 py-0.5">
                     Option {project.project_index}
                   </span>
-                  <h5 className="font-semibold text-green-400 text-sm">
+                  <h5 className="font-semibold text-theme-primary text-sm">
                     {project.title}
                   </h5>
                 </div>
-                <p className="text-sm text-green-500 leading-relaxed">
+                <p className="text-sm text-theme-secondary leading-relaxed">
                   {project.objective}
                 </p>
               </div>
               <button
                 onClick={() => handleSelect(project)}
                 disabled={selectMutation.isPending}
-                className="flex-shrink-0 px-3 py-1.5 rounded border border-green-500/50 bg-green-900/30 text-green-400 text-xs font-medium hover:bg-green-900/50 hover:border-green-400/60 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-shrink-0 px-3 py-1.5 rounded border border-theme-primary bg-theme-surface-hover text-theme-primary text-xs font-medium hover:bg-theme-surface-hover hover:border-theme-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {selectMutation.isPending ? "..." : "Select"}
               </button>
@@ -697,32 +697,32 @@ function ProjectSelectionArea({
         <div
           className={`rounded border-2 p-4 ${
             isCompleted
-              ? "border-green-600/50 bg-green-950/40"
-              : "border-green-500/50 bg-green-950/30"
+              ? "border-theme-border-strong bg-theme-surface"
+              : "border-theme-primary bg-theme-surface"
           }`}
         >
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-xs font-mono text-green-400 border border-green-500/40 rounded px-1.5 py-0.5 bg-green-900/30">
+            <span className="text-xs font-mono text-theme-primary border border-theme-primary rounded px-1.5 py-0.5 bg-theme-surface-hover">
               {isCompleted ? "COMPLETED" : "SELECTED"}
             </span>
-            <h5 className="font-semibold text-green-400 text-sm">
+            <h5 className="font-semibold text-theme-primary text-sm">
               {selectedProject.title}
             </h5>
           </div>
           <div className="space-y-2">
             <div>
-              <p className="text-xs text-green-700 uppercase tracking-wider mb-1">
+              <p className="text-xs text-theme-muted uppercase tracking-wider mb-1">
                 Objective
               </p>
-              <p className="text-sm text-green-500 leading-relaxed">
+              <p className="text-sm text-theme-secondary leading-relaxed">
                 {selectedProject.objective}
               </p>
             </div>
             <div>
-              <p className="text-xs text-green-700 uppercase tracking-wider mb-1">
+              <p className="text-xs text-theme-muted uppercase tracking-wider mb-1">
                 Instructions
               </p>
-              <p className="text-sm text-green-600 leading-relaxed">
+              <p className="text-sm text-theme-muted leading-relaxed">
                 {selectedProject.instructions}
               </p>
             </div>
@@ -731,7 +731,7 @@ function ProjectSelectionArea({
           <div className="mt-4">
             {isCompleted ? (
               <div className="space-y-3">
-                <div className="flex items-center gap-2 text-green-500 text-sm">
+                <div className="flex items-center gap-2 text-theme-secondary text-sm">
                   <svg
                     className="h-5 w-5"
                     fill="none"
@@ -746,7 +746,7 @@ function ProjectSelectionArea({
                   <span className="font-medium">
                     Project completed
                     {selection?.completedAt && (
-                      <span className="text-green-700 font-normal ml-1">
+                      <span className="text-theme-muted font-normal ml-1">
                         — {new Date(selection.completedAt).toLocaleDateString(undefined, {
                           month: "short",
                           day: "numeric",
@@ -759,26 +759,26 @@ function ProjectSelectionArea({
                 </div>
 
                 {selection?.comment && (
-                  <div className="rounded border border-green-900/40 bg-green-950/30 p-3">
-                    <p className="text-xs text-green-700 uppercase tracking-wider mb-1">
+                  <div className="rounded border border-theme-border bg-theme-surface p-3">
+                    <p className="text-xs text-theme-muted uppercase tracking-wider mb-1">
                       Your Comment
                     </p>
-                    <p className="text-sm text-green-500 leading-relaxed whitespace-pre-wrap">
+                    <p className="text-sm text-theme-secondary leading-relaxed whitespace-pre-wrap">
                       {selection.comment}
                     </p>
                   </div>
                 )}
 
                 {selection?.imageUrl && (
-                  <div className="rounded border border-green-900/40 bg-green-950/30 p-3">
-                    <p className="text-xs text-green-700 uppercase tracking-wider mb-2">
+                  <div className="rounded border border-theme-border bg-theme-surface p-3">
+                    <p className="text-xs text-theme-muted uppercase tracking-wider mb-2">
                       Uploaded Image
                     </p>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={selection.imageUrl}
                       alt="Completion submission"
-                      className="max-w-full max-h-64 rounded border border-green-900/40 object-contain"
+                      className="max-w-full max-h-64 rounded border border-theme-border object-contain"
                     />
                   </div>
                 )}
@@ -786,7 +786,7 @@ function ProjectSelectionArea({
             ) : (
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs text-green-700 uppercase tracking-wider mb-1">
+                  <label className="block text-xs text-theme-muted uppercase tracking-wider mb-1">
                     Comment (optional)
                   </label>
                   <textarea
@@ -795,16 +795,16 @@ function ProjectSelectionArea({
                     maxLength={MAX_COMMENT_LENGTH}
                     placeholder="Share your thoughts on this project..."
                     rows={3}
-                    className="w-full rounded border border-green-900/50 bg-green-950/40 text-green-400 text-sm px-3 py-2 placeholder:text-green-800 focus:outline-none focus:border-green-500/60 resize-y"
+                    className="w-full rounded border border-theme-border bg-theme-surface text-theme-primary text-sm px-3 py-2 placeholder:text-theme-primary-faint focus:outline-none focus:border-theme-primary resize-y"
                     disabled={isSubmitting}
                   />
-                  <p className="text-xs text-green-800 mt-0.5 text-right">
+                  <p className="text-xs text-theme-primary-faint mt-0.5 text-right">
                     {comment.length}/{MAX_COMMENT_LENGTH}
                   </p>
                 </div>
 
                 <div>
-                  <label className="block text-xs text-green-700 uppercase tracking-wider mb-1">
+                  <label className="block text-xs text-theme-muted uppercase tracking-wider mb-1">
                     Image (optional)
                   </label>
 
@@ -815,7 +815,7 @@ function ProjectSelectionArea({
                         <img
                           src={imagePreview}
                           alt="Preview"
-                          className="max-w-full max-h-48 rounded border border-green-900/40 object-contain"
+                          className="max-w-full max-h-48 rounded border border-theme-border object-contain"
                         />
                         <button
                           onClick={clearFile}
@@ -826,7 +826,7 @@ function ProjectSelectionArea({
                           X
                         </button>
                       </div>
-                      <p className="text-xs text-green-700">
+                      <p className="text-xs text-theme-muted">
                         {selectedFile?.name}
                       </p>
                     </div>
@@ -834,7 +834,7 @@ function ProjectSelectionArea({
                     <button
                       onClick={() => fileInputRef.current?.click()}
                       disabled={isSubmitting}
-                      className="w-full py-3 px-4 rounded border border-dashed border-green-900/50 bg-green-950/20 text-green-600 text-sm hover:bg-green-950/30 hover:border-green-700/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full py-3 px-4 rounded border border-dashed border-theme-border bg-theme-surface text-theme-muted text-sm hover:bg-theme-surface-hover hover:border-theme-border-strong transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Click to upload an image (JPEG, PNG, WebP, max 10 MB)
                     </button>
@@ -862,7 +862,7 @@ function ProjectSelectionArea({
                 <button
                   onClick={handleComplete}
                   disabled={isSubmitting}
-                  className="w-full py-2.5 px-4 rounded-lg border border-green-500/50 bg-green-900/30 text-green-400 font-medium text-sm hover:bg-green-900/50 hover:border-green-400/60 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-2.5 px-4 rounded-lg border border-theme-primary bg-theme-surface-hover text-theme-primary font-medium text-sm hover:bg-theme-surface-hover hover:border-theme-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? (
                     <span className="flex items-center justify-center gap-2">
@@ -902,17 +902,17 @@ function ProjectSelectionArea({
         .map((project) => (
           <div
             key={project.id}
-            className="rounded border border-green-900/20 bg-green-950/10 p-4 opacity-40"
+            className="rounded border border-theme-border bg-theme-surface p-4 opacity-40"
           >
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-mono text-green-800 border border-green-900/30 rounded px-1.5 py-0.5">
+              <span className="text-xs font-mono text-theme-primary-faint border border-theme-border rounded px-1.5 py-0.5">
                 Option {project.project_index}
               </span>
-              <h5 className="font-semibold text-green-700 text-sm">
+              <h5 className="font-semibold text-theme-muted text-sm">
                 {project.title}
               </h5>
             </div>
-            <p className="text-sm text-green-800 leading-relaxed">
+            <p className="text-sm text-theme-primary-faint leading-relaxed">
               {project.objective}
             </p>
           </div>
@@ -1057,7 +1057,7 @@ export default function CoursePage({
           </p>
           <button
             onClick={() => router.push("/")}
-            className="px-4 py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/30 transition-colors"
+            className="px-4 py-2 rounded-lg border border-theme-border text-theme-primary hover:bg-theme-surface-hover transition-colors"
           >
             Back to Dashboard
           </button>
@@ -1120,25 +1120,25 @@ export default function CoursePage({
         <div className="terminal-vignette" />
 
         {/* Top Bar */}
-        <header className="relative z-20 border-b border-green-900/50">
+        <header className="relative z-20 border-b border-theme-border">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center gap-4">
               <button
                 onClick={() => router.push("/")}
-                className="text-green-600 hover:text-green-400 transition-colors flex items-center gap-2"
+                className="text-theme-secondary hover:text-theme-primary transition-colors flex items-center gap-2"
               >
                 <svg className="h-5 w-5" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
                   <path d="M15 19l-7-7 7-7" />
                 </svg>
                 <span className="text-sm">Back</span>
               </button>
-              <div className="h-6 w-px bg-green-900/50" />
-              <h1 className="text-xl font-semibold text-green-400 tracking-wider truncate flex-1">
+              <div className="h-6 w-px bg-theme-border" />
+              <h1 className="text-xl font-semibold text-theme-primary tracking-wider truncate flex-1">
                 {course.normalized_title}
               </h1>
               <button
                 onClick={() => setShowPathDetail(true)}
-                className="text-sm text-green-600 hover:text-green-400 transition-colors border border-green-900/50 rounded px-3 py-1.5 hover:bg-green-900/20 flex-shrink-0"
+                className="text-sm text-theme-secondary hover:text-theme-primary transition-colors border border-theme-border rounded px-3 py-1.5 hover:bg-theme-surface-hover flex-shrink-0"
               >
                 See more
               </button>
@@ -1147,7 +1147,7 @@ export default function CoursePage({
               <div className="relative" ref={menuRef}>
                 <button
                   onClick={() => setMenuOpen((prev) => !prev)}
-                  className="p-2 text-green-600 hover:text-green-400 hover:bg-green-900/30 rounded-lg transition-colors"
+                  className="p-2 text-theme-secondary hover:text-theme-primary hover:bg-theme-surface-hover rounded-lg transition-colors"
                   aria-label="Course options"
                 >
                   <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -1157,13 +1157,13 @@ export default function CoursePage({
                   </svg>
                 </button>
                 {menuOpen && (
-                  <div className="absolute right-0 mt-1 w-48 rounded-lg border border-green-900/60 bg-green-950 shadow-lg z-30">
+                  <div className="absolute right-0 mt-1 w-48 rounded-lg border border-theme-border bg-theme-surface shadow-lg z-30">
                     <button
                       onClick={() => {
                         setMenuOpen(false);
                         setShowUnenrollDialog(true);
                       }}
-                      className="w-full px-4 py-3 text-left text-sm text-red-400 hover:bg-green-900/40 transition-colors rounded-lg"
+                      className="w-full px-4 py-3 text-left text-sm text-red-400 hover:bg-theme-surface-hover transition-colors rounded-lg"
                     >
                       Unenroll
                     </button>
@@ -1224,11 +1224,11 @@ export default function CoursePage({
                 }
               }}
             />
-            <div className="relative z-10 w-full max-w-md mx-4 rounded-lg border border-green-900/60 bg-green-950 p-6 shadow-xl">
-              <h3 className="text-lg font-semibold text-green-400 mb-2">
+            <div className="relative z-10 w-full max-w-md mx-4 rounded-lg border border-theme-border bg-theme-surface p-6 shadow-xl">
+              <h3 className="text-lg font-semibold text-theme-primary mb-2">
                 Already leaving?
               </h3>
-              <p className="text-green-500 text-sm leading-relaxed mb-6">
+              <p className="text-theme-secondary text-sm leading-relaxed mb-6">
                 You&apos;ve been doing so well! Are you sure you want to unenroll
                 from this learning path? Your progress and schedule won&apos;t be saved.
               </p>
@@ -1246,7 +1246,7 @@ export default function CoursePage({
                     setUnenrollError(null);
                   }}
                   disabled={unenrollMutation.isPending}
-                  className="px-4 py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/30 transition-colors text-sm font-medium disabled:opacity-50"
+                  className="px-4 py-2 rounded-lg border border-theme-border text-theme-primary hover:bg-theme-surface-hover transition-colors text-sm font-medium disabled:opacity-50"
                 >
                   Cancel
                 </button>
@@ -1296,20 +1296,20 @@ export default function CoursePage({
       <div className="terminal-vignette" />
 
       {/* Top Bar */}
-      <header className="relative z-20 border-b border-green-900/50">
+      <header className="relative z-20 border-b border-theme-border">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center gap-4">
             <button
               onClick={() => router.push("/")}
-              className="text-green-600 hover:text-green-400 transition-colors flex items-center gap-2"
+              className="text-theme-secondary hover:text-theme-primary transition-colors flex items-center gap-2"
             >
               <svg className="h-5 w-5" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
                 <path d="M15 19l-7-7 7-7" />
               </svg>
               <span className="text-sm">Back</span>
             </button>
-            <div className="h-6 w-px bg-green-900/50" />
-            <h1 className="text-xl font-semibold text-green-400 tracking-wider truncate flex-1">
+            <div className="h-6 w-px bg-theme-border" />
+            <h1 className="text-xl font-semibold text-theme-primary tracking-wider truncate flex-1">
               {course.normalized_title}
             </h1>
           </div>
@@ -1319,49 +1319,49 @@ export default function CoursePage({
       <main className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-8">
         {/* Course Header */}
         <div className="mb-8">
-          <h2 className="text-2xl font-semibold text-green-400 mb-2 tracking-wide">
-            <span className="text-green-600">{">"}</span>{" "}
+          <h2 className="text-2xl font-semibold text-theme-primary mb-2 tracking-wide">
+            <span className="text-theme-secondary">{">"}</span>{" "}
             {course.normalized_title}
           </h2>
-          <p className="text-green-500 text-lg mb-4">
+          <p className="text-theme-secondary text-lg mb-4">
             {course.learning_goal}
           </p>
-          <p className="text-green-600 leading-relaxed">
+          <p className="text-theme-muted leading-relaxed">
             {course.learning_goal_details}
           </p>
         </div>
 
         {/* Course Info Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
-          <div className="rounded-lg border border-green-900/60 bg-green-950/20 p-4">
-            <p className="text-xs text-green-700 uppercase tracking-wider mb-1">
+          <div className="rounded-lg border border-theme-border bg-theme-surface p-4">
+            <p className="text-xs text-theme-muted uppercase tracking-wider mb-1">
               Steps
             </p>
-            <p className="text-xl font-bold text-green-400">
+            <p className="text-xl font-bold text-theme-primary">
               {course.total_modules}
             </p>
           </div>
-          <div className="rounded-lg border border-green-900/60 bg-green-950/20 p-4">
-            <p className="text-xs text-green-700 uppercase tracking-wider mb-1">
+          <div className="rounded-lg border border-theme-border bg-theme-surface p-4">
+            <p className="text-xs text-theme-muted uppercase tracking-wider mb-1">
               Your Level
             </p>
-            <p className="text-sm font-semibold text-green-400">
+            <p className="text-sm font-semibold text-theme-primary">
               {course.expertise_level}
             </p>
           </div>
-          <div className="rounded-lg border border-green-900/60 bg-green-950/20 p-4">
-            <p className="text-xs text-green-700 uppercase tracking-wider mb-1">
+          <div className="rounded-lg border border-theme-border bg-theme-surface p-4">
+            <p className="text-xs text-theme-muted uppercase tracking-wider mb-1">
               Target Level
             </p>
-            <p className="text-sm font-semibold text-green-400">
+            <p className="text-sm font-semibold text-theme-primary">
               {course.expected_skill_level}
             </p>
           </div>
-          <div className="rounded-lg border border-green-900/60 bg-green-950/20 p-4">
-            <p className="text-xs text-green-700 uppercase tracking-wider mb-1">
+          <div className="rounded-lg border border-theme-border bg-theme-surface p-4">
+            <p className="text-xs text-theme-muted uppercase tracking-wider mb-1">
               Success Rate
             </p>
-            <p className="text-xl font-bold text-green-400">
+            <p className="text-xl font-bold text-theme-primary">
               {course.likelihood_of_learning}%
             </p>
           </div>
@@ -1369,11 +1369,11 @@ export default function CoursePage({
 
         {/* Expertise Details */}
         {course.expertise_details && (
-          <div className="rounded-lg border border-green-900/60 bg-green-950/20 p-4 mb-8">
-            <p className="text-xs text-green-700 uppercase tracking-wider mb-2">
+          <div className="rounded-lg border border-theme-border bg-theme-surface p-4 mb-8">
+            <p className="text-xs text-theme-muted uppercase tracking-wider mb-2">
               Your Background
             </p>
-            <p className="text-green-500 text-sm leading-relaxed">
+            <p className="text-theme-secondary text-sm leading-relaxed">
               {course.expertise_details}
             </p>
           </div>
@@ -1383,8 +1383,8 @@ export default function CoursePage({
         <div className="mb-8">
           <div className="space-y-4">
             {/* Cadence Selector */}
-            <div className="rounded-lg border border-green-900/60 bg-green-950/20 p-4">
-              <label className="block text-xs text-green-700 uppercase tracking-wider mb-3">
+            <div className="rounded-lg border border-theme-border bg-theme-surface p-4">
+              <label className="block text-xs text-theme-muted uppercase tracking-wider mb-3">
                 How often will you study?
               </label>
               <div className="flex flex-wrap gap-2">
@@ -1407,10 +1407,10 @@ export default function CoursePage({
                         isSelected
                           ? isTooLong
                             ? "border-red-500/60 bg-red-950/40 text-red-400"
-                            : "border-green-500/60 bg-green-900/40 text-green-400"
+                            : "border-theme-primary bg-theme-surface-hover text-theme-primary"
                           : isTooLong
                             ? "border-red-900/40 bg-red-950/20 text-red-700 hover:bg-red-950/30 hover:text-red-500"
-                            : "border-green-900/60 bg-green-950/30 text-green-700 hover:bg-green-900/20 hover:text-green-500"
+                            : "border-theme-border bg-theme-surface text-theme-muted hover:bg-theme-surface-hover hover:text-theme-secondary"
                       }`}
                     >
                       {opt.label}
@@ -1423,7 +1423,7 @@ export default function CoursePage({
               {commitmentValidation && (
                 <div className="mt-3">
                   {commitmentValidation.valid ? (
-                    <p className="text-xs text-green-600">
+                    <p className="text-xs text-theme-muted">
                       Estimated completion: ~{commitmentValidation.projectedDays} days
                       ({course.total_modules} steps)
                     </p>
@@ -1468,7 +1468,7 @@ export default function CoursePage({
                 enrollMutation.isPending ||
                 (commitmentValidation !== null && !commitmentValidation.valid)
               }
-              className="w-full py-3 px-6 rounded-lg border border-green-500/60 bg-green-900/40 text-green-400 font-semibold tracking-wider hover:bg-green-900/60 hover:border-green-400/60 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 px-6 rounded-lg border border-theme-primary bg-theme-surface-hover text-theme-primary font-semibold tracking-wider hover:bg-theme-surface-hover hover:border-theme-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {enrollMutation.isPending ? (
                 <span className="flex items-center justify-center gap-2">
@@ -1503,10 +1503,10 @@ export default function CoursePage({
         {/* Modules List (unenrolled — title-only, no projects) */}
         {hasModules && (
           <div className="mb-8">
-            <h3 className="text-lg font-semibold text-green-400 mb-4 tracking-wide">
-              <span className="text-green-600">{">"}</span>{" "}
+            <h3 className="text-lg font-semibold text-theme-primary mb-4 tracking-wide">
+              <span className="text-theme-secondary">{">"}</span>{" "}
               Learning Path Steps
-              <span className="text-sm font-normal text-green-700 ml-2">
+              <span className="text-sm font-normal text-theme-muted ml-2">
                 ({course.modules.length} step
                 {course.modules.length !== 1 ? "s" : ""})
               </span>
@@ -1516,14 +1516,14 @@ export default function CoursePage({
               {course.modules.map((mod) => (
                 <div
                   key={mod.id}
-                  className="rounded-lg border border-green-900/60 bg-green-950/20"
+                  className="rounded-lg border border-theme-border bg-theme-surface"
                 >
                   <div className="p-4 flex items-start gap-4">
-                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded border border-green-800/50 bg-green-950/50 text-sm font-bold text-green-400">
+                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded border border-theme-border bg-theme-surface text-sm font-bold text-theme-primary">
                       {mod.module_index}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-green-400">
+                      <h4 className="font-semibold text-theme-primary">
                         {mod.title}
                       </h4>
                     </div>
@@ -1532,7 +1532,7 @@ export default function CoursePage({
               ))}
             </div>
 
-            <p className="text-sm text-green-700 mt-4 text-center">
+            <p className="text-sm text-theme-muted mt-4 text-center">
               Enroll to unlock step details and project options.
             </p>
           </div>

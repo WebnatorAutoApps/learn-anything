@@ -9,8 +9,8 @@ export default function PageLoader({ message = "Loading" }: { message?: string }
     <div className="terminal-screen min-h-screen font-mono">
       <div className="terminal-vignette" />
       <div className="relative z-10 flex items-center justify-center min-h-screen">
-        <div className="text-green-400 text-lg">
-          <span className="text-green-600">{">"}</span> {message}
+        <div className="text-theme-primary text-lg">
+          <span className="text-theme-secondary">{">"}</span> {message}
           <span className="typing-dots">
             <span className="dot">.</span>
             <span className="dot">.</span>
@@ -28,12 +28,12 @@ export default function PageLoader({ message = "Loading" }: { message?: string }
  */
 export function CourseCardSkeleton() {
   return (
-    <div className="rounded-lg border border-green-900/60 bg-green-950/20 p-6 animate-pulse">
+    <div className="rounded-lg border border-theme-border bg-theme-surface p-6 animate-pulse">
       <div className="flex items-center gap-4">
-        <div className="h-12 w-12 rounded-lg bg-green-900/40" />
+        <div className="h-12 w-12 rounded-lg bg-theme-surface-hover" />
         <div className="flex-1 min-w-0 space-y-2">
-          <div className="h-5 w-3/4 rounded bg-green-900/40" />
-          <div className="h-4 w-1/3 rounded bg-green-900/30" />
+          <div className="h-5 w-3/4 rounded bg-theme-surface-hover" />
+          <div className="h-4 w-1/3 rounded bg-theme-border" />
         </div>
       </div>
     </div>
@@ -62,12 +62,12 @@ export function CourseDetailSkeleton() {
       <div className="terminal-vignette" />
 
       {/* Header skeleton */}
-      <header className="relative z-20 border-b border-green-900/50">
+      <header className="relative z-20 border-b border-theme-border">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center gap-4">
-            <div className="h-5 w-16 rounded bg-green-900/40 animate-pulse" />
-            <div className="h-6 w-px bg-green-900/50" />
-            <div className="h-6 w-48 rounded bg-green-900/40 animate-pulse" />
+            <div className="h-5 w-16 rounded bg-theme-surface-hover animate-pulse" />
+            <div className="h-6 w-px bg-theme-border" />
+            <div className="h-6 w-48 rounded bg-theme-surface-hover animate-pulse" />
           </div>
         </div>
       </header>
@@ -75,9 +75,9 @@ export function CourseDetailSkeleton() {
       <main className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-8 animate-pulse">
         {/* Title */}
         <div className="mb-8 space-y-3">
-          <div className="h-8 w-2/3 rounded bg-green-900/40" />
-          <div className="h-5 w-full rounded bg-green-900/30" />
-          <div className="h-4 w-4/5 rounded bg-green-900/20" />
+          <div className="h-8 w-2/3 rounded bg-theme-surface-hover" />
+          <div className="h-5 w-full rounded bg-theme-border" />
+          <div className="h-4 w-4/5 rounded bg-theme-border" />
         </div>
 
         {/* Info grid */}
@@ -85,17 +85,17 @@ export function CourseDetailSkeleton() {
           {Array.from({ length: 4 }).map((_, i) => (
             <div
               key={i}
-              className="rounded-lg border border-green-900/60 bg-green-950/20 p-4 space-y-2"
+              className="rounded-lg border border-theme-border bg-theme-surface p-4 space-y-2"
             >
-              <div className="h-3 w-16 rounded bg-green-900/30" />
-              <div className="h-6 w-12 rounded bg-green-900/40" />
+              <div className="h-3 w-16 rounded bg-theme-border" />
+              <div className="h-6 w-12 rounded bg-theme-surface-hover" />
             </div>
           ))}
         </div>
 
         {/* Enroll button */}
         <div className="mb-8">
-          <div className="h-12 w-full rounded-lg bg-green-900/30" />
+          <div className="h-12 w-full rounded-lg bg-theme-border" />
         </div>
 
         {/* Step skeletons */}
@@ -103,12 +103,12 @@ export function CourseDetailSkeleton() {
           {Array.from({ length: 4 }).map((_, i) => (
             <div
               key={i}
-              className="rounded-lg border border-green-900/60 bg-green-950/20 p-4"
+              className="rounded-lg border border-theme-border bg-theme-surface p-4"
             >
               <div className="flex items-center gap-4">
-                <div className="h-8 w-8 rounded bg-green-900/40" />
+                <div className="h-8 w-8 rounded bg-theme-surface-hover" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-5 w-1/2 rounded bg-green-900/40" />
+                  <div className="h-5 w-1/2 rounded bg-theme-surface-hover" />
                 </div>
               </div>
             </div>

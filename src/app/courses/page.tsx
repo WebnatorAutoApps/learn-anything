@@ -16,14 +16,14 @@ function MyCoursesTab() {
 
   if (courses.length === 0) {
     return (
-      <div className="rounded-lg border border-green-900/60 bg-green-950/20 p-8 text-center">
-        <p className="text-green-600 mb-4">
+      <div className="rounded-lg border border-theme-border bg-theme-surface p-8 text-center">
+        <p className="text-theme-muted mb-4">
           No learning paths yet. Create your first learning path from the
           Dashboard.
         </p>
         <button
           onClick={() => router.push("/")}
-          className="px-4 py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/30 transition-colors"
+          className="px-4 py-2 rounded-lg border border-theme-border text-theme-primary hover:bg-theme-surface-hover transition-colors"
         >
           Go to Dashboard
         </button>
@@ -36,23 +36,23 @@ function MyCoursesTab() {
       {courses.map((course) => (
         <div
           key={course.id}
-          className="group relative overflow-hidden rounded-lg border border-green-900/60 bg-green-950/20 p-6 transition-all hover:border-green-500/70 hover:bg-green-950/40"
+          className="group relative overflow-hidden rounded-lg border border-theme-border bg-theme-surface p-6 transition-all hover:border-theme-primary hover:bg-theme-surface-hover"
         >
           <button
             onClick={() => router.push(`/course/${course.id}`)}
             className="w-full text-left"
           >
             <div className="flex items-center gap-4 mb-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-green-800/50 bg-green-950/50">
-                <span className="text-lg font-bold text-green-400">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-theme-border bg-theme-surface">
+                <span className="text-lg font-bold text-theme-primary">
                   {course.normalized_title.charAt(0)}
                 </span>
               </div>
               <div className="min-w-0 flex-1">
-                <h3 className="text-lg font-semibold text-green-400 truncate">
+                <h3 className="text-lg font-semibold text-theme-primary truncate">
                   {course.normalized_title}
                 </h3>
-                <p className="text-sm text-green-700">
+                <p className="text-sm text-theme-muted">
                   {course.total_modules} steps
                 </p>
               </div>
@@ -61,14 +61,14 @@ function MyCoursesTab() {
           {course.isEnrolled ? (
             <button
               disabled
-              className="w-full px-4 py-2 rounded-lg border border-green-900/60 bg-green-950/30 text-green-600 font-semibold text-sm cursor-default opacity-70"
+              className="w-full px-4 py-2 rounded-lg border border-theme-border bg-theme-surface text-theme-muted font-semibold text-sm cursor-default opacity-70"
             >
               Already Enrolled
             </button>
           ) : (
             <button
               onClick={() => router.push(`/course/${course.id}`)}
-              className="w-full px-4 py-2 rounded-lg bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors text-sm"
+              className="w-full px-4 py-2 rounded-lg bg-theme-accent text-theme-text-on-accent font-semibold hover:bg-theme-primary-hover transition-colors text-sm"
             >
               Start Learning Path
             </button>
@@ -83,9 +83,9 @@ function PublicCoursesTab() {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-4">
       {/* Globe/network illustration */}
-      <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-green-900/60 bg-green-950/30">
+      <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-theme-border bg-theme-surface">
         <svg
-          className="h-10 w-10 text-green-600"
+          className="h-10 w-10 text-theme-muted"
           fill="none"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -98,10 +98,10 @@ function PublicCoursesTab() {
           <path d="M12 3a15.3 15.3 0 014 9 15.3 15.3 0 01-4 9 15.3 15.3 0 01-4-9 15.3 15.3 0 014-9z" />
         </svg>
       </div>
-      <h3 className="text-xl font-semibold text-green-400 mb-2 tracking-wide">
+      <h3 className="text-xl font-semibold text-theme-primary mb-2 tracking-wide">
         Nothing here yet
       </h3>
-      <p className="text-green-600 text-center max-w-md">
+      <p className="text-theme-muted text-center max-w-md">
         Public learning paths are coming soon &mdash; stay tuned!
       </p>
     </div>
@@ -139,12 +139,12 @@ function CoursesPageContent() {
       <div className="terminal-vignette" />
 
       {/* Top Bar */}
-      <header className="relative z-20 border-b border-green-900/50">
+      <header className="relative z-20 border-b border-theme-border">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center gap-4">
             <button
               onClick={() => router.push("/")}
-              className="text-green-600 hover:text-green-400 transition-colors flex items-center gap-2"
+              className="text-theme-muted hover:text-theme-primary transition-colors flex items-center gap-2"
             >
               <svg
                 className="h-5 w-5"
@@ -159,8 +159,8 @@ function CoursesPageContent() {
               </svg>
               <span className="text-sm">Dashboard</span>
             </button>
-            <div className="h-6 w-px bg-green-900/50" />
-            <h1 className="text-xl font-semibold text-green-400 tracking-wider">
+            <div className="h-6 w-px bg-theme-surface-hover" />
+            <h1 className="text-xl font-semibold text-theme-primary tracking-wider">
               Browse Learning Paths
             </h1>
           </div>
@@ -170,7 +170,7 @@ function CoursesPageContent() {
       <main className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
         {/* Tabs */}
         <div className="mb-8" role="tablist" aria-label="Learning paths tabs">
-          <div className="flex border-b border-green-900/50">
+          <div className="flex border-b border-theme-border">
             {tabs.map((tab) => (
               <button
                 key={tab.key}
@@ -180,13 +180,13 @@ function CoursesPageContent() {
                 onClick={() => setActiveTab(tab.key)}
                 className={`px-6 py-3 text-sm font-medium transition-colors relative ${
                   activeTab === tab.key
-                    ? "text-green-400"
-                    : "text-green-700 hover:text-green-500"
+                    ? "text-theme-primary"
+                    : "text-theme-muted hover:text-theme-secondary"
                 }`}
               >
                 {tab.label}
                 {activeTab === tab.key && (
-                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-green-400" />
+                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-theme-primary" />
                 )}
               </button>
             ))}

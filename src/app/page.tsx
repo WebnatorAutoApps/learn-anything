@@ -201,10 +201,10 @@ export default function Home() {
       <div className="terminal-vignette" />
 
       {/* Top Bar */}
-      <header className="relative z-20 border-b border-green-900/50">
+      <header className="relative z-20 border-b border-theme-border">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
-            <h1 className="text-xl font-semibold text-green-400 tracking-wider">
+            <h1 className="text-xl font-semibold text-theme-primary tracking-wider">
               Learn Anything
             </h1>
             <div className="relative flex items-center">
@@ -212,10 +212,10 @@ export default function Home() {
                 ref={avatarRef}
                 onClick={handleAvatarClick}
                 onMouseEnter={handleAvatarMouseEnter}
-                className="h-10 w-10 rounded-full border-2 border-green-500 bg-green-950 flex items-center justify-center text-green-400 font-semibold cursor-pointer hover:border-green-400 hover:bg-green-950/50 transition-colors overflow-hidden"
+                className="h-10 w-10 rounded-full border-2 border-theme-primary bg-theme-surface flex items-center justify-center text-theme-primary font-semibold cursor-pointer hover:border-theme-primary hover:bg-theme-surface-hover transition-colors overflow-hidden"
               >
                 {profileLoading ? (
-                  <div className="h-full w-full bg-green-900/40 animate-pulse rounded-full" />
+                  <div className="h-full w-full bg-theme-surface-hover animate-pulse rounded-full" />
                 ) : avatarUrl ? (
                   <img
                     src={avatarUrl}
@@ -233,10 +233,10 @@ export default function Home() {
                 <div
                   ref={menuRef}
                   onMouseLeave={handleMenuMouseLeave}
-                  className="absolute right-0 top-full mt-2 w-48 rounded-lg border border-green-900/60 bg-green-950/95 shadow-lg shadow-green-900/20 overflow-hidden"
+                  className="absolute right-0 top-full mt-2 w-48 rounded-lg border border-theme-border bg-theme-surface shadow-lg shadow-[color:var(--t-glow)] overflow-hidden"
                 >
                   {profile?.username && (
-                    <div className="px-4 py-3 text-green-400 text-sm font-semibold border-b border-green-900/60 truncate">
+                    <div className="px-4 py-3 text-theme-primary text-sm font-semibold border-b border-theme-border truncate">
                       @{profile.username}
                     </div>
                   )}
@@ -245,7 +245,7 @@ export default function Home() {
                       setIsMenuOpen(false);
                       router.push("/courses");
                     }}
-                    className="w-full px-4 py-3 text-left text-green-400 hover:bg-green-900/50 transition-colors flex items-center gap-2"
+                    className="w-full px-4 py-3 text-left text-theme-primary hover:bg-theme-surface-hover transition-colors flex items-center gap-2"
                   >
                     <svg
                       className="h-4 w-4"
@@ -262,7 +262,7 @@ export default function Home() {
                   </button>
                   <button
                     onClick={handleSettingsClick}
-                    className="w-full px-4 py-3 text-left text-green-400 hover:bg-green-900/50 transition-colors flex items-center gap-2"
+                    className="w-full px-4 py-3 text-left text-theme-primary hover:bg-theme-surface-hover transition-colors flex items-center gap-2"
                   >
                     <svg
                       className="h-4 w-4"
@@ -279,7 +279,7 @@ export default function Home() {
                   </button>
                   <button
                     onClick={handleLogoutClick}
-                    className="w-full px-4 py-3 text-left text-green-400 hover:bg-green-900/50 transition-colors flex items-center gap-2"
+                    className="w-full px-4 py-3 text-left text-theme-primary hover:bg-theme-surface-hover transition-colors flex items-center gap-2"
                   >
                     <svg
                       className="h-4 w-4"
@@ -342,18 +342,18 @@ export default function Home() {
       <main className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h2 className="text-2xl font-semibold text-green-400 mb-2 tracking-wide">
-              <span className="text-green-600">{">"}</span> What do you want to
+            <h2 className="text-2xl font-semibold text-theme-primary mb-2 tracking-wide">
+              <span className="text-theme-secondary">{">"}</span> What do you want to
               learn today?
-              <span className="inline-block w-2.5 h-5 bg-green-400 ml-1 animate-pulse align-middle" />
+              <span className="inline-block w-2.5 h-5 bg-theme-primary ml-1 animate-pulse align-middle" />
             </h2>
-            <p className="text-green-600">
+            <p className="text-theme-muted">
               Your active learning paths. Continue where you left off.
             </p>
           </div>
           <button
             onClick={() => router.push("/courses")}
-            className="w-full sm:w-auto sm:flex-shrink-0 px-4 py-3 sm:py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/30 transition-colors text-sm flex items-center justify-center sm:justify-start gap-2"
+            className="w-full sm:w-auto sm:flex-shrink-0 px-4 py-3 sm:py-2 rounded-lg border border-theme-border text-theme-primary hover:bg-theme-surface-hover transition-colors text-sm flex items-center justify-center sm:justify-start gap-2"
           >
             <svg
               className="h-4 w-4"
@@ -380,19 +380,19 @@ export default function Home() {
               <button
                 key={course.id}
                 onClick={() => router.push(`/course/${course.id}`)}
-                className="group relative overflow-hidden rounded-lg border border-green-900/60 bg-green-950/20 p-6 text-left transition-all hover:shadow-[0_0_15px_rgba(0,255,65,0.15)] hover:border-green-500/70 hover:bg-green-950/40"
+                className="group relative overflow-hidden rounded-lg border border-theme-border bg-theme-surface p-6 text-left transition-all hover:shadow-[0_0_15px_var(--t-glow)] hover:border-theme-primary hover:bg-theme-surface-hover"
               >
                 <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-green-800/50 bg-green-950/50">
-                    <span className="text-lg font-bold text-green-400">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-theme-border bg-theme-surface">
+                    <span className="text-lg font-bold text-theme-primary">
                       {course.normalized_title.charAt(0)}
                     </span>
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="text-lg font-semibold text-green-400 truncate">
+                    <h3 className="text-lg font-semibold text-theme-primary truncate">
                       {course.normalized_title}
                     </h3>
-                    <p className="text-sm text-green-700">
+                    <p className="text-sm text-theme-muted">
                       {course.total_modules} steps
                     </p>
                   </div>
@@ -403,12 +403,12 @@ export default function Home() {
             {/* Add New Button */}
             <button
               onClick={handleLearnClick}
-              className="group relative overflow-hidden rounded-lg border-2 border-dashed border-green-900/50 bg-green-950/10 p-6 text-left transition-all hover:border-green-600/50 hover:bg-green-950/30"
+              className="group relative overflow-hidden rounded-lg border-2 border-dashed border-theme-border bg-theme-bg p-6 text-left transition-all hover:border-theme-primary hover:bg-theme-surface-hover"
             >
               <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-green-800/50 bg-green-950/50">
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-theme-border bg-theme-surface">
                   <svg
-                    className="h-6 w-6 text-green-600"
+                    className="h-6 w-6 text-theme-secondary"
                     fill="none"
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -420,10 +420,10 @@ export default function Home() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-green-400">
+                  <h3 className="text-lg font-semibold text-theme-primary">
                     Learn Something New
                   </h3>
-                  <p className="text-sm text-green-700">
+                  <p className="text-sm text-theme-muted">
                     Add a new topic
                   </p>
                 </div>
@@ -448,11 +448,11 @@ export default function Home() {
             className="absolute inset-0 bg-black/70"
             onClick={() => setShowApiKeyWarning(false)}
           />
-          <div className="relative z-10 w-full max-w-md mx-4 rounded-lg border border-green-900/60 bg-green-950/95 p-6 shadow-lg shadow-green-900/30">
-            <h3 className="text-lg font-semibold text-green-400 mb-2">
+          <div className="relative z-10 w-full max-w-md mx-4 rounded-lg border border-theme-border bg-theme-surface p-6 shadow-lg shadow-[color:var(--t-glow)]">
+            <h3 className="text-lg font-semibold text-theme-primary mb-2">
               API Key Required
             </h3>
-            <p className="text-green-600 mb-6">
+            <p className="text-theme-muted mb-6">
               You don&apos;t have an API key configured. We won&apos;t be able
               to create a learning path for you. Please go to Settings to add
               one.
@@ -460,13 +460,13 @@ export default function Home() {
             <div className="flex gap-3 justify-end">
               <button
                 onClick={() => setShowApiKeyWarning(false)}
-                className="px-4 py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/30 transition-colors"
+                className="px-4 py-2 rounded-lg border border-theme-border text-theme-primary hover:bg-theme-surface-hover transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleApiKeyWarningGoToSettings}
-                className="px-4 py-2 rounded-lg bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors"
+                className="px-4 py-2 rounded-lg bg-theme-accent text-theme-text-on-accent font-semibold hover:bg-theme-primary-hover transition-colors"
               >
                 Go to Settings
               </button>
@@ -501,25 +501,25 @@ export default function Home() {
           />
 
           {/* Dialog */}
-          <div className="relative z-10 w-full max-w-md mx-4 rounded-lg border border-green-900/60 bg-green-950/95 p-6 shadow-lg shadow-green-900/30">
-            <h3 className="text-lg font-semibold text-green-400 mb-2">
+          <div className="relative z-10 w-full max-w-md mx-4 rounded-lg border border-theme-border bg-theme-surface p-6 shadow-lg shadow-[color:var(--t-glow)]">
+            <h3 className="text-lg font-semibold text-theme-primary mb-2">
               Confirm Logout
             </h3>
-            <p className="text-green-600 mb-6">
+            <p className="text-theme-muted mb-6">
               Are you sure you want to log out?
             </p>
 
             <div className="flex gap-3 justify-end">
               <button
                 onClick={handleCancelLogout}
-                className="px-4 py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/30 transition-colors"
+                className="px-4 py-2 rounded-lg border border-theme-border text-theme-primary hover:bg-theme-surface-hover transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleConfirmLogout}
                 disabled={isLoggingOut}
-                className="px-4 py-2 rounded-lg bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 rounded-lg bg-theme-accent text-theme-text-on-accent font-semibold hover:bg-theme-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoggingOut ? "Logging out..." : "Logout"}
               </button>

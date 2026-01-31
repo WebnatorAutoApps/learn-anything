@@ -46,7 +46,7 @@ function ProjectRow({
   const dueStatus = getDueStatus(project.dueDate);
 
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-green-900/40 bg-green-950/20 px-4 py-3 transition-colors hover:bg-green-950/40 hover:border-green-700/50 group">
+    <div className="flex items-center gap-3 rounded-lg border border-theme-border bg-theme-surface px-4 py-3 transition-colors hover:bg-theme-surface-hover hover:border-theme-border-strong group">
       {/* Checkbox */}
       <button
         onClick={(e) => {
@@ -54,12 +54,12 @@ function ProjectRow({
           onComplete(project);
         }}
         disabled={isCompleting}
-        className="flex-shrink-0 h-5 w-5 rounded border border-green-700/60 bg-green-950/50 hover:border-green-500 hover:bg-green-900/30 transition-colors disabled:opacity-50 flex items-center justify-center"
+        className="flex-shrink-0 h-5 w-5 rounded border border-theme-border bg-theme-surface hover:border-theme-primary hover:bg-theme-surface-hover transition-colors disabled:opacity-50 flex items-center justify-center"
         aria-label={`Mark "${project.title}" as complete`}
       >
         {isCompleting && (
           <svg
-            className="animate-spin h-3 w-3 text-green-400"
+            className="animate-spin h-3 w-3 text-theme-primary"
             viewBox="0 0 24 24"
             fill="none"
           >
@@ -86,15 +86,15 @@ function ProjectRow({
         className="flex-1 min-w-0 text-left"
       >
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-sm font-semibold text-green-400 truncate">
+          <span className="text-sm font-semibold text-theme-primary truncate">
             {project.title}
           </span>
-          <span className="text-xs text-green-700">
+          <span className="text-xs text-theme-muted">
             {project.courseName}
           </span>
         </div>
         <div className="flex items-center gap-2 mt-0.5">
-          <span className="text-xs text-green-800">
+          <span className="text-xs text-theme-primary-faint">
             Step {project.moduleIndex} &middot; Project {project.projectIndex}
           </span>
           {project.dueDate ? (
@@ -104,21 +104,21 @@ function ProjectRow({
                   ? "text-red-400"
                   : dueStatus === "soon"
                     ? "text-yellow-500"
-                    : "text-green-700"
+                    : "text-theme-muted"
               }`}
             >
               {dueStatus === "overdue" ? "Overdue — " : "Due "}
               {formatDueDate(project.dueDate)}
             </span>
           ) : (
-            <span className="text-xs text-green-800 italic">No due date</span>
+            <span className="text-xs text-theme-primary-faint italic">No due date</span>
           )}
         </div>
       </button>
 
       {/* Arrow icon */}
       <svg
-        className="h-4 w-4 text-green-800 group-hover:text-green-500 flex-shrink-0 transition-colors"
+        className="h-4 w-4 text-theme-primary-faint group-hover:text-theme-secondary flex-shrink-0 transition-colors"
         fill="none"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -159,10 +159,10 @@ export default function UpcomingProjectsBanner() {
   const hasMore = projects.length > visibleCount;
 
   return (
-    <div className="mb-8 rounded-lg border border-green-900/60 bg-green-950/30 p-5">
+    <div className="mb-8 rounded-lg border border-theme-border bg-theme-surface p-5">
       <div className="flex items-center gap-2 mb-4">
         <svg
-          className="h-5 w-5 text-green-500"
+          className="h-5 w-5 text-theme-secondary"
           fill="none"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -172,10 +172,10 @@ export default function UpcomingProjectsBanner() {
         >
           <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
         </svg>
-        <h3 className="text-lg font-semibold text-green-400 tracking-wide">
+        <h3 className="text-lg font-semibold text-theme-primary tracking-wide">
           Upcoming Projects
         </h3>
-        <span className="text-xs text-green-700 ml-1">
+        <span className="text-xs text-theme-muted ml-1">
           ({projects.length} remaining)
         </span>
       </div>
@@ -194,7 +194,7 @@ export default function UpcomingProjectsBanner() {
       {hasMore && (
         <button
           onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
-          className="mt-3 w-full py-2 text-sm text-green-600 hover:text-green-400 transition-colors border border-green-900/40 rounded-lg hover:bg-green-950/30"
+          className="mt-3 w-full py-2 text-sm text-theme-muted hover:text-theme-primary transition-colors border border-theme-border rounded-lg hover:bg-theme-surface-hover"
         >
           Show more ({projects.length - visibleCount} remaining)
         </button>

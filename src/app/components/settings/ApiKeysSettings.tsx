@@ -62,13 +62,13 @@ export default function ApiKeysSettings({ profile }: ApiKeysSettingsProps) {
         {/* Gemini API Key Section */}
         <div className="space-y-3">
           <div className="flex items-center gap-2">
-            <label className="text-sm font-medium text-green-400">
+            <label className="text-sm font-medium text-theme-primary">
               Gemini API Key
             </label>
             <button
               type="button"
               onClick={() => setShowSecurityInfo(true)}
-              className="flex h-5 w-5 items-center justify-center rounded-full text-green-700 hover:text-green-400 hover:bg-green-900/40 transition-colors"
+              className="flex h-5 w-5 items-center justify-center rounded-full text-theme-muted hover:text-theme-primary hover:bg-theme-surface-hover transition-colors"
               aria-label="API key security information"
             >
               <svg
@@ -85,14 +85,14 @@ export default function ApiKeysSettings({ profile }: ApiKeysSettingsProps) {
             </button>
           </div>
 
-          <p className="text-xs text-green-700">
+          <p className="text-xs text-theme-muted">
             This key is used to generate learning plans and communicate
             with the Gemini API. You can get one from{" "}
             <a
               href="https://aistudio.google.com/apikey"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-green-500 underline hover:text-green-400"
+              className="text-theme-secondary underline hover:text-theme-primary"
             >
               Google AI Studio
             </a>
@@ -101,11 +101,11 @@ export default function ApiKeysSettings({ profile }: ApiKeysSettingsProps) {
 
           {/* Show masked key if one exists */}
           {hasExistingKey && maskedKey && (
-            <div className="flex items-center gap-2 rounded-lg border border-green-900/40 bg-green-950/40 px-3 py-2">
-              <span className="text-green-600 text-sm font-mono flex-1">
+            <div className="flex items-center gap-2 rounded-lg border border-theme-border bg-theme-surface px-3 py-2">
+              <span className="text-theme-muted text-sm font-mono flex-1">
                 {maskedKey}
               </span>
-              <span className="text-xs text-green-800">
+              <span className="text-xs text-theme-primary-faint">
                 (currently set)
               </span>
             </div>
@@ -121,7 +121,7 @@ export default function ApiKeysSettings({ profile }: ApiKeysSettingsProps) {
                 ? "Enter a new key to replace the current one"
                 : "Enter your Gemini API key"
             }
-            className="w-full rounded-lg border border-green-900/60 bg-green-950/40 px-3 py-2 text-green-300 placeholder-green-800 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500 transition-colors font-mono text-sm"
+            className="w-full rounded-lg border border-theme-border bg-theme-surface px-3 py-2 text-theme-primary placeholder-theme-primary-faint focus:border-theme-primary focus:outline-none focus:ring-1 focus:ring-theme-primary transition-colors font-mono text-sm"
           />
         </div>
 
@@ -130,7 +130,7 @@ export default function ApiKeysSettings({ profile }: ApiKeysSettingsProps) {
           <p
             className={`text-sm ${
               message.type === "success"
-                ? "text-green-400"
+                ? "text-theme-primary"
                 : "text-red-400"
             }`}
           >
@@ -143,14 +143,14 @@ export default function ApiKeysSettings({ profile }: ApiKeysSettingsProps) {
           <button
             onClick={handleClear}
             disabled={!hasExistingKey || saveMutation.isPending}
-            className="px-4 py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/30 transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
+            className="px-4 py-2 rounded-lg border border-theme-border text-theme-primary hover:bg-theme-surface-hover transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
           >
             {saveMutation.isPending ? "Clearing..." : "Clear Key"}
           </button>
           <button
             onClick={handleSave}
             disabled={!apiKey.trim() || saveMutation.isPending}
-            className="px-4 py-2 rounded-lg bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
+            className="px-4 py-2 rounded-lg bg-theme-accent text-theme-text-on-accent font-semibold hover:bg-theme-primary-hover transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
           >
             {saveMutation.isPending ? "Saving..." : "Save Key"}
           </button>
