@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback, useSyncExternalStore } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo, useSyncExternalStore } from "react";
 import Link from "next/link";
 import ScrollReveal from "@/app/components/ScrollReveal";
 import LanguageSwitcher from "@/app/components/LanguageSwitcher";
@@ -345,12 +345,16 @@ const SLIDE_DURATION = 6000; // ms per slide
 function HeroSection() {
   const mounted = useMounted();
   const prefersReducedMotion = useReducedMotion();
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const hero = t.hero as Record<string, string | Record<string, string>>;
   const skillWords = hero.skillWords as Record<string, string>;
   const anythingText = hero.anything as string;
 
-  const wordQueue = buildWordQueue(skillWords, anythingText);
+  const wordQueue = useMemo(
+    () => buildWordQueue(skillWords, anythingText),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- recalculate only when locale changes
+    [locale],
+  );
   const { displayText, currentColor } = useTypewriter(
     prefersReducedMotion,
     wordQueue,
