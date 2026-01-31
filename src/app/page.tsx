@@ -222,6 +222,11 @@ export default function Home() {
                   onMouseLeave={handleMenuMouseLeave}
                   className="absolute right-0 top-full mt-2 w-48 rounded-lg border border-green-900/60 bg-green-950/95 shadow-lg shadow-green-900/20 overflow-hidden"
                 >
+                  {profile?.username && (
+                    <div className="px-4 py-3 text-green-400 text-sm font-semibold border-b border-green-900/60 truncate">
+                      @{profile.username}
+                    </div>
+                  )}
                   <button
                     onClick={() => {
                       setIsMenuOpen(false);
