@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useSyncExternalStore } from "react";
+import { useState, useEffect, useRef, useSyncExternalStore } from "react";
 import Link from "next/link";
 import ScrollReveal from "@/app/components/ScrollReveal";
 
@@ -12,6 +12,119 @@ function useMounted() {
     () => true,
     () => false
   );
+}
+
+/* ───────────────────── Typewriter hook ───────────────────── */
+
+interface SkillWord {
+  text: string;
+  color: string;
+  isAnything: boolean;
+}
+
+const SKILL_WORDS: { text: string; color: string }[] = [
+  { text: "cooking", color: "#f97316" },       // orange
+  { text: "coding", color: "#22c55e" },         // green
+  { text: "music", color: "#a855f7" },          // purple
+  { text: "saxophone", color: "#eab308" },      // gold
+  { text: "woodworking", color: "#a16207" },    // brown
+  { text: "electronics", color: "#06b6d4" },    // cyan
+  { text: "crafts", color: "#ec4899" },         // pink
+  { text: "photography", color: "#f87171" },    // coral
+  { text: "languages", color: "#14b8a6" },      // teal
+  { text: "pottery", color: "#d97706" },        // amber
+  { text: "chess", color: "#8b5cf6" },          // violet
+  { text: "filmmaking", color: "#f43f5e" },     // rose
+  { text: "robotics", color: "#3b82f6" },       // blue
+  { text: "calligraphy", color: "#c084fc" },    // light purple
+  { text: "gardening", color: "#4ade80" },      // light green
+  { text: "animation", color: "#fb923c" },      // light orange
+  { text: "astronomy", color: "#60a5fa" },      // light blue
+];
+
+function buildWordQueue(): SkillWord[] {
+  const queue: SkillWord[] = [];
+  for (let i = 0; i < SKILL_WORDS.length; i++) {
+    queue.push({ ...SKILL_WORDS[i], isAnything: false });
+    if ((i + 1) % 2 === 0) {
+      queue.push({ text: "Anything", color: "#ffffff", isAnything: true });
+    }
+  }
+  // If the last batch had an odd word, add a trailing "Anything"
+  if (SKILL_WORDS.length % 2 !== 0) {
+    queue.push({ text: "Anything", color: "#ffffff", isAnything: true });
+  }
+  return queue;
+}
+
+const WORD_QUEUE = buildWordQueue();
+
+const TYPE_SPEED = 80;
+const DELETE_SPEED = 50;
+const PAUSE_NORMAL = 1000;
+const PAUSE_ANYTHING = 2000;
+
+function useTypewriter(prefersReducedMotion: boolean) {
+  const [displayText, setDisplayText] = useState("");
+  const [currentColor, setCurrentColor] = useState("#ffffff");
+  const wordIndexRef = useRef(0);
+  const charIndexRef = useRef(0);
+  const isDeletingRef = useRef(false);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (prefersReducedMotion) {
+      return;
+    }
+
+    function tick() {
+      const word = WORD_QUEUE[wordIndexRef.current];
+      const fullText = word.text;
+
+      if (!isDeletingRef.current) {
+        // Typing
+        charIndexRef.current++;
+        setDisplayText(fullText.slice(0, charIndexRef.current));
+        setCurrentColor(word.color);
+
+        if (charIndexRef.current === fullText.length) {
+          // Pause then start deleting
+          const pause = word.isAnything ? PAUSE_ANYTHING : PAUSE_NORMAL;
+          timeoutRef.current = setTimeout(() => {
+            isDeletingRef.current = true;
+            tick();
+          }, pause);
+          return;
+        }
+        timeoutRef.current = setTimeout(tick, TYPE_SPEED);
+      } else {
+        // Deleting
+        charIndexRef.current--;
+        setDisplayText(fullText.slice(0, charIndexRef.current));
+
+        if (charIndexRef.current === 0) {
+          isDeletingRef.current = false;
+          wordIndexRef.current = (wordIndexRef.current + 1) % WORD_QUEUE.length;
+          // Small pause before typing next word
+          timeoutRef.current = setTimeout(tick, TYPE_SPEED * 2);
+          return;
+        }
+        timeoutRef.current = setTimeout(tick, DELETE_SPEED);
+      }
+    }
+
+    timeoutRef.current = setTimeout(tick, TYPE_SPEED);
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, [prefersReducedMotion]);
+
+  // When reduced motion is preferred, show static "Anything" text
+  if (prefersReducedMotion) {
+    return { displayText: "Anything", currentColor: "#ffffff" };
+  }
+
+  return { displayText, currentColor };
 }
 
 /* ───────────────────── Navbar ───────────────────── */
@@ -46,7 +159,9 @@ function Navbar() {
           {/* Logo */}
           <Link
             href="/landing"
-            className="flex items-center gap-2 text-xl font-bold text-gray-900"
+            className={`flex items-center gap-2 text-xl font-bold transition-colors duration-300 ${
+              scrolled ? "text-gray-900" : "text-white"
+            }`}
           >
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-600 text-white text-sm font-bold">
               LA
@@ -60,7 +175,11 @@ function Navbar() {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-gray-600 hover:text-green-600 transition-colors"
+                className={`text-sm font-medium transition-colors ${
+                  scrolled
+                    ? "text-gray-600 hover:text-green-600"
+                    : "text-white/80 hover:text-white"
+                }`}
               >
                 {link.label}
               </a>
@@ -71,7 +190,11 @@ function Navbar() {
           <div className="hidden md:flex items-center gap-3">
             <Link
               href="/login"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:text-green-600 transition-colors"
+              className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                scrolled
+                  ? "text-gray-700 hover:text-green-600"
+                  : "text-white/90 hover:text-white"
+              }`}
             >
               Log in
             </Link>
@@ -86,7 +209,9 @@ function Navbar() {
           {/* Mobile hamburger */}
           <button
             type="button"
-            className="md:hidden p-2 text-gray-700"
+            className={`md:hidden p-2 transition-colors ${
+              scrolled ? "text-gray-700" : "text-white"
+            }`}
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle menu"
           >
@@ -150,72 +275,110 @@ function Navbar() {
 
 /* ───────────────────── Hero Section ───────────────────── */
 
+function useReducedMotion() {
+  return useSyncExternalStore(
+    (callback) => {
+      const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+      mq.addEventListener("change", callback);
+      return () => mq.removeEventListener("change", callback);
+    },
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    () => false
+  );
+}
+
 function HeroSection() {
   const mounted = useMounted();
+  const prefersReducedMotion = useReducedMotion();
+  const { displayText, currentColor } = useTypewriter(prefersReducedMotion);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Ensure video plays on mount (some browsers need a nudge)
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video && !prefersReducedMotion) {
+      video.play().catch(() => {
+        // Autoplay blocked — poster image will show
+      });
+    }
+  }, [prefersReducedMotion]);
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-green-50 to-white pt-28 pb-20 sm:pt-36 sm:pb-28">
-      {/* Decorative blobs */}
-      <div className="absolute -top-32 -right-32 h-96 w-96 rounded-full bg-green-200/40 blur-3xl" />
-      <div className="absolute -bottom-32 -left-32 h-96 w-96 rounded-full bg-green-100/50 blur-3xl" />
+    <section
+      className="relative h-screen w-full overflow-hidden bg-gradient-to-br from-gray-950 via-gray-900 to-green-950"
+      aria-label="Learn anything — cooking, coding, music, and more"
+    >
+      {/* Background video */}
+      {!prefersReducedMotion && (
+        <video
+          ref={videoRef}
+          className="absolute inset-0 h-full w-full object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+        >
+          <source src="/hero-video.mp4" type="video/mp4" />
+          <source src="/hero-video.webm" type="video/webm" />
+        </video>
+      )}
 
-      <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6">
+      {/* Dark overlay for text readability */}
+      <div className="absolute inset-0 bg-black/50" />
+
+      {/* Content */}
+      <div className="relative z-10 flex h-full flex-col justify-center px-6 sm:px-12 lg:px-20">
         <div
-          className={`transition-all duration-700 ${
+          className={`max-w-4xl transition-all duration-700 ${
             mounted
               ? "opacity-100 translate-y-0"
               : "opacity-0 translate-y-8"
           }`}
         >
-          <span className="inline-block rounded-full bg-green-100 px-4 py-1.5 text-sm font-semibold text-green-700 mb-6">
-            AI-Powered Learning — 100% Free Forever
-          </span>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 leading-tight">
-            Learn{" "}
-            <span className="text-green-600">Literally Anything</span>
+          <h1 className="text-5xl sm:text-7xl lg:text-8xl font-extrabold tracking-tight text-white leading-none">
+            Learn
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg sm:text-xl text-gray-600 leading-relaxed">
-            Tell our expert AI instructors what you want to learn, answer a few
-            questions, and get a personalized hands-on learning path built just
-            for you — from astrophotography to salsa dancing, 3D printing to
-            ancient philosophy, anything you can imagine.
+          <div className="mt-2 sm:mt-4 min-h-[1.2em] text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-none">
+            <span style={{ color: currentColor }} className="typewriter-text">
+              {displayText}
+            </span>
+            <span className="typewriter-cursor" aria-hidden="true" />
+          </div>
+
+          <p className="mt-8 max-w-xl text-base sm:text-lg text-white/70 leading-relaxed">
+            Stop watching. Start doing. Master real skills through hands-on
+            projects — completely free.
           </p>
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+
+          <div className="mt-10 flex flex-col sm:flex-row items-start gap-4">
             <Link
               href="/signup"
-              className="w-full sm:w-auto rounded-xl bg-green-600 px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-green-600/25 hover:bg-green-700 hover:shadow-green-700/25 transition-all"
+              className="rounded-xl bg-green-600 px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-green-600/25 hover:bg-green-700 hover:shadow-green-700/25 transition-all"
             >
               Start Learning for Free
             </Link>
             <a
               href="#how-it-works"
-              className="w-full sm:w-auto rounded-xl border border-gray-300 bg-white px-8 py-3.5 text-base font-semibold text-gray-700 hover:border-green-300 hover:text-green-600 transition-all"
+              className="rounded-xl border border-white/30 px-8 py-3.5 text-base font-semibold text-white hover:border-white/60 hover:bg-white/10 transition-all"
             >
               See How It Works
             </a>
           </div>
         </div>
+      </div>
 
-        {/* Stats bar */}
-        <div
-          className={`mt-16 grid grid-cols-3 gap-6 sm:gap-8 transition-all duration-700 delay-300 ${
-            mounted
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-8"
-          }`}
-        >
-          {[
-            { number: "\u221E", label: "Possible Topics" },
-            { number: "100%", label: "Personalized by AI" },
-            { number: "$0", label: "Always Free" },
-          ].map((stat) => (
-            <div key={stat.label} className="text-center">
-              <div className="text-2xl sm:text-3xl font-bold text-green-600">
-                {stat.number}
-              </div>
-              <div className="mt-1 text-sm text-gray-500">{stat.label}</div>
-            </div>
-          ))}
+      {/* Scroll indicator */}
+      <div
+        className={`absolute bottom-8 left-1/2 -translate-x-1/2 z-10 transition-all duration-700 delay-500 ${
+          mounted ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <div className="flex flex-col items-center gap-2 text-white/50">
+          <span className="text-xs font-medium tracking-widest uppercase">Scroll</span>
+          <svg className="h-5 w-5 animate-bounce" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
         </div>
       </div>
     </section>

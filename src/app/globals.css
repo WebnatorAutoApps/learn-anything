@@ -197,6 +197,30 @@ body {
   transform: scale(1);
 }
 
+/* ───────── Typewriter Cursor ───────── */
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.typewriter-cursor {
+  display: inline-block;
+  width: 4px;
+  height: 0.9em;
+  background: white;
+  margin-left: 4px;
+  vertical-align: baseline;
+  animation: cursor-blink 0.7s step-end infinite;
+}
+
+@media (min-width: 640px) {
+  .typewriter-cursor {
+    width: 5px;
+    margin-left: 6px;
+  }
+}
+
 /* Respect prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   .scroll-reveal,
@@ -206,5 +230,10 @@ body {
     opacity: 1;
     transform: none;
     transition: none;
+  }
+
+  .typewriter-cursor {
+    animation: none;
+    opacity: 1;
   }
 }
