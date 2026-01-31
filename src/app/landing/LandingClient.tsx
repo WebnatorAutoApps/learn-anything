@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useSyncExternalStore } from "react";
+import { useState, useEffect, useRef, useCallback, useSyncExternalStore } from "react";
 import Link from "next/link";
 import ScrollReveal from "@/app/components/ScrollReveal";
 
@@ -287,42 +287,85 @@ function useReducedMotion() {
   );
 }
 
+/* ── Hero background images (Unsplash – free to use) ── */
+
+const HERO_IMAGES = [
+  {
+    src: "https://images.unsplash.com/photo-1502680390548-bdbac40b3298?auto=format&fit=crop&w=1920&q=80",
+    alt: "Surfer riding a wave at sunset",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=1920&q=80",
+    alt: "Chef preparing food in a professional kitchen",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=1920&q=80",
+    alt: "Sports car racing on a track",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=1920&q=80",
+    alt: "Developer writing code on a laptop",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1920&q=80",
+    alt: "Live concert with crowd and stage lights",
+  },
+];
+
+const SLIDE_DURATION = 6000; // ms per slide
+
 function HeroSection() {
   const mounted = useMounted();
   const prefersReducedMotion = useReducedMotion();
   const { displayText, currentColor } = useTypewriter(prefersReducedMotion);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Ensure video plays on mount (some browsers need a nudge)
+  const startTimer = useCallback(() => {
+    timerRef.current = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % HERO_IMAGES.length);
+    }, SLIDE_DURATION);
+  }, []);
+
   useEffect(() => {
-    const video = videoRef.current;
-    if (video && !prefersReducedMotion) {
-      video.play().catch(() => {
-        // Autoplay blocked — poster image will show
-      });
-    }
-  }, [prefersReducedMotion]);
+    if (prefersReducedMotion) return;
+    startTimer();
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [prefersReducedMotion, startTimer]);
 
   return (
     <section
       className="relative h-screen w-full overflow-hidden bg-gradient-to-br from-gray-950 via-gray-900 to-green-950"
       aria-label="Learn anything — cooking, coding, music, and more"
     >
-      {/* Background video */}
-      {!prefersReducedMotion && (
-        <video
-          ref={videoRef}
-          className="absolute inset-0 h-full w-full object-cover"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
+      {/* Background image slideshow */}
+      {HERO_IMAGES.map((img, i) => (
+        <div
+          key={img.src}
+          aria-hidden={i !== activeIndex}
+          className={`absolute inset-0 transition-opacity duration-1000 ${
+            i === activeIndex ? "opacity-100" : "opacity-0"
+          }`}
         >
-          <source src="/hero-video.mp4" type="video/mp4" />
-          <source src="/hero-video.webm" type="video/webm" />
-        </video>
-      )}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={img.src}
+            alt={img.alt}
+            loading={i === 0 ? "eager" : "lazy"}
+            decoding={i === 0 ? "sync" : "async"}
+            className={`h-full w-full object-cover ${
+              prefersReducedMotion ? "" : "hero-ken-burns"
+            }`}
+            style={
+              prefersReducedMotion
+                ? undefined
+                : { animationDelay: `${i * -SLIDE_DURATION}ms` }
+            }
+          />
+        </div>
+      ))}
 
       {/* Dark overlay for text readability */}
       <div className="absolute inset-0 bg-black/50" />
