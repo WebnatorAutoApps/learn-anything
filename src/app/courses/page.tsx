@@ -1,8 +1,8 @@
 "use client";
 
-import { Suspense, useState, useCallback } from "react";
+import { Suspense, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCourses, useEnrollCourse } from "@/lib/hooks/queries";
+import { useCourses } from "@/lib/hooks/queries";
 import { CourseGridSkeleton } from "../components/PageLoader";
 
 type Tab = "my-courses" | "public";
@@ -10,20 +10,6 @@ type Tab = "my-courses" | "public";
 function MyCoursesTab() {
   const router = useRouter();
   const { data: courses = [], isLoading } = useCourses("all");
-  const enrollMutation = useEnrollCourse();
-  const [enrollingId, setEnrollingId] = useState<string | null>(null);
-
-  async function handleEnroll(courseId: string) {
-    setEnrollingId(courseId);
-    try {
-      await enrollMutation.mutateAsync({ courseId, isOwner: true });
-    } catch {
-      // Non-critical
-    } finally {
-      setEnrollingId(null);
-    }
-  }
-
   if (isLoading) {
     return <CourseGridSkeleton count={3} />;
   }
@@ -81,13 +67,10 @@ function MyCoursesTab() {
             </button>
           ) : (
             <button
-              onClick={() => handleEnroll(course.id)}
-              disabled={enrollingId === course.id}
-              className="w-full px-4 py-2 rounded-lg bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+              onClick={() => router.push(`/course/${course.id}`)}
+              className="w-full px-4 py-2 rounded-lg bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors text-sm"
             >
-              {enrollingId === course.id
-                ? "Starting..."
-                : "Start Learning Path"}
+              Start Learning Path
             </button>
           )}
         </div>
