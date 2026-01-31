@@ -196,16 +196,16 @@ export default function GeneralSettings({ profile }: GeneralSettingsProps) {
     <div className="space-y-8">
       {/* Profile Picture */}
       <section className="space-y-3">
-        <h4 className="text-sm font-medium text-green-400">Profile Picture</h4>
+        <h4 className="text-sm font-medium text-theme-primary">Profile Picture</h4>
         <div className="flex items-center gap-4">
           <button
             type="button"
             onClick={handleAvatarClick}
             disabled={uploadAvatarMutation.isPending}
-            className="relative h-16 w-16 rounded-full border-2 border-green-500 bg-green-950 flex items-center justify-center text-green-400 font-semibold cursor-pointer hover:border-green-400 transition-colors overflow-hidden disabled:opacity-50"
+            className="relative h-16 w-16 rounded-full border-2 border-theme-primary bg-theme-surface flex items-center justify-center text-theme-primary font-semibold cursor-pointer hover:border-theme-primary transition-colors overflow-hidden disabled:opacity-50"
           >
             {uploadAvatarMutation.isPending ? (
-              <div className="h-full w-full bg-green-900/40 animate-pulse rounded-full" />
+              <div className="h-full w-full bg-theme-surface-hover animate-pulse rounded-full" />
             ) : profile.avatar_url ? (
               <img
                 src={profile.avatar_url}
@@ -222,11 +222,11 @@ export default function GeneralSettings({ profile }: GeneralSettingsProps) {
               type="button"
               onClick={handleAvatarClick}
               disabled={uploadAvatarMutation.isPending}
-              className="text-sm text-green-400 hover:text-green-300 transition-colors disabled:opacity-50"
+              className="text-sm text-theme-primary hover:text-theme-primary transition-colors disabled:opacity-50"
             >
               {uploadAvatarMutation.isPending ? "Uploading..." : "Change picture"}
             </button>
-            <p className="text-xs text-green-700 mt-0.5">JPEG, PNG, or WebP. Max 5 MB.</p>
+            <p className="text-xs text-theme-muted mt-0.5">JPEG, PNG, or WebP. Max 5 MB.</p>
           </div>
           <input
             ref={fileInputRef}
@@ -237,7 +237,7 @@ export default function GeneralSettings({ profile }: GeneralSettingsProps) {
           />
         </div>
         {avatarMessage && (
-          <p className={`text-sm ${avatarMessage.type === "success" ? "text-green-400" : "text-red-400"}`}>
+          <p className={`text-sm ${avatarMessage.type === "success" ? "text-theme-primary" : "text-red-400"}`}>
             {avatarMessage.text}
           </p>
         )}
@@ -245,7 +245,7 @@ export default function GeneralSettings({ profile }: GeneralSettingsProps) {
 
       {/* Change Username */}
       <section className="space-y-3">
-        <label className="text-sm font-medium text-green-400 block">Change Username</label>
+        <label className="text-sm font-medium text-theme-primary block">Change Username</label>
         <div className="flex gap-3">
           <input
             type="text"
@@ -253,7 +253,7 @@ export default function GeneralSettings({ profile }: GeneralSettingsProps) {
             onChange={(e) => setUsername(e.target.value.toLowerCase())}
             placeholder="your-username"
             maxLength={39}
-            className="flex-1 rounded-lg border border-green-900/60 bg-green-950/40 px-3 py-2 text-green-300 placeholder-green-800 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500 transition-colors text-sm"
+            className="flex-1 rounded-lg border border-theme-border bg-theme-surface px-3 py-2 text-theme-primary placeholder-theme-primary-faint focus:border-theme-primary focus:outline-none focus:ring-1 focus:ring-theme-primary transition-colors text-sm"
           />
           <button
             onClick={handleUsernameSave}
@@ -262,16 +262,16 @@ export default function GeneralSettings({ profile }: GeneralSettingsProps) {
               username.trim().toLowerCase() === profile.username?.toLowerCase() ||
               updateUsernameMutation.isPending
             }
-            className="px-4 py-2 rounded-lg bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
+            className="px-4 py-2 rounded-lg bg-theme-accent text-theme-text-on-accent font-semibold hover:bg-theme-primary-hover transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
           >
             {updateUsernameMutation.isPending ? "Saving..." : "Change Username"}
           </button>
         </div>
-        <p className="text-xs text-green-700">
+        <p className="text-xs text-theme-muted">
           3–39 characters. Lowercase letters, numbers, and hyphens only.
         </p>
         {usernameMessage && (
-          <p className={`text-sm ${usernameMessage.type === "success" ? "text-green-400" : "text-red-400"}`}>
+          <p className={`text-sm ${usernameMessage.type === "success" ? "text-theme-primary" : "text-red-400"}`}>
             {usernameMessage.text}
           </p>
         )}
@@ -279,7 +279,7 @@ export default function GeneralSettings({ profile }: GeneralSettingsProps) {
 
       {/* Display Name */}
       <section className="space-y-3">
-        <label className="text-sm font-medium text-green-400 block">Display Name</label>
+        <label className="text-sm font-medium text-theme-primary block">Display Name</label>
         <div className="flex gap-3">
           <input
             type="text"
@@ -287,18 +287,18 @@ export default function GeneralSettings({ profile }: GeneralSettingsProps) {
             onChange={(e) => setDisplayName(e.target.value)}
             placeholder="Your display name"
             maxLength={100}
-            className="flex-1 rounded-lg border border-green-900/60 bg-green-950/40 px-3 py-2 text-green-300 placeholder-green-800 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500 transition-colors text-sm"
+            className="flex-1 rounded-lg border border-theme-border bg-theme-surface px-3 py-2 text-theme-primary placeholder-theme-primary-faint focus:border-theme-primary focus:outline-none focus:ring-1 focus:ring-theme-primary transition-colors text-sm"
           />
           <button
             onClick={handleNameSave}
             disabled={!displayName.trim() || displayName.trim() === profile.full_name || updateProfileMutation.isPending}
-            className="px-4 py-2 rounded-lg bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
+            className="px-4 py-2 rounded-lg bg-theme-accent text-theme-text-on-accent font-semibold hover:bg-theme-primary-hover transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
           >
             {updateProfileMutation.isPending ? "Saving..." : "Save"}
           </button>
         </div>
         {nameMessage && (
-          <p className={`text-sm ${nameMessage.type === "success" ? "text-green-400" : "text-red-400"}`}>
+          <p className={`text-sm ${nameMessage.type === "success" ? "text-theme-primary" : "text-red-400"}`}>
             {nameMessage.text}
           </p>
         )}
@@ -306,16 +306,16 @@ export default function GeneralSettings({ profile }: GeneralSettingsProps) {
 
       {/* Email */}
       <section className="space-y-3">
-        <label className="text-sm font-medium text-green-400 block">Email</label>
+        <label className="text-sm font-medium text-theme-primary block">Email</label>
         {isOAuth ? (
           <>
             <input
               type="email"
               value={profile.email}
               disabled
-              className="w-full rounded-lg border border-green-900/60 bg-green-950/40 px-3 py-2 text-green-600 text-sm cursor-not-allowed opacity-60"
+              className="w-full rounded-lg border border-theme-border bg-theme-surface px-3 py-2 text-theme-muted text-sm cursor-not-allowed opacity-60"
             />
-            <p className="text-xs text-green-700">
+            <p className="text-xs text-theme-muted">
               Email cannot be changed for accounts signed in with Google. Manage your email through your Google account.
             </p>
           </>
@@ -327,18 +327,18 @@ export default function GeneralSettings({ profile }: GeneralSettingsProps) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
-                className="flex-1 rounded-lg border border-green-900/60 bg-green-950/40 px-3 py-2 text-green-300 placeholder-green-800 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500 transition-colors text-sm"
+                className="flex-1 rounded-lg border border-theme-border bg-theme-surface px-3 py-2 text-theme-primary placeholder-theme-primary-faint focus:border-theme-primary focus:outline-none focus:ring-1 focus:ring-theme-primary transition-colors text-sm"
               />
               <button
                 onClick={handleEmailSave}
                 disabled={!email.trim() || email.trim().toLowerCase() === profile.email?.toLowerCase() || updateEmailMutation.isPending}
-                className="px-4 py-2 rounded-lg bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
+                className="px-4 py-2 rounded-lg bg-theme-accent text-theme-text-on-accent font-semibold hover:bg-theme-primary-hover transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
               >
                 {updateEmailMutation.isPending ? "Saving..." : "Save"}
               </button>
             </div>
             {emailMessage && (
-              <p className={`text-sm ${emailMessage.type === "success" ? "text-green-400" : "text-red-400"}`}>
+              <p className={`text-sm ${emailMessage.type === "success" ? "text-theme-primary" : "text-red-400"}`}>
                 {emailMessage.text}
               </p>
             )}
@@ -349,41 +349,41 @@ export default function GeneralSettings({ profile }: GeneralSettingsProps) {
       {/* Password — only for email+password users */}
       {!isOAuth && (
         <section className="space-y-3">
-          <label className="text-sm font-medium text-green-400 block">Change Password</label>
+          <label className="text-sm font-medium text-theme-primary block">Change Password</label>
           <div className="space-y-2">
             <input
               type="password"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
               placeholder="Current password"
-              className="w-full rounded-lg border border-green-900/60 bg-green-950/40 px-3 py-2 text-green-300 placeholder-green-800 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500 transition-colors text-sm"
+              className="w-full rounded-lg border border-theme-border bg-theme-surface px-3 py-2 text-theme-primary placeholder-theme-primary-faint focus:border-theme-primary focus:outline-none focus:ring-1 focus:ring-theme-primary transition-colors text-sm"
             />
             <input
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               placeholder="New password (min. 6 characters)"
-              className="w-full rounded-lg border border-green-900/60 bg-green-950/40 px-3 py-2 text-green-300 placeholder-green-800 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500 transition-colors text-sm"
+              className="w-full rounded-lg border border-theme-border bg-theme-surface px-3 py-2 text-theme-primary placeholder-theme-primary-faint focus:border-theme-primary focus:outline-none focus:ring-1 focus:ring-theme-primary transition-colors text-sm"
             />
             <input
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Confirm new password"
-              className="w-full rounded-lg border border-green-900/60 bg-green-950/40 px-3 py-2 text-green-300 placeholder-green-800 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500 transition-colors text-sm"
+              className="w-full rounded-lg border border-theme-border bg-theme-surface px-3 py-2 text-theme-primary placeholder-theme-primary-faint focus:border-theme-primary focus:outline-none focus:ring-1 focus:ring-theme-primary transition-colors text-sm"
             />
           </div>
           <div className="flex justify-end">
             <button
               onClick={handlePasswordSave}
               disabled={!currentPassword || !newPassword || !confirmPassword || updatePasswordMutation.isPending}
-              className="px-4 py-2 rounded-lg bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
+              className="px-4 py-2 rounded-lg bg-theme-accent text-theme-text-on-accent font-semibold hover:bg-theme-primary-hover transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
             >
               {updatePasswordMutation.isPending ? "Updating..." : "Update Password"}
             </button>
           </div>
           {passwordMessage && (
-            <p className={`text-sm ${passwordMessage.type === "success" ? "text-green-400" : "text-red-400"}`}>
+            <p className={`text-sm ${passwordMessage.type === "success" ? "text-theme-primary" : "text-red-400"}`}>
               {passwordMessage.text}
             </p>
           )}

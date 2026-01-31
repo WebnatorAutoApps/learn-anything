@@ -19,6 +19,7 @@
   --color-theme-accent: var(--t-accent);
   --color-theme-glow: var(--t-glow);
   --color-theme-text-on-accent: var(--t-text-on-accent);
+  --color-theme-primary-faint: var(--t-primary-faint);
 }
 
 /* ───────── Theme: Terminal (default) ───────── */
@@ -37,6 +38,7 @@
   --t-accent: #16a34a;
   --t-glow: rgba(0, 255, 65, 0.15);
   --t-text-on-accent: #000;
+  --t-primary-faint: #14532d;
 }
 
 /* ───────── Theme: Space ───────── */
@@ -54,6 +56,7 @@
   --t-accent: #7c3aed;
   --t-glow: rgba(139, 92, 246, 0.15);
   --t-text-on-accent: #fff;
+  --t-primary-faint: #2e1065;
 }
 
 /* ───────── Theme: School ───────── */
@@ -71,6 +74,7 @@
   --t-accent: #b45309;
   --t-glow: rgba(245, 158, 11, 0.15);
   --t-text-on-accent: #000;
+  --t-primary-faint: #451a03;
 }
 
 /* ───────── Theme: Gym ───────── */
@@ -88,6 +92,7 @@
   --t-accent: #be123c;
   --t-glow: rgba(244, 63, 94, 0.15);
   --t-text-on-accent: #fff;
+  --t-primary-faint: #4c0519;
 }
 
 /* ───────── Theme: 90s Internet ───────── */
@@ -105,6 +110,7 @@
   --t-accent: #0e7490;
   --t-glow: rgba(6, 182, 212, 0.15);
   --t-text-on-accent: #000;
+  --t-primary-faint: #083344;
 }
 
 body {

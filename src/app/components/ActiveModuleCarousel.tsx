@@ -120,17 +120,17 @@ function CompletionModal({
           if (!isSubmitting) onClose();
         }}
       />
-      <div className="relative z-10 w-full max-w-lg mx-4 rounded-lg border border-green-900/60 bg-green-950 p-6 shadow-xl max-h-[90vh] overflow-y-auto">
-        <h3 className="text-lg font-semibold text-green-400 mb-1">
+      <div className="relative z-10 w-full max-w-lg mx-4 rounded-lg border border-theme-border bg-theme-surface p-6 shadow-xl max-h-[90vh] overflow-y-auto">
+        <h3 className="text-lg font-semibold text-theme-primary mb-1">
           Complete Step
         </h3>
-        <p className="text-sm text-green-600 mb-4">
+        <p className="text-sm text-theme-muted mb-4">
           {project.courseName} — {project.moduleName}
         </p>
 
         {/* Comment textarea */}
         <div className="mb-4">
-          <label className="block text-xs text-green-700 uppercase tracking-wider mb-1">
+          <label className="block text-xs text-theme-muted uppercase tracking-wider mb-1">
             Comment (optional)
           </label>
           <textarea
@@ -139,17 +139,17 @@ function CompletionModal({
             maxLength={MAX_COMMENT_LENGTH}
             placeholder="Share your thoughts on this project..."
             rows={3}
-            className="w-full rounded border border-green-900/50 bg-green-950/40 text-green-400 text-sm px-3 py-2 placeholder:text-green-800 focus:outline-none focus:border-green-500/60 resize-y"
+            className="w-full rounded border border-theme-border bg-theme-surface text-theme-primary text-sm px-3 py-2 placeholder:text-theme-primary-faint focus:outline-none focus:border-theme-primary resize-y"
             disabled={isSubmitting}
           />
-          <p className="text-xs text-green-800 mt-0.5 text-right">
+          <p className="text-xs text-theme-primary-faint mt-0.5 text-right">
             {comment.length}/{MAX_COMMENT_LENGTH}
           </p>
         </div>
 
         {/* Image upload */}
         <div className="mb-4">
-          <label className="block text-xs text-green-700 uppercase tracking-wider mb-1">
+          <label className="block text-xs text-theme-muted uppercase tracking-wider mb-1">
             Image (optional)
           </label>
 
@@ -160,7 +160,7 @@ function CompletionModal({
                 <img
                   src={imagePreview}
                   alt="Preview"
-                  className="max-w-full max-h-48 rounded border border-green-900/40 object-contain"
+                  className="max-w-full max-h-48 rounded border border-theme-border object-contain"
                 />
                 <button
                   onClick={clearFile}
@@ -171,7 +171,7 @@ function CompletionModal({
                   X
                 </button>
               </div>
-              <p className="text-xs text-green-700">
+              <p className="text-xs text-theme-muted">
                 {selectedFile?.name}
               </p>
             </div>
@@ -179,7 +179,7 @@ function CompletionModal({
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={isSubmitting}
-              className="w-full py-3 px-4 rounded border border-dashed border-green-900/50 bg-green-950/20 text-green-600 text-sm hover:bg-green-950/30 hover:border-green-700/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 px-4 rounded border border-dashed border-theme-border bg-theme-surface text-theme-muted text-sm hover:bg-theme-surface-hover hover:border-theme-border-strong transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Click to upload an image (JPEG, PNG, WebP, max 10 MB)
             </button>
@@ -209,14 +209,14 @@ function CompletionModal({
           <button
             onClick={onClose}
             disabled={isSubmitting}
-            className="px-4 py-2 rounded-lg border border-green-900/60 text-green-400 hover:bg-green-900/30 transition-colors text-sm font-medium disabled:opacity-50"
+            className="px-4 py-2 rounded-lg border border-theme-border text-theme-primary hover:bg-theme-surface-hover transition-colors text-sm font-medium disabled:opacity-50"
           >
             Cancel
           </button>
           <button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="px-4 py-2 rounded-lg bg-green-600 text-black font-semibold text-sm hover:bg-green-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-4 py-2 rounded-lg bg-theme-accent text-theme-text-on-accent font-semibold text-sm hover:bg-theme-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {isSubmitting ? (
               <>
@@ -263,26 +263,26 @@ function ActiveModuleSlide({
 
   return (
     <div className="w-full flex-shrink-0 snap-center px-1">
-      <div className="rounded-lg border border-green-900/60 bg-green-950/30 p-5">
+      <div className="rounded-lg border border-theme-border bg-theme-surface p-5">
         {/* Course name header */}
         <div className="flex items-center justify-between mb-3">
           <button
             onClick={() => router.push(`/course/${project.courseId}`)}
-            className="text-sm font-semibold text-green-500 hover:text-green-400 transition-colors truncate"
+            className="text-sm font-semibold text-theme-secondary hover:text-theme-primary transition-colors truncate"
           >
             {project.courseName}
           </button>
-          <span className="text-xs text-green-800 flex-shrink-0 ml-2">
+          <span className="text-xs text-theme-primary-faint flex-shrink-0 ml-2">
             Step {project.moduleIndex} / {project.totalModules}
           </span>
         </div>
 
         {/* Module info */}
         <div className="mb-3">
-          <h4 className="text-base font-semibold text-green-400 mb-1">
+          <h4 className="text-base font-semibold text-theme-primary mb-1">
             {project.moduleName}
           </h4>
-          <div className="flex items-center gap-2 text-xs text-green-700">
+          <div className="flex items-center gap-2 text-xs text-theme-muted">
             <span>Project {project.projectIndex}: {project.title}</span>
           </div>
         </div>
@@ -297,27 +297,27 @@ function ActiveModuleSlide({
                     ? "text-red-400"
                     : dueStatus === "soon"
                       ? "text-yellow-500"
-                      : "text-green-700"
+                      : "text-theme-muted"
                 }`}
               >
                 {dueStatus === "overdue" ? "Overdue — " : "Due "}
                 {formatDueDate(project.dueDate)}
               </span>
             ) : (
-              <span className="text-xs text-green-800 italic">No due date</span>
+              <span className="text-xs text-theme-primary-faint italic">No due date</span>
             )}
           </div>
 
           <div className="flex items-center gap-2">
             <button
               onClick={() => router.push(`/course/${project.courseId}`)}
-              className="px-3 py-1.5 text-xs rounded border border-green-900/60 text-green-400 hover:bg-green-900/30 transition-colors"
+              className="px-3 py-1.5 text-xs rounded border border-theme-border text-theme-primary hover:bg-theme-surface-hover transition-colors"
             >
               View
             </button>
             <button
               onClick={() => onComplete(project)}
-              className="px-3 py-1.5 text-xs rounded bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors flex items-center gap-1.5"
+              className="px-3 py-1.5 text-xs rounded bg-theme-accent text-theme-text-on-accent font-semibold hover:bg-theme-primary-hover transition-colors flex items-center gap-1.5"
               aria-label={`Mark step "${project.moduleName}" as complete`}
             >
               <svg
@@ -392,11 +392,11 @@ export default function ActiveModuleCarousel() {
   // Loading skeleton
   if (isLoading) {
     return (
-      <div className="mb-8 rounded-lg border border-green-900/60 bg-green-950/30 p-5">
-        <div className="h-5 w-40 bg-green-900/40 rounded animate-pulse mb-4" />
-        <div className="h-4 w-full bg-green-900/30 rounded animate-pulse mb-2" />
-        <div className="h-4 w-3/4 bg-green-900/30 rounded animate-pulse mb-3" />
-        <div className="h-8 w-24 bg-green-900/30 rounded animate-pulse" />
+      <div className="mb-8 rounded-lg border border-theme-border bg-theme-surface p-5">
+        <div className="h-5 w-40 bg-theme-surface-hover rounded animate-pulse mb-4" />
+        <div className="h-4 w-full bg-theme-surface-hover rounded animate-pulse mb-2" />
+        <div className="h-4 w-3/4 bg-theme-surface-hover rounded animate-pulse mb-3" />
+        <div className="h-8 w-24 bg-theme-surface-hover rounded animate-pulse" />
       </div>
     );
   }
@@ -404,9 +404,9 @@ export default function ActiveModuleCarousel() {
   // Empty state: no active modules
   if (!projects || projects.length === 0) {
     return (
-      <div className="mb-8 rounded-lg border border-dashed border-green-900/50 bg-green-950/10 p-6 text-center">
+      <div className="mb-8 rounded-lg border border-dashed border-theme-border bg-theme-surface p-6 text-center">
         <svg
-          className="h-8 w-8 text-green-800 mx-auto mb-3"
+          className="h-8 w-8 text-theme-primary-faint mx-auto mb-3"
           fill="none"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -416,7 +416,7 @@ export default function ActiveModuleCarousel() {
         >
           <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        <p className="text-green-600 text-sm">
+        <p className="text-theme-muted text-sm">
           No active steps. Start a learning path or enroll in one to get started.
         </p>
       </div>
@@ -429,7 +429,7 @@ export default function ActiveModuleCarousel() {
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <svg
-            className="h-5 w-5 text-green-500"
+            className="h-5 w-5 text-theme-secondary"
             fill="none"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -439,11 +439,11 @@ export default function ActiveModuleCarousel() {
           >
             <path d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
-          <h3 className="text-lg font-semibold text-green-400 tracking-wide">
+          <h3 className="text-lg font-semibold text-theme-primary tracking-wide">
             Active Step
           </h3>
           {hasMultiple && (
-            <span className="text-xs text-green-700 ml-1">
+            <span className="text-xs text-theme-muted ml-1">
               ({clampedIndex + 1} of {projectCount} projects)
             </span>
           )}
@@ -455,7 +455,7 @@ export default function ActiveModuleCarousel() {
             <button
               onClick={goToPrev}
               disabled={clampedIndex === 0}
-              className="p-1.5 rounded border border-green-900/60 text-green-500 hover:bg-green-900/30 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              className="p-1.5 rounded border border-theme-border text-theme-secondary hover:bg-theme-surface-hover transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
               aria-label="Previous project"
             >
               <svg
@@ -473,7 +473,7 @@ export default function ActiveModuleCarousel() {
             <button
               onClick={goToNext}
               disabled={clampedIndex === projectCount - 1}
-              className="p-1.5 rounded border border-green-900/60 text-green-500 hover:bg-green-900/30 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+              className="p-1.5 rounded border border-theme-border text-theme-secondary hover:bg-theme-surface-hover transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
               aria-label="Next project"
             >
               <svg
@@ -527,8 +527,8 @@ export default function ActiveModuleCarousel() {
               }}
               className={`h-2 rounded-full transition-all ${
                 index === clampedIndex
-                  ? "w-6 bg-green-400"
-                  : "w-2 bg-green-800 hover:bg-green-600"
+                  ? "w-6 bg-theme-primary"
+                  : "w-2 bg-theme-primary-faint hover:bg-theme-muted"
               }`}
               role="tab"
               aria-selected={index === clampedIndex}

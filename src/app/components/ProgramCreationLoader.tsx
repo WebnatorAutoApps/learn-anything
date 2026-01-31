@@ -60,7 +60,7 @@ export default function ProgramCreationLoader({
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center">
         <div className="absolute inset-0 bg-black/80" />
-        <div className="relative z-10 w-full max-w-md mx-4 rounded-lg border border-red-900/60 bg-green-950/95 shadow-lg shadow-red-900/30 p-8 text-center">
+        <div className="relative z-10 w-full max-w-md mx-4 rounded-lg border border-red-900/60 bg-theme-surface shadow-lg shadow-[color:var(--t-glow)] p-8 text-center">
           <div className="flex justify-center mb-4">
             <svg
               className="h-12 w-12 text-red-400"
@@ -77,11 +77,11 @@ export default function ProgramCreationLoader({
           <h3 className="text-lg font-semibold text-red-400 mb-2">
             Something went wrong
           </h3>
-          <p className="text-green-400 text-sm mb-6">{error}</p>
+          <p className="text-theme-primary text-sm mb-6">{error}</p>
           <button
             type="button"
             onClick={onDismissError}
-            className="px-6 py-2 rounded-lg bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors"
+            className="px-6 py-2 rounded-lg bg-theme-accent text-theme-text-on-accent font-semibold hover:bg-theme-primary-hover transition-colors"
           >
             Go Back
           </button>
@@ -99,7 +99,7 @@ export default function ProgramCreationLoader({
 
         {/* Rotating message */}
         <p
-          className={`text-green-400 text-lg sm:text-xl font-medium transition-opacity duration-300 min-h-[3.5rem] flex items-center ${
+          className={`text-theme-primary text-lg sm:text-xl font-medium transition-opacity duration-300 min-h-[3.5rem] flex items-center ${
             fadingOut ? "opacity-0" : "opacity-100"
           }`}
         >
@@ -108,7 +108,7 @@ export default function ProgramCreationLoader({
 
         {/* Extended wait notice */}
         {showExtendedWait && (
-          <p className="text-green-600 text-sm animate-pulse">
+          <p className="text-theme-muted text-sm animate-pulse">
             {EXTENDED_WAIT_MESSAGE}
           </p>
         )}
