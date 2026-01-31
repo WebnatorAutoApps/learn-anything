@@ -7,6 +7,7 @@ import type { LearningPlanData } from "./components/LearnModal";
 import SettingsModal from "./components/SettingsModal";
 import ProgramCreationLoader from "./components/ProgramCreationLoader";
 import ActiveModuleCarousel from "./components/ActiveModuleCarousel";
+import TipBanner from "./components/TipBanner";
 import { CourseGridSkeleton } from "./components/PageLoader";
 import { useProfile, useCourses } from "@/lib/hooks/queries";
 
@@ -151,6 +152,15 @@ export default function Home() {
     setShowApiKeyWarning(false);
     setSettingsInitialTab("api-keys");
     setShowSettingsModal(true);
+  }
+
+  function handleTipOpenSettings(tab: "general" | "api-keys" | "customization") {
+    setSettingsInitialTab(tab);
+    setShowSettingsModal(true);
+  }
+
+  function handleTipNavigate(path: string) {
+    router.push(path);
   }
 
   function handleSettingsClick() {
@@ -321,6 +331,12 @@ export default function Home() {
           </div>
         </div>
       )}
+
+      {/* Tip Banner */}
+      <TipBanner
+        onOpenSettings={handleTipOpenSettings}
+        onNavigate={handleTipNavigate}
+      />
 
       {/* Body */}
       <main className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
