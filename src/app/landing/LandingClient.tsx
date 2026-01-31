@@ -339,7 +339,7 @@ const values = [
     ),
     title: "Learn Anything You Imagine",
     description:
-      "From coding to cooking, music to mechanics — if you can dream it, you can learn it. Our AI-powered platform creates custom courses for any topic.",
+      "From coding to cooking, music to mechanics — if you can dream it, you can learn it. Our AI-powered platform creates custom learning paths for any topic.",
   },
 ];
 
@@ -606,7 +606,7 @@ function PricingSection() {
             </div>
             <ul className="mt-8 space-y-3 text-left max-w-sm mx-auto">
               {[
-                "Unlimited skill courses",
+                "Unlimited learning paths",
                 "Hands-on project-based lessons",
                 "AI-powered personalized learning paths",
                 "Progress tracking and milestones",

@@ -23,8 +23,8 @@ export default function PageLoader({ message = "Loading" }: { message?: string }
 }
 
 /**
- * Skeleton loader for course cards in a grid layout.
- * Mirrors the shape of actual course cards.
+ * Skeleton loader for learning path cards in a grid layout.
+ * Mirrors the shape of actual learning path cards.
  */
 export function CourseCardSkeleton() {
   return (
@@ -41,7 +41,7 @@ export function CourseCardSkeleton() {
 }
 
 /**
- * Grid of skeleton course cards for list loading states.
+ * Grid of skeleton learning path cards for list loading states.
  */
 export function CourseGridSkeleton({ count = 3 }: { count?: number }) {
   return (
@@ -54,7 +54,7 @@ export function CourseGridSkeleton({ count = 3 }: { count?: number }) {
 }
 
 /**
- * Skeleton for the course detail page (header + info grid + modules).
+ * Skeleton for the learning path detail page (header + info grid + modules).
  */
 export function CourseDetailSkeleton() {
   return (
@@ -98,7 +98,7 @@ export function CourseDetailSkeleton() {
           <div className="h-12 w-full rounded-lg bg-green-900/30" />
         </div>
 
-        {/* Module skeletons */}
+        {/* Step skeletons */}
         <div className="space-y-2">
           {Array.from({ length: 4 }).map((_, i) => (
             <div

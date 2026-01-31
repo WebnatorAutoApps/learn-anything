@@ -62,7 +62,7 @@ export default function PrivacyPolicyPage() {
               </li>
               <li>
                 <strong>Usage Data:</strong> Information about how you interact
-                with our platform, including courses accessed, progress, and
+                with our platform, including learning paths accessed, progress, and
                 learning activity.
               </li>
               <li>

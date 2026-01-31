@@ -122,7 +122,7 @@ function CompletionModal({
       />
       <div className="relative z-10 w-full max-w-lg mx-4 rounded-lg border border-green-900/60 bg-green-950 p-6 shadow-xl max-h-[90vh] overflow-y-auto">
         <h3 className="text-lg font-semibold text-green-400 mb-1">
-          Complete Module
+          Complete Step
         </h3>
         <p className="text-sm text-green-600 mb-4">
           {project.courseName} — {project.moduleName}
@@ -273,7 +273,7 @@ function ActiveModuleSlide({
             {project.courseName}
           </button>
           <span className="text-xs text-green-800 flex-shrink-0 ml-2">
-            Module {project.moduleIndex} / {project.totalModules}
+            Step {project.moduleIndex} / {project.totalModules}
           </span>
         </div>
 
@@ -318,7 +318,7 @@ function ActiveModuleSlide({
             <button
               onClick={() => onComplete(project)}
               className="px-3 py-1.5 text-xs rounded bg-green-600 text-black font-semibold hover:bg-green-500 transition-colors flex items-center gap-1.5"
-              aria-label={`Mark module "${project.moduleName}" as complete`}
+              aria-label={`Mark step "${project.moduleName}" as complete`}
             >
               <svg
                 className="h-3 w-3"
@@ -417,14 +417,14 @@ export default function ActiveModuleCarousel() {
           <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
         <p className="text-green-600 text-sm">
-          No active modules. Start a course or enroll in one to get started.
+          No active steps. Start a learning path or enroll in one to get started.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="mb-8" role="region" aria-label="Active modules carousel">
+    <div className="mb-8" role="region" aria-label="Active steps carousel">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
@@ -440,7 +440,7 @@ export default function ActiveModuleCarousel() {
             <path d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
           <h3 className="text-lg font-semibold text-green-400 tracking-wide">
-            Active Module
+            Active Step
           </h3>
           {hasMultiple && (
             <span className="text-xs text-green-700 ml-1">

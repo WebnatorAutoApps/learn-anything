@@ -10,8 +10,8 @@ export const LOADING_MESSAGES = [
   "Connecting the dots between theory and practice\u2026",
   "Assembling a roadmap you\u2019ll actually enjoy\u2026",
   "Teaching the AI to teach you\u2026",
-  "Plotting your course to mastery\u2026",
-  "Calibrating modules to your level\u2026",
+  "Plotting your path to mastery\u2026",
+  "Calibrating steps to your level\u2026",
   "Turning big ideas into small steps\u2026",
 ];
 

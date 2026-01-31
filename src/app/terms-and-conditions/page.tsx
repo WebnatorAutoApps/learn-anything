@@ -55,7 +55,7 @@ export default function TermsAndConditionsPage() {
             </h2>
             <p>
               LearnAnything is a free, AI-powered learning platform that
-              provides personalized, project-based courses across a wide range
+              provides personalized, project-based learning paths across a wide range
               of skills and topics. The Service generates learning content
               using artificial intelligence and is provided &quot;as is.&quot;
             </p>
@@ -110,7 +110,7 @@ export default function TermsAndConditionsPage() {
               The Service and its original content (excluding user-generated
               content) are the property of LearnAnything and are protected by
               copyright, trademark, and other intellectual property laws.
-              AI-generated course content is provided for personal educational
+              AI-generated learning path content is provided for personal educational
               use only.
             </p>
           </section>

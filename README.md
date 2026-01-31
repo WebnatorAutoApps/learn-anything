@@ -8,7 +8,7 @@ A personalized learning companion that generates AI-powered, learn-by-doing plan
 
 ## Project Overview
 
-LearnAnything addresses a fundamental problem in self-directed learning: the gap between wanting to learn something and knowing exactly what to do next. Traditional learning resources (courses, books, tutorials) are static and don't adapt to individual schedules, prior knowledge, or learning preferences.
+LearnAnything addresses a fundamental problem in self-directed learning: the gap between wanting to learn something and knowing exactly what to do next. Traditional learning resources (learning paths, books, tutorials) are static and don't adapt to individual schedules, prior knowledge, or learning preferences.
 
 This project builds a system where users can:
 
@@ -23,7 +23,7 @@ The core differentiator is **learn-by-doing**: instead of passive content consum
 
 ## Product Goals
 
-1. **Reduce friction in starting to learn** - No more analysis paralysis about which course to take or book to read.
+1. **Reduce friction in starting to learn** - No more analysis paralysis about which learning path to take or book to read.
 2. **Enable learning in fragmented time** - Plans adapt whether you have 15 minutes or 2 hours.
 3. **Prioritize doing over reading** - Every learning step involves a concrete action or output.
 4. **Maintain context across sessions** - The system remembers where you are and what you've done.
