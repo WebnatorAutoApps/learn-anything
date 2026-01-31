@@ -17,6 +17,7 @@ export default function Home() {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [showLearnModal, setShowLearnModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [settingsInitialTab, setSettingsInitialTab] = useState<"general" | "api-keys">("general");
   const [showApiKeyWarning, setShowApiKeyWarning] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [creationError, setCreationError] = useState<string | null>(null);
@@ -148,11 +149,13 @@ export default function Home() {
 
   function handleApiKeyWarningGoToSettings() {
     setShowApiKeyWarning(false);
+    setSettingsInitialTab("api-keys");
     setShowSettingsModal(true);
   }
 
   function handleSettingsClick() {
     setIsMenuOpen(false);
+    setSettingsInitialTab("general");
     setShowSettingsModal(true);
   }
 
@@ -416,7 +419,10 @@ export default function Home() {
 
       {/* Settings Modal */}
       {showSettingsModal && (
-        <SettingsModal onClose={() => setShowSettingsModal(false)} />
+        <SettingsModal
+          onClose={() => setShowSettingsModal(false)}
+          initialTab={settingsInitialTab}
+        />
       )}
 
       {/* API Key Warning Dialog */}
