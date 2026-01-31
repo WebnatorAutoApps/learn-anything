@@ -611,7 +611,6 @@ function PricingSection() {
                 "AI-powered personalized learning paths",
                 "Progress tracking and milestones",
                 "Community access",
-                "No ads, no upsells",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3">
                   <svg
