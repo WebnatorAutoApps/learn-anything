@@ -3,10 +3,114 @@
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Theme-aware color tokens — these map to Tailwind utility classes like
+     text-theme-primary, bg-theme-surface, border-theme-border, etc. */
+  --color-theme-primary: var(--t-primary);
+  --color-theme-primary-hover: var(--t-primary-hover);
+  --color-theme-primary-dim: var(--t-primary-dim);
+  --color-theme-secondary: var(--t-secondary);
+  --color-theme-muted: var(--t-muted);
+  --color-theme-bg: var(--t-bg);
+  --color-theme-surface: var(--t-surface);
+  --color-theme-surface-hover: var(--t-surface-hover);
+  --color-theme-border: var(--t-border);
+  --color-theme-border-strong: var(--t-border-strong);
+  --color-theme-accent: var(--t-accent);
+  --color-theme-glow: var(--t-glow);
+  --color-theme-text-on-accent: var(--t-text-on-accent);
+}
+
+/* ───────── Theme: Terminal (default) ───────── */
+:root,
+[data-theme="terminal"] {
+  --t-primary: #4ade80;
+  --t-primary-hover: #22c55e;
+  --t-primary-dim: #166534;
+  --t-secondary: #16a34a;
+  --t-muted: #15803d;
+  --t-bg: #0a0f0a;
+  --t-surface: rgba(2, 44, 15, 0.95);
+  --t-surface-hover: rgba(5, 60, 20, 0.4);
+  --t-border: rgba(20, 83, 45, 0.4);
+  --t-border-strong: rgba(20, 83, 45, 0.6);
+  --t-accent: #16a34a;
+  --t-glow: rgba(0, 255, 65, 0.15);
+  --t-text-on-accent: #000;
+}
+
+/* ───────── Theme: Space ───────── */
+[data-theme="space"] {
+  --t-primary: #a78bfa;
+  --t-primary-hover: #8b5cf6;
+  --t-primary-dim: #4c1d95;
+  --t-secondary: #7c3aed;
+  --t-muted: #6d28d9;
+  --t-bg: #0b0d1a;
+  --t-surface: rgba(15, 15, 40, 0.95);
+  --t-surface-hover: rgba(30, 20, 60, 0.4);
+  --t-border: rgba(55, 30, 100, 0.4);
+  --t-border-strong: rgba(55, 30, 100, 0.6);
+  --t-accent: #7c3aed;
+  --t-glow: rgba(139, 92, 246, 0.15);
+  --t-text-on-accent: #fff;
+}
+
+/* ───────── Theme: School ───────── */
+[data-theme="school"] {
+  --t-primary: #f59e0b;
+  --t-primary-hover: #d97706;
+  --t-primary-dim: #78350f;
+  --t-secondary: #b45309;
+  --t-muted: #92400e;
+  --t-bg: #1c1a17;
+  --t-surface: rgba(35, 30, 25, 0.95);
+  --t-surface-hover: rgba(50, 42, 30, 0.4);
+  --t-border: rgba(100, 70, 30, 0.4);
+  --t-border-strong: rgba(100, 70, 30, 0.6);
+  --t-accent: #b45309;
+  --t-glow: rgba(245, 158, 11, 0.15);
+  --t-text-on-accent: #000;
+}
+
+/* ───────── Theme: Gym ───────── */
+[data-theme="gym"] {
+  --t-primary: #f43f5e;
+  --t-primary-hover: #e11d48;
+  --t-primary-dim: #881337;
+  --t-secondary: #be123c;
+  --t-muted: #9f1239;
+  --t-bg: #0f0a0b;
+  --t-surface: rgba(30, 12, 15, 0.95);
+  --t-surface-hover: rgba(50, 18, 22, 0.4);
+  --t-border: rgba(100, 20, 40, 0.4);
+  --t-border-strong: rgba(100, 20, 40, 0.6);
+  --t-accent: #be123c;
+  --t-glow: rgba(244, 63, 94, 0.15);
+  --t-text-on-accent: #fff;
+}
+
+/* ───────── Theme: 90s Internet ───────── */
+[data-theme="90s-internet"] {
+  --t-primary: #06b6d4;
+  --t-primary-hover: #0891b2;
+  --t-primary-dim: #164e63;
+  --t-secondary: #0e7490;
+  --t-muted: #155e75;
+  --t-bg: #0c0a1a;
+  --t-surface: rgba(15, 12, 35, 0.95);
+  --t-surface-hover: rgba(25, 18, 55, 0.4);
+  --t-border: rgba(40, 30, 100, 0.4);
+  --t-border-strong: rgba(40, 30, 100, 0.6);
+  --t-accent: #0e7490;
+  --t-glow: rgba(6, 182, 212, 0.15);
+  --t-text-on-accent: #000;
 }
 
 body {
   font-family: Arial, Helvetica, sans-serif;
+  background: var(--t-bg);
+  color: var(--t-primary);
 }
 
 /* Old terminal screen effects */
@@ -28,19 +132,19 @@ body {
 }
 
 .terminal-screen {
-  background: #0a0f0a;
+  background: var(--t-bg);
   position: relative;
   overflow: hidden;
 }
 
-/* Phosphor green glow overlay */
+/* Phosphor glow overlay — uses theme glow color */
 .terminal-screen::before {
   content: "";
   position: fixed;
   inset: 0;
   background: radial-gradient(
     ellipse at center,
-    rgba(0, 255, 65, 0.03) 0%,
+    color-mix(in srgb, var(--t-primary) 3%, transparent) 0%,
     rgba(0, 0, 0, 0) 70%
   );
   pointer-events: none;
@@ -132,8 +236,8 @@ body {
 .loader-spinner {
   width: 56px;
   height: 56px;
-  border: 3px solid rgba(74, 222, 128, 0.2);
-  border-top-color: #4ade80;
+  border: 3px solid color-mix(in srgb, var(--t-primary) 20%, transparent);
+  border-top-color: var(--t-primary);
   border-radius: 50%;
   animation: loader-spin 1s linear infinite;
 }

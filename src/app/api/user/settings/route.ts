@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { encrypt, extractLast4 } from "@/lib/crypto";
 
 const MAX_TONE_LENGTH = 500;
+const VALID_THEMES = ["terminal", "space", "school", "gym", "90s-internet"];
 
 export async function PUT(request: Request) {
   try {
@@ -21,7 +22,7 @@ export async function PUT(request: Request) {
     }
 
     const body = await request.json();
-    const { gemini_api_key, tone } = body;
+    const { gemini_api_key, tone, theme } = body;
 
     // Username changes are handled by the dedicated /api/user/username endpoint
     if ("username" in body) {
@@ -89,6 +90,17 @@ export async function PUT(request: Request) {
       const trimmed = typeof tone === "string" ? tone.trim() : "";
       // Empty/whitespace-only tone clears the field (falls back to default in app)
       updateData.tone = trimmed || null;
+    }
+
+    // Handle theme
+    if (theme !== undefined) {
+      if (typeof theme !== "string" || !VALID_THEMES.includes(theme)) {
+        return NextResponse.json(
+          { success: false, error: `Invalid theme. Must be one of: ${VALID_THEMES.join(", ")}` },
+          { status: 400 }
+        );
+      }
+      updateData.theme = theme;
     }
 
     // Nothing to update

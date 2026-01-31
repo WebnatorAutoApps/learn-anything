@@ -27,6 +27,10 @@ async function fetchJSON<T>(
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
+export type ThemeKey = "terminal" | "space" | "school" | "gym" | "90s-internet";
+
+export const VALID_THEMES: ThemeKey[] = ["terminal", "space", "school", "gym", "90s-internet"];
+
 export interface Profile {
   full_name: string;
   email: string;
@@ -36,6 +40,7 @@ export interface Profile {
   username: string | null;
   auth_provider: string;
   tone: string | null;
+  theme: ThemeKey | null;
 }
 
 export interface CourseListItem {
@@ -266,6 +271,22 @@ export function useSaveTone() {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ tone }),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.profile });
+    },
+  });
+}
+
+export function useSaveTheme() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (theme: ThemeKey) =>
+      fetchJSON<{ success: boolean }>("/api/user/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ theme }),
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.profile });
