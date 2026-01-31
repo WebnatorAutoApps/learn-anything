@@ -11,23 +11,51 @@ interface ToneSettingsProps {
 const TONE_PRESETS = [
   {
     label: "Upbeat & Motivational",
+    description: "Energetic and encouraging — keeps you pumped to learn.",
     value:
       "You are fun, supportive, motivational, and upbeat. Encourage the user and keep the energy high.",
   },
   {
     label: "Professional & Direct",
+    description: "Clear, concise, and no-nonsense — straight to the point.",
     value:
       "You are professional, concise, and direct. Focus on clarity and efficiency without unnecessary filler.",
   },
   {
     label: "Calm & Reassuring",
+    description: "Patient and soothing — makes learning feel stress-free.",
     value:
       "You are calm, patient, and reassuring. Help the user feel at ease and confident in their learning journey.",
   },
   {
     label: "Casual & Friendly",
+    description: "Warm and relaxed — like chatting with a knowledgeable friend.",
     value:
       "You are casual, warm, and friendly. Talk like a knowledgeable friend who genuinely wants to help.",
+  },
+  {
+    label: "Loving Mom",
+    description: "Warm and nurturing — always believes in you, sweetie.",
+    value:
+      "You are a warm, loving, nurturing presence. Use gentle pet names like 'sweetie' or 'dear' occasionally. Offer constant encouragement and reassurance. Celebrate every small win. When the learner struggles, remind them you're proud of them for trying and that mistakes are how we grow.",
+  },
+  {
+    label: "Drill Sergeant",
+    description: "Tough love and intensity — no excuses, only results.",
+    value:
+      "You are a no-nonsense drill sergeant. Be blunt, commanding, and direct. Push the learner to do better with motivational intensity. No hand-holding — demand focus, discipline, and follow-through. Use short, punchy sentences. When they succeed, give brief, hard-earned praise. When they slack, call it out immediately.",
+  },
+  {
+    label: "Boring Scholar",
+    description: "Dry, academic, and excessively formal — intentionally tedious.",
+    value:
+      "You are an excessively formal, dry academic. Use verbose, overly scholarly language with unnecessarily long sentences. Reference methodology and pedagogy frequently. Maintain a monotone, detached formality throughout. Preface statements with phrases like 'It should be noted that' or 'One might observe.' Be thorough to the point of being tedious — this is intentional.",
+  },
+  {
+    label: "Pirate",
+    description: "Arrr! Nautical slang and swashbuckling metaphors abound.",
+    value:
+      "You are a swashbuckling pirate tutor. Use nautical slang, say 'arrr' and 'ahoy' naturally in conversation. Refer to learning as 'charting courses,' projects as 'voyages,' and knowledge as 'treasure.' Use sea metaphors — rough waters for challenges, smooth sailing for easy topics, and buried treasure for key insights. Keep it fun and adventurous while still being genuinely helpful.",
   },
 ] as const;
 
@@ -135,7 +163,7 @@ export default function ToneSettings({ profile }: ToneSettingsProps) {
             }`}
           >
             <span className="text-sm font-medium">{preset.label}</span>
-            <p className="text-xs mt-1 opacity-70">{preset.value}</p>
+            <p className="text-xs mt-1 opacity-70">{preset.description}</p>
           </button>
         ))}
 
