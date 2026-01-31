@@ -3,6 +3,9 @@
 import { useState, useEffect, useRef, useCallback, useSyncExternalStore } from "react";
 import Link from "next/link";
 import ScrollReveal from "@/app/components/ScrollReveal";
+import LanguageSwitcher from "@/app/components/LanguageSwitcher";
+import HreflangTags from "@/app/components/HreflangTags";
+import { I18nProvider, useI18n } from "@/lib/i18n";
 
 /* Hydration-safe mounted check without setState-in-effect */
 const emptySubscribe = () => () => {};
@@ -22,49 +25,64 @@ interface SkillWord {
   isAnything: boolean;
 }
 
-const SKILL_WORDS: { text: string; color: string }[] = [
-  { text: "cooking", color: "#f97316" },       // orange
-  { text: "coding", color: "#22c55e" },         // green
-  { text: "music", color: "#a855f7" },          // purple
-  { text: "saxophone", color: "#eab308" },      // gold
-  { text: "woodworking", color: "#a16207" },    // brown
-  { text: "electronics", color: "#06b6d4" },    // cyan
-  { text: "crafts", color: "#ec4899" },         // pink
-  { text: "photography", color: "#f87171" },    // coral
-  { text: "languages", color: "#14b8a6" },      // teal
-  { text: "pottery", color: "#d97706" },        // amber
-  { text: "chess", color: "#8b5cf6" },          // violet
-  { text: "filmmaking", color: "#f43f5e" },     // rose
-  { text: "robotics", color: "#3b82f6" },       // blue
-  { text: "calligraphy", color: "#c084fc" },    // light purple
-  { text: "gardening", color: "#4ade80" },      // light green
-  { text: "animation", color: "#fb923c" },      // light orange
-  { text: "astronomy", color: "#60a5fa" },      // light blue
+const SKILL_COLORS: Record<string, string> = {
+  cooking: "#f97316",
+  coding: "#22c55e",
+  music: "#a855f7",
+  saxophone: "#eab308",
+  woodworking: "#a16207",
+  electronics: "#06b6d4",
+  crafts: "#ec4899",
+  photography: "#f87171",
+  languages: "#14b8a6",
+  pottery: "#d97706",
+  chess: "#8b5cf6",
+  filmmaking: "#f43f5e",
+  robotics: "#3b82f6",
+  calligraphy: "#c084fc",
+  gardening: "#4ade80",
+  animation: "#fb923c",
+  astronomy: "#60a5fa",
+};
+
+const SKILL_KEYS = [
+  "cooking", "coding", "music", "saxophone", "woodworking", "electronics",
+  "crafts", "photography", "languages", "pottery", "chess", "filmmaking",
+  "robotics", "calligraphy", "gardening", "animation", "astronomy",
 ];
 
-function buildWordQueue(): SkillWord[] {
+function buildWordQueue(
+  skillWords: Record<string, string>,
+  anythingText: string,
+): SkillWord[] {
   const queue: SkillWord[] = [];
-  for (let i = 0; i < SKILL_WORDS.length; i++) {
-    queue.push({ ...SKILL_WORDS[i], isAnything: false });
+  for (let i = 0; i < SKILL_KEYS.length; i++) {
+    const key = SKILL_KEYS[i];
+    queue.push({
+      text: skillWords[key] || key,
+      color: SKILL_COLORS[key] || "#ffffff",
+      isAnything: false,
+    });
     if ((i + 1) % 2 === 0) {
-      queue.push({ text: "Anything", color: "#ffffff", isAnything: true });
+      queue.push({ text: anythingText, color: "#ffffff", isAnything: true });
     }
   }
-  // If the last batch had an odd word, add a trailing "Anything"
-  if (SKILL_WORDS.length % 2 !== 0) {
-    queue.push({ text: "Anything", color: "#ffffff", isAnything: true });
+  if (SKILL_KEYS.length % 2 !== 0) {
+    queue.push({ text: anythingText, color: "#ffffff", isAnything: true });
   }
   return queue;
 }
-
-const WORD_QUEUE = buildWordQueue();
 
 const TYPE_SPEED = 80;
 const DELETE_SPEED = 50;
 const PAUSE_NORMAL = 1000;
 const PAUSE_ANYTHING = 2000;
 
-function useTypewriter(prefersReducedMotion: boolean) {
+function useTypewriter(
+  prefersReducedMotion: boolean,
+  wordQueue: SkillWord[],
+  anythingText: string,
+) {
   const [displayText, setDisplayText] = useState("");
   const [currentColor, setCurrentColor] = useState("#ffffff");
   const wordIndexRef = useRef(0);
@@ -73,22 +91,24 @@ function useTypewriter(prefersReducedMotion: boolean) {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    if (prefersReducedMotion) {
-      return;
-    }
+    if (prefersReducedMotion) return;
+
+    // Reset on queue change
+    wordIndexRef.current = 0;
+    charIndexRef.current = 0;
+    isDeletingRef.current = false;
 
     function tick() {
-      const word = WORD_QUEUE[wordIndexRef.current];
+      if (wordQueue.length === 0) return;
+      const word = wordQueue[wordIndexRef.current % wordQueue.length];
       const fullText = word.text;
 
       if (!isDeletingRef.current) {
-        // Typing
         charIndexRef.current++;
         setDisplayText(fullText.slice(0, charIndexRef.current));
         setCurrentColor(word.color);
 
         if (charIndexRef.current === fullText.length) {
-          // Pause then start deleting
           const pause = word.isAnything ? PAUSE_ANYTHING : PAUSE_NORMAL;
           timeoutRef.current = setTimeout(() => {
             isDeletingRef.current = true;
@@ -98,14 +118,13 @@ function useTypewriter(prefersReducedMotion: boolean) {
         }
         timeoutRef.current = setTimeout(tick, TYPE_SPEED);
       } else {
-        // Deleting
         charIndexRef.current--;
         setDisplayText(fullText.slice(0, charIndexRef.current));
 
         if (charIndexRef.current === 0) {
           isDeletingRef.current = false;
-          wordIndexRef.current = (wordIndexRef.current + 1) % WORD_QUEUE.length;
-          // Small pause before typing next word
+          wordIndexRef.current =
+            (wordIndexRef.current + 1) % wordQueue.length;
           timeoutRef.current = setTimeout(tick, TYPE_SPEED * 2);
           return;
         }
@@ -113,15 +132,18 @@ function useTypewriter(prefersReducedMotion: boolean) {
       }
     }
 
-    timeoutRef.current = setTimeout(tick, TYPE_SPEED);
+    // Reset display text and start first tick in a single callback
+    timeoutRef.current = setTimeout(() => {
+      setDisplayText("");
+      tick();
+    }, 0);
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [prefersReducedMotion]);
+  }, [prefersReducedMotion, wordQueue]);
 
-  // When reduced motion is preferred, show static "Anything" text
   if (prefersReducedMotion) {
-    return { displayText: "Anything", currentColor: "#ffffff" };
+    return { displayText: anythingText, currentColor: "#ffffff" };
   }
 
   return { displayText, currentColor };
@@ -132,6 +154,8 @@ function useTypewriter(prefersReducedMotion: boolean) {
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { t } = useI18n();
+  const nav = t.nav as Record<string, string>;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -140,10 +164,10 @@ function Navbar() {
   }, []);
 
   const navLinks = [
-    { label: "How It Works", href: "#how-it-works" },
-    { label: "Examples", href: "#examples" },
-    { label: "Testimonials", href: "#testimonials" },
-    { label: "Pricing", href: "#pricing" },
+    { label: nav.howItWorks, href: "#how-it-works" },
+    { label: nav.examples, href: "#examples" },
+    { label: nav.testimonials, href: "#testimonials" },
+    { label: nav.pricing, href: "#pricing" },
   ];
 
   return (
@@ -186,8 +210,9 @@ function Navbar() {
             ))}
           </div>
 
-          {/* Auth buttons */}
+          {/* Auth buttons + Language Switcher */}
           <div className="hidden md:flex items-center gap-3">
+            <LanguageSwitcher scrolled={scrolled} />
             <Link
               href="/login"
               className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
@@ -196,47 +221,50 @@ function Navbar() {
                   : "text-white/90 hover:text-white"
               }`}
             >
-              Log in
+              {nav.logIn}
             </Link>
             <Link
               href="/signup"
               className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 transition-colors shadow-sm"
             >
-              Sign Up Free
+              {nav.signUpFree}
             </Link>
           </div>
 
           {/* Mobile hamburger */}
-          <button
-            type="button"
-            className={`md:hidden p-2 transition-colors ${
-              scrolled ? "text-gray-700" : "text-white"
-            }`}
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle menu"
-          >
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-              viewBox="0 0 24 24"
+          <div className="md:hidden flex items-center gap-2">
+            <LanguageSwitcher scrolled={scrolled} />
+            <button
+              type="button"
+              className={`p-2 transition-colors ${
+                scrolled ? "text-gray-700" : "text-white"
+              }`}
+              onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label={nav.toggleMenu}
             >
-              {mobileOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              )}
-            </svg>
-          </button>
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                viewBox="0 0 24 24"
+              >
+                {mobileOpen ? (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                ) : (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                )}
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* Mobile menu */}
@@ -257,13 +285,13 @@ function Navbar() {
                 href="/login"
                 className="rounded-lg border border-gray-300 px-4 py-2 text-center text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
               >
-                Log in
+                {nav.logIn}
               </Link>
               <Link
                 href="/signup"
                 className="rounded-lg bg-green-600 px-4 py-2 text-center text-sm font-semibold text-white hover:bg-green-700 transition-colors"
               >
-                Sign Up Free
+                {nav.signUpFree}
               </Link>
             </div>
           </div>
@@ -317,7 +345,17 @@ const SLIDE_DURATION = 6000; // ms per slide
 function HeroSection() {
   const mounted = useMounted();
   const prefersReducedMotion = useReducedMotion();
-  const { displayText, currentColor } = useTypewriter(prefersReducedMotion);
+  const { t } = useI18n();
+  const hero = t.hero as Record<string, string | Record<string, string>>;
+  const skillWords = hero.skillWords as Record<string, string>;
+  const anythingText = hero.anything as string;
+
+  const wordQueue = buildWordQueue(skillWords, anythingText);
+  const { displayText, currentColor } = useTypewriter(
+    prefersReducedMotion,
+    wordQueue,
+    anythingText,
+  );
   const [activeIndex, setActiveIndex] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -338,7 +376,7 @@ function HeroSection() {
   return (
     <section
       className="relative h-screen w-full overflow-hidden bg-gradient-to-br from-gray-950 via-gray-900 to-green-950"
-      aria-label="Learn anything — cooking, coding, music, and more"
+      aria-label={hero.ariaLabel as string}
     >
       {/* Background image slideshow */}
       {HERO_IMAGES.map((img, i) => (
@@ -380,7 +418,7 @@ function HeroSection() {
           }`}
         >
           <h1 className="text-5xl sm:text-7xl lg:text-8xl font-extrabold tracking-tight text-white leading-none">
-            Learn
+            {hero.learn as string}
           </h1>
           <div className="mt-2 sm:mt-4 min-h-[1.2em] text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-none">
             <span style={{ color: currentColor }} className="typewriter-text">
@@ -390,8 +428,7 @@ function HeroSection() {
           </div>
 
           <p className="mt-8 max-w-xl text-base sm:text-lg text-white/70 leading-relaxed">
-            Stop watching. Start doing. Master real skills through hands-on
-            projects — completely free.
+            {hero.tagline as string}
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row items-start gap-4">
@@ -399,13 +436,13 @@ function HeroSection() {
               href="/signup"
               className="rounded-xl bg-green-600 px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-green-600/25 hover:bg-green-700 hover:shadow-green-700/25 transition-all"
             >
-              Start Learning for Free
+              {hero.ctaStart as string}
             </Link>
             <a
               href="#how-it-works"
               className="rounded-xl border border-white/30 px-8 py-3.5 text-base font-semibold text-white hover:border-white/60 hover:bg-white/10 transition-all"
             >
-              See How It Works
+              {hero.ctaSeeHow as string}
             </a>
           </div>
         </div>
@@ -418,7 +455,7 @@ function HeroSection() {
         }`}
       >
         <div className="flex flex-col items-center gap-2 text-white/50">
-          <span className="text-xs font-medium tracking-widest uppercase">Scroll</span>
+          <span className="text-xs font-medium tracking-widest uppercase">{hero.scroll as string}</span>
           <svg className="h-5 w-5 animate-bounce" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
           </svg>
@@ -430,71 +467,50 @@ function HeroSection() {
 
 /* ───────────────────── How It Works ───────────────────── */
 
-const steps = [
-  {
-    icon: (
-      <svg className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
-      </svg>
-    ),
-    title: "Tell Us What You Want to Learn",
-    description:
-      "Quantum physics, classical guitar, Korean cooking, game design — literally anything you can imagine. Just type it in.",
-  },
-  {
-    icon: (
-      <svg className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
-      </svg>
-    ),
-    title: "Our AI Builds Your Path",
-    description:
-      "Expert AI instructors generate a personalized, hands-on learning path crafted just for you. No cookie-cutter courses.",
-  },
-  {
-    icon: (
-      <svg className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17l-5.384-3.073A1.5 1.5 0 005 13.5v5.25a1.5 1.5 0 001.036 1.427l5.384 1.795a1.5 1.5 0 00.928 0l5.384-1.795A1.5 1.5 0 0019 18.75V13.5a1.5 1.5 0 00-1.036-1.403L12.58 9.024a1.5 1.5 0 00-.928 0L6.268 10.82" />
-      </svg>
-    ),
-    title: "Learn by Doing Real Projects",
-    description:
-      "No passive videos. You build real things from day one — guided step by step by AI that adapts to your pace.",
-  },
-  {
-    icon: (
-      <svg className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.841m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
-      </svg>
-    ),
-    title: "Master Skills That Matter to You",
-    description:
-      "Track your progress, crush milestones, and walk away with skills nobody else has — because this path was made for you.",
-  },
+const stepIcons = [
+  <svg key="s1" className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+  </svg>,
+  <svg key="s2" className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+  </svg>,
+  <svg key="s3" className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17l-5.384-3.073A1.5 1.5 0 005 13.5v5.25a1.5 1.5 0 001.036 1.427l5.384 1.795a1.5 1.5 0 00.928 0l5.384-1.795A1.5 1.5 0 0019 18.75V13.5a1.5 1.5 0 00-1.036-1.403L12.58 9.024a1.5 1.5 0 00-.928 0L6.268 10.82" />
+  </svg>,
+  <svg key="s4" className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.841m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+  </svg>,
 ];
 
 function HowItWorksSection() {
+  const { t } = useI18n();
+  const hiw = t.howItWorks as Record<string, string>;
+
+  const steps = [
+    { icon: stepIcons[0], title: hiw.step1Title, description: hiw.step1Desc },
+    { icon: stepIcons[1], title: hiw.step2Title, description: hiw.step2Desc },
+    { icon: stepIcons[2], title: hiw.step3Title, description: hiw.step3Desc },
+    { icon: stepIcons[3], title: hiw.step4Title, description: hiw.step4Desc },
+  ];
+
   return (
     <section id="how-it-works" className="bg-white py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <ScrollReveal>
           <div className="text-center">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-              How It Works
+              {hiw.title}
             </h2>
             <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-              This isn&apos;t Udemy. This isn&apos;t Coursera. You don&apos;t pick
-              from someone else&apos;s catalog — you tell our AI what you want to
-              learn, and it builds a path that exists nowhere else on Earth.
+              {hiw.description}
             </p>
           </div>
         </ScrollReveal>
 
         <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {steps.map((step, i) => (
-            <ScrollReveal key={step.title} delay={i * 120}>
+            <ScrollReveal key={i} delay={i * 120}>
               <div className="relative text-center group">
-                {/* Step number */}
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-green-100 text-green-600 group-hover:bg-green-600 group-hover:text-white transition-colors duration-300">
                   {step.icon}
                 </div>
@@ -518,59 +534,45 @@ function HowItWorksSection() {
 
 /* ───────────────────── Value Proposition ───────────────────── */
 
-const values = [
-  {
-    icon: (
-      <svg className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
-      </svg>
-    ),
-    title: "Expert AI Instructors",
-    description:
-      "Every learning path is generated by advanced AI that understands your goals, your level, and how to get you there. It\u2019s like having a world-class tutor for every subject that exists.",
-  },
-  {
-    icon: (
-      <svg className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-      </svg>
-    ),
-    title: "100% Personalized, 0% Generic",
-    description:
-      "Forget one-size-fits-all courses made for the masses. Your learning path is custom-built around your experience, your goals, and your pace. No two paths are the same.",
-  },
-  {
-    icon: (
-      <svg className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" />
-      </svg>
-    ),
-    title: "Infinite Possibilities",
-    description:
-      "There is no catalog to browse. There is no limit. From quantum computing to pottery, from hip-hop production to ancient Sumerian — if you can name it, we can teach it.",
-  },
+const valueIcons = [
+  <svg key="v1" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+  </svg>,
+  <svg key="v2" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+  </svg>,
+  <svg key="v3" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" />
+  </svg>,
 ];
 
 function ValuePropositionSection() {
+  const { t } = useI18n();
+  const vp = t.valueProposition as Record<string, string>;
+
+  const values = [
+    { icon: valueIcons[0], title: vp.value1Title, description: vp.value1Desc },
+    { icon: valueIcons[1], title: vp.value2Title, description: vp.value2Desc },
+    { icon: valueIcons[2], title: vp.value3Title, description: vp.value3Desc },
+  ];
+
   return (
     <section className="bg-green-50 py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <ScrollReveal>
           <div className="text-center">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-              Why LearnAnything?
+              {vp.title}
             </h2>
             <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-              The future of education isn&apos;t a library of pre-recorded
-              videos. It&apos;s an AI that knows exactly what you need and
-              builds it on the fly.
+              {vp.description}
             </p>
           </div>
         </ScrollReveal>
 
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
           {values.map((value, i) => (
-            <ScrollReveal key={value.title} delay={i * 150}>
+            <ScrollReveal key={i} delay={i * 150}>
               <div className="rounded-2xl bg-white p-8 shadow-sm border border-green-100 hover:shadow-md hover:border-green-200 transition-all duration-300">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600">
                   {value.icon}
@@ -601,6 +603,9 @@ function CTABanner({
   subtext: string;
   id?: string;
 }) {
+  const { t } = useI18n();
+  const cta = t.cta as Record<string, string>;
+
   return (
     <section id={id} className="bg-green-600 py-16 sm:py-20">
       <ScrollReveal>
@@ -613,7 +618,7 @@ function CTABanner({
             href="/signup"
             className="mt-8 inline-block rounded-xl bg-white px-8 py-3.5 text-base font-semibold text-green-700 shadow-lg hover:bg-green-50 transition-colors"
           >
-            Get Started — It&apos;s Free
+            {cta.getStarted}
           </Link>
         </div>
       </ScrollReveal>
@@ -623,86 +628,45 @@ function CTABanner({
 
 /* ───────────────────── Examples Section ───────────────────── */
 
-const examples = [
-  {
-    emoji: "\uD83E\uDD16",
-    title: "Build AI Apps",
-    description:
-      "Go from zero to deploying your own AI-powered applications. Build chatbots, image generators, and intelligent automation — no CS degree required.",
-    color: "bg-blue-50 border-blue-100",
-    iconColor: "text-blue-600",
-  },
-  {
-    emoji: "\uD83C\uDFB8",
-    title: "Master an Instrument",
-    description:
-      "Learn flamenco guitar, jazz piano, electronic music production, or the theremin. Your AI instructor meets you at your level and pushes you further.",
-    color: "bg-purple-50 border-purple-100",
-    iconColor: "text-purple-600",
-  },
-  {
-    emoji: "\uD83D\uDE80",
-    title: "Astrophotography",
-    description:
-      "Capture stunning images of nebulae and galaxies from your backyard. Learn telescope setup, long-exposure techniques, and deep-sky image processing.",
-    color: "bg-indigo-50 border-indigo-100",
-    iconColor: "text-indigo-600",
-  },
-  {
-    emoji: "\uD83C\uDF7C",
-    title: "Fermentation & Brewing",
-    description:
-      "Craft your own kombucha, sourdough, hot sauce, or home-brewed beer. Master the science of fermentation through hands-on experiments.",
-    color: "bg-orange-50 border-orange-100",
-    iconColor: "text-orange-600",
-  },
-  {
-    emoji: "\uD83C\uDFAD",
-    title: "Screenwriting",
-    description:
-      "Write your first short film, pilot episode, or feature screenplay. Learn story structure, dialogue, and world-building guided by AI.",
-    color: "bg-pink-50 border-pink-100",
-    iconColor: "text-pink-600",
-  },
-  {
-    emoji: "\uD83E\uDDE0",
-    title: "Anything You Dream Up",
-    description:
-      "Urban beekeeping, quantum computing, calligraphy, drone racing, leather crafting, ancient Greek — if you can think it, you can learn it.",
-    color: "bg-amber-50 border-amber-100",
-    iconColor: "text-amber-700",
-  },
+const examplesMeta = [
+  { emoji: "\uD83E\uDD16", color: "bg-blue-50 border-blue-100", iconColor: "text-blue-600", titleKey: "aiTitle", descKey: "aiDesc" },
+  { emoji: "\uD83C\uDFB8", color: "bg-purple-50 border-purple-100", iconColor: "text-purple-600", titleKey: "musicTitle", descKey: "musicDesc" },
+  { emoji: "\uD83D\uDE80", color: "bg-indigo-50 border-indigo-100", iconColor: "text-indigo-600", titleKey: "astroTitle", descKey: "astroDesc" },
+  { emoji: "\uD83C\uDF7C", color: "bg-orange-50 border-orange-100", iconColor: "text-orange-600", titleKey: "fermentTitle", descKey: "fermentDesc" },
+  { emoji: "\uD83C\uDFAD", color: "bg-pink-50 border-pink-100", iconColor: "text-pink-600", titleKey: "screenTitle", descKey: "screenDesc" },
+  { emoji: "\uD83E\uDDE0", color: "bg-amber-50 border-amber-100", iconColor: "text-amber-700", titleKey: "dreamTitle", descKey: "dreamDesc" },
 ];
 
 function ExamplesSection() {
+  const { t } = useI18n();
+  const ex = t.examples as Record<string, string>;
+
   return (
     <section id="examples" className="bg-white py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <ScrollReveal>
           <div className="text-center">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-              If You Can Dream It, You Can Learn It
+              {ex.title}
             </h2>
             <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-              No pre-made catalog. No limits. Our AI generates a custom
-              learning path for anything you can imagine — here are just a
-              few ideas.
+              {ex.description}
             </p>
           </div>
         </ScrollReveal>
 
         <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {examples.map((ex, i) => (
-            <ScrollReveal key={ex.title} variant="scale" delay={i * 100}>
+          {examplesMeta.map((item, i) => (
+            <ScrollReveal key={i} variant="scale" delay={i * 100}>
               <div
-                className={`rounded-2xl border p-8 ${ex.color} hover:shadow-lg transition-all duration-300 group`}
+                className={`rounded-2xl border p-8 ${item.color} hover:shadow-lg transition-all duration-300 group`}
               >
-                <span className="text-4xl">{ex.emoji}</span>
+                <span className="text-4xl">{item.emoji}</span>
                 <h3 className="mt-4 text-xl font-semibold text-gray-900 group-hover:text-green-700 transition-colors">
-                  {ex.title}
+                  {ex[item.titleKey]}
                 </h3>
                 <p className="mt-3 text-gray-600 leading-relaxed">
-                  {ex.description}
+                  {ex[item.descKey]}
                 </p>
               </div>
             </ScrollReveal>
@@ -715,55 +679,34 @@ function ExamplesSection() {
 
 /* ───────────────────── Testimonials ───────────────────── */
 
-const testimonials = [
-  {
-    name: "Alex R.",
-    skill: "Guitar",
-    quote:
-      "I always wanted to play guitar but classroom lessons never clicked. LearnAnything had me strumming songs within a week because every lesson involved actually playing.",
-    avatar: "AR",
-  },
-  {
-    name: "Priya M.",
-    skill: "Python Programming",
-    quote:
-      "I went from zero coding knowledge to building my first web app in a month. The project-based approach made it feel like I was creating something real from day one.",
-    avatar: "PM",
-  },
-  {
-    name: "Jordan K.",
-    skill: "Sourdough Baking",
-    quote:
-      "The step-by-step baking projects were amazing. I now make bakery-quality sourdough at home, and I actually understand the science behind every rise.",
-    avatar: "JK",
-  },
-  {
-    name: "Sam T.",
-    skill: "Woodworking",
-    quote:
-      "I built my first bookshelf following a LearnAnything project. It's still standing! The hands-on approach gave me confidence to tackle bigger projects.",
-    avatar: "ST",
-  },
+const testimonialsMeta = [
+  { nameKey: "t1Name", skillKey: "t1Skill", quoteKey: "t1Quote", avatar: "AR" },
+  { nameKey: "t2Name", skillKey: "t2Skill", quoteKey: "t2Quote", avatar: "PM" },
+  { nameKey: "t3Name", skillKey: "t3Skill", quoteKey: "t3Quote", avatar: "JK" },
+  { nameKey: "t4Name", skillKey: "t4Skill", quoteKey: "t4Quote", avatar: "ST" },
 ];
 
 function TestimonialsSection() {
+  const { t } = useI18n();
+  const tm = t.testimonials as Record<string, string>;
+
   return (
     <section id="testimonials" className="bg-gray-50 py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <ScrollReveal>
           <div className="text-center">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-              Loved by Learners
+              {tm.title}
             </h2>
             <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-              Real stories from people who transformed their abilities.
+              {tm.description}
             </p>
           </div>
         </ScrollReveal>
 
         <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {testimonials.map((t, i) => (
-            <ScrollReveal key={t.name} delay={i * 120}>
+          {testimonialsMeta.map((item, i) => (
+            <ScrollReveal key={i} delay={i * 120}>
               <div className="flex flex-col rounded-2xl bg-white p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300 h-full">
                 {/* Stars */}
                 <div className="flex gap-0.5 text-yellow-400 mb-4">
@@ -779,19 +722,19 @@ function TestimonialsSection() {
                 </div>
 
                 <p className="flex-1 text-gray-600 text-sm leading-relaxed italic">
-                  &quot;{t.quote}&quot;
+                  &quot;{tm[item.quoteKey]}&quot;
                 </p>
 
                 <div className="mt-6 flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 text-green-700 text-sm font-bold">
-                    {t.avatar}
+                    {item.avatar}
                   </div>
                   <div>
                     <div className="text-sm font-semibold text-gray-900">
-                      {t.name}
+                      {tm[item.nameKey]}
                     </div>
                     <div className="text-xs text-gray-500">
-                      Learned {t.skill}
+                      {tm.learned} {tm[item.skillKey]}
                     </div>
                   </div>
                 </div>
@@ -807,16 +750,21 @@ function TestimonialsSection() {
 /* ───────────────────── Pricing ───────────────────── */
 
 function PricingSection() {
+  const { t } = useI18n();
+  const pr = t.pricing as Record<string, string>;
+
+  const features = [pr.feature1, pr.feature2, pr.feature3, pr.feature4, pr.feature5];
+
   return (
     <section id="pricing" className="bg-white py-20 sm:py-28">
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
         <ScrollReveal>
           <div className="text-center">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-              Simple Pricing
+              {pr.title}
             </h2>
             <p className="mt-4 text-lg text-gray-600">
-              No hidden fees. No trials. No credit card required.
+              {pr.description}
             </p>
           </div>
         </ScrollReveal>
@@ -824,20 +772,14 @@ function PricingSection() {
         <ScrollReveal variant="scale" delay={150}>
           <div className="mt-12 rounded-3xl border-2 border-green-200 bg-gradient-to-b from-green-50 to-white p-8 sm:p-12 text-center shadow-sm">
             <span className="inline-block rounded-full bg-green-100 px-4 py-1 text-sm font-semibold text-green-700">
-              Free Plan
+              {pr.freePlan}
             </span>
             <div className="mt-6">
-              <span className="text-6xl font-extrabold text-gray-900">$0</span>
-              <span className="ml-2 text-xl text-gray-500">/ forever</span>
+              <span className="text-6xl font-extrabold text-gray-900">{pr.price}</span>
+              <span className="ml-2 text-xl text-gray-500">{pr.forever}</span>
             </div>
             <ul className="mt-8 space-y-3 text-left max-w-sm mx-auto">
-              {[
-                "Unlimited learning paths",
-                "Hands-on project-based lessons",
-                "AI-powered personalized learning paths",
-                "Progress tracking and milestones",
-                "Community access",
-              ].map((item) => (
+              {features.map((item) => (
                 <li key={item} className="flex items-start gap-3">
                   <svg
                     className="h-5 w-5 flex-shrink-0 text-green-600 mt-0.5"
@@ -860,7 +802,7 @@ function PricingSection() {
               href="/signup"
               className="mt-10 inline-block rounded-xl bg-green-600 px-10 py-3.5 text-base font-semibold text-white shadow-lg shadow-green-600/25 hover:bg-green-700 transition-colors"
             >
-              Sign Up for Free
+              {pr.signUp}
             </Link>
           </div>
         </ScrollReveal>
@@ -872,6 +814,10 @@ function PricingSection() {
 /* ───────────────────── Footer ───────────────────── */
 
 function Footer() {
+  const { t } = useI18n();
+  const nav = t.nav as Record<string, string>;
+  const ft = t.footer as Record<string, string>;
+
   return (
     <footer className="bg-gray-900 py-12 sm:py-16">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
@@ -885,8 +831,7 @@ function Footer() {
               LearnAnything
             </div>
             <p className="mt-2 text-sm text-gray-400 max-w-xs">
-              AI-powered personalized learning paths for anything you can
-              imagine. Completely free, forever.
+              {ft.tagline}
             </p>
           </div>
 
@@ -896,31 +841,31 @@ function Footer() {
               href="#how-it-works"
               className="text-gray-400 hover:text-white transition-colors"
             >
-              How It Works
+              {nav.howItWorks}
             </a>
             <a
               href="#examples"
               className="text-gray-400 hover:text-white transition-colors"
             >
-              Examples
+              {nav.examples}
             </a>
             <a
               href="#pricing"
               className="text-gray-400 hover:text-white transition-colors"
             >
-              Pricing
+              {nav.pricing}
             </a>
             <Link
               href="/privacy-policy"
               className="text-gray-400 hover:text-white transition-colors"
             >
-              Privacy Policy
+              {ft.privacyPolicy}
             </Link>
             <Link
               href="/terms-and-conditions"
               className="text-gray-400 hover:text-white transition-colors"
             >
-              Terms &amp; Conditions
+              {ft.termsConditions}
             </Link>
           </div>
         </div>
@@ -928,14 +873,13 @@ function Footer() {
         {/* Social placeholders & copyright */}
         <div className="mt-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-t border-gray-800 pt-8">
           <p className="text-sm text-gray-500">
-            &copy; {new Date().getFullYear()} LearnAnything. All rights
-            reserved.
+            &copy; {new Date().getFullYear()} {ft.copyright}
           </p>
           <div className="flex gap-4">
             {/* Twitter / X */}
             <a
               href="#"
-              aria-label="Twitter"
+              aria-label={ft.twitter}
               className="text-gray-500 hover:text-white transition-colors"
             >
               <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -945,7 +889,7 @@ function Footer() {
             {/* GitHub */}
             <a
               href="#"
-              aria-label="GitHub"
+              aria-label={ft.github}
               className="text-gray-500 hover:text-white transition-colors"
             >
               <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -965,26 +909,38 @@ function Footer() {
 
 /* ───────────────────── Main Landing Page ───────────────────── */
 
-export default function LandingClient() {
+function LandingContent() {
+  const { t } = useI18n();
+  const cta = t.cta as Record<string, string>;
+
   return (
     <div className="min-h-screen bg-white">
+      <HreflangTags />
       <Navbar />
       <HeroSection />
       <HowItWorksSection />
       <ValuePropositionSection />
       <CTABanner
-        headline="The World's First Truly Personalized Learning Platform"
-        subtext="No catalogs. No waiting lists. Just tell us what you want to learn and our AI does the rest."
+        headline={cta.headline1}
+        subtext={cta.subtext1}
       />
       <ExamplesSection />
       <TestimonialsSection />
       <CTABanner
         id="cta-final"
-        headline="Your Next Obsession Starts Now"
-        subtext="Whatever you've always wanted to learn — this is the moment. Completely free, powered by AI, built for you."
+        headline={cta.headline2}
+        subtext={cta.subtext2}
       />
       <PricingSection />
       <Footer />
     </div>
+  );
+}
+
+export default function LandingClient() {
+  return (
+    <I18nProvider>
+      <LandingContent />
+    </I18nProvider>
   );
 }
