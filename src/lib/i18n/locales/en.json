@@ -471,5 +471,25 @@
     "freeTierBody": "Link your API key to Google's free-tier plan so that even in a worst-case breach scenario there is zero financial exposure. The free tier is sufficient for using this application.",
     "revokeTitle": "Revoke when no longer needed",
     "revokeBody": "If you stop using this application, head over to Google AI Studio and delete the key you created for it. Keeping unused credentials active is an unnecessary risk."
+  },
+  "apiKeyGuide": {
+    "title": "API Key Setup Guide",
+    "bannerText": "No API key configured — you need one to create learning paths.",
+    "bannerCta": "Learn how to get your API key",
+    "intro": "To generate personalized learning paths, this app uses Google's Gemini AI. You'll need a free API key to get started.",
+    "whatIsTitle": "What is a Gemini API key?",
+    "whatIsBody": "An API key is a unique code that lets this app communicate with Google's Gemini AI on your behalf. It's free to create and use within Google's free-tier limits.",
+    "stepsTitle": "How to get your API key",
+    "step1Title": "Sign in to Google AI Studio",
+    "step1Body": "Go to Google AI Studio and sign in with your Google account. If you don't have one, you can create one for free.",
+    "step2Title": "Open Google AI Studio",
+    "step2Body": "Visit",
+    "step3Title": "Create an API key",
+    "step3Body": "Click \"Get API key\" in the top-left menu, then click \"Create API key\". Select the default project or create a new one. Copy the generated key.",
+    "step4Title": "Add the key to this app",
+    "step4Body": "Go to Settings > API Keys in this app, paste your key into the input field, and click Save Key. You're all set!",
+    "tipLabel": "Tip:",
+    "tipBody": "Create a dedicated API key just for this app. Use Google's free-tier plan so there's zero cost. You can revoke the key anytime from Google AI Studio.",
+    "goToSettings": "Go to Settings"
   }
 }

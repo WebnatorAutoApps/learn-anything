@@ -471,5 +471,25 @@
     "freeTierBody": "Vincula tu clave API al plan gratuito de Google para que, incluso en el peor escenario de una brecha, no haya exposición financiera. El plan gratuito es suficiente para usar esta aplicación.",
     "revokeTitle": "Revoca cuando ya no sea necesaria",
     "revokeBody": "Si dejas de usar esta aplicación, ve a Google AI Studio y elimina la clave que creaste para ella. Mantener credenciales no utilizadas activas es un riesgo innecesario."
+  },
+  "apiKeyGuide": {
+    "title": "Guía de configuración de clave API",
+    "bannerText": "No hay clave API configurada — necesitas una para crear rutas de aprendizaje.",
+    "bannerCta": "Aprende cómo obtener tu clave API",
+    "intro": "Para generar rutas de aprendizaje personalizadas, esta app usa la IA Gemini de Google. Necesitarás una clave API gratuita para empezar.",
+    "whatIsTitle": "¿Qué es una clave API de Gemini?",
+    "whatIsBody": "Una clave API es un código único que permite a esta app comunicarse con la IA Gemini de Google en tu nombre. Es gratis crearla y usarla dentro de los límites del plan gratuito de Google.",
+    "stepsTitle": "Cómo obtener tu clave API",
+    "step1Title": "Inicia sesión en Google AI Studio",
+    "step1Body": "Ve a Google AI Studio e inicia sesión con tu cuenta de Google. Si no tienes una, puedes crear una gratis.",
+    "step2Title": "Abre Google AI Studio",
+    "step2Body": "Visita",
+    "step3Title": "Crea una clave API",
+    "step3Body": "Haz clic en \"Get API key\" en el menú superior izquierdo, luego haz clic en \"Create API key\". Selecciona el proyecto predeterminado o crea uno nuevo. Copia la clave generada.",
+    "step4Title": "Añade la clave a esta app",
+    "step4Body": "Ve a Ajustes > Claves API en esta app, pega tu clave en el campo de entrada y haz clic en Guardar Clave. ¡Listo!",
+    "tipLabel": "Consejo:",
+    "tipBody": "Crea una clave API dedicada solo para esta app. Usa el plan gratuito de Google para que no tenga costo. Puedes revocar la clave en cualquier momento desde Google AI Studio.",
+    "goToSettings": "Ir a Ajustes"
   }
 }

@@ -471,5 +471,25 @@
     "freeTierBody": "将你的API密钥关联到Google的免费计划，这样即使在最坏的安全事件中也不会有财务风险。免费计划足以使用此应用。",
     "revokeTitle": "不再需要时请撤销",
     "revokeBody": "如果你停止使用此应用，请前往Google AI Studio删除你为此创建的密钥。保持未使用的凭证处于活跃状态是不必要的风险。"
+  },
+  "apiKeyGuide": {
+    "title": "API密钥设置指南",
+    "bannerText": "未配置API密钥 — 你需要一个密钥来创建学习路径。",
+    "bannerCta": "了解如何获取API密钥",
+    "intro": "为了生成个性化的学习路径，此应用使用Google的Gemini AI。你需要一个免费的API密钥来开始使用。",
+    "whatIsTitle": "什么是Gemini API密钥？",
+    "whatIsBody": "API密钥是一个唯一代码，允许此应用代表你与Google的Gemini AI进行通信。在Google免费计划的限额内，创建和使用都是免费的。",
+    "stepsTitle": "如何获取API密钥",
+    "step1Title": "登录Google AI Studio",
+    "step1Body": "前往Google AI Studio并使用你的Google账户登录。如果没有账户，可以免费创建一个。",
+    "step2Title": "打开Google AI Studio",
+    "step2Body": "访问",
+    "step3Title": "创建API密钥",
+    "step3Body": "点击左上角菜单中的\"Get API key\"，然后点击\"Create API key\"。选择默认项目或创建新项目。复制生成的密钥。",
+    "step4Title": "将密钥添加到此应用",
+    "step4Body": "在此应用中前往设置 > API密钥，将你的密钥粘贴到输入框中，然后点击保存密钥。一切就绪！",
+    "tipLabel": "提示：",
+    "tipBody": "专门为此应用创建一个API密钥。使用Google的免费计划，这样完全免费。你可以随时从Google AI Studio撤销密钥。",
+    "goToSettings": "前往设置"
   }
 }

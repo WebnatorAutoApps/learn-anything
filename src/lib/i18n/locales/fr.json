@@ -471,5 +471,25 @@
     "freeTierBody": "Associez votre clé API au plan gratuit de Google afin que, même dans le pire des scénarios de violation, il n'y ait aucune exposition financière. Le plan gratuit est suffisant pour utiliser cette application.",
     "revokeTitle": "Révoquez quand elle n'est plus nécessaire",
     "revokeBody": "Si vous cessez d'utiliser cette application, rendez-vous sur Google AI Studio et supprimez la clé que vous avez créée pour elle. Garder des identifiants inutilisés actifs est un risque inutile."
+  },
+  "apiKeyGuide": {
+    "title": "Guide de configuration de la clé API",
+    "bannerText": "Aucune clé API configurée — vous en avez besoin pour créer des parcours d'apprentissage.",
+    "bannerCta": "Découvrez comment obtenir votre clé API",
+    "intro": "Pour générer des parcours d'apprentissage personnalisés, cette application utilise l'IA Gemini de Google. Vous aurez besoin d'une clé API gratuite pour commencer.",
+    "whatIsTitle": "Qu'est-ce qu'une clé API Gemini ?",
+    "whatIsBody": "Une clé API est un code unique qui permet à cette application de communiquer avec l'IA Gemini de Google en votre nom. Sa création et son utilisation sont gratuites dans les limites du plan gratuit de Google.",
+    "stepsTitle": "Comment obtenir votre clé API",
+    "step1Title": "Connectez-vous à Google AI Studio",
+    "step1Body": "Allez sur Google AI Studio et connectez-vous avec votre compte Google. Si vous n'en avez pas, vous pouvez en créer un gratuitement.",
+    "step2Title": "Ouvrez Google AI Studio",
+    "step2Body": "Visitez",
+    "step3Title": "Créez une clé API",
+    "step3Body": "Cliquez sur « Get API key » dans le menu en haut à gauche, puis cliquez sur « Create API key ». Sélectionnez le projet par défaut ou créez-en un nouveau. Copiez la clé générée.",
+    "step4Title": "Ajoutez la clé à cette application",
+    "step4Body": "Allez dans Paramètres > Clés API dans cette application, collez votre clé dans le champ de saisie et cliquez sur Enregistrer la clé. Vous êtes prêt !",
+    "tipLabel": "Conseil :",
+    "tipBody": "Créez une clé API dédiée uniquement à cette application. Utilisez le plan gratuit de Google pour un coût nul. Vous pouvez révoquer la clé à tout moment depuis Google AI Studio.",
+    "goToSettings": "Aller aux Paramètres"
   }
 }

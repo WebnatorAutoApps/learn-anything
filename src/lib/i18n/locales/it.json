@@ -471,5 +471,25 @@
     "freeTierBody": "Collega la tua chiave API al piano gratuito di Google in modo che, anche nel peggiore scenario di violazione, non ci sia esposizione finanziaria. Il piano gratuito è sufficiente per utilizzare questa applicazione.",
     "revokeTitle": "Revoca quando non è più necessaria",
     "revokeBody": "Se smetti di usare questa applicazione, vai su Google AI Studio ed elimina la chiave che hai creato per essa. Mantenere credenziali inutilizzate attive è un rischio non necessario."
+  },
+  "apiKeyGuide": {
+    "title": "Guida alla configurazione della chiave API",
+    "bannerText": "Nessuna chiave API configurata — ne serve una per creare percorsi di apprendimento.",
+    "bannerCta": "Scopri come ottenere la tua chiave API",
+    "intro": "Per generare percorsi di apprendimento personalizzati, questa app utilizza l'IA Gemini di Google. Avrai bisogno di una chiave API gratuita per iniziare.",
+    "whatIsTitle": "Cos'è una chiave API Gemini?",
+    "whatIsBody": "Una chiave API è un codice univoco che consente a questa app di comunicare con l'IA Gemini di Google per tuo conto. È gratuita da creare e utilizzare entro i limiti del piano gratuito di Google.",
+    "stepsTitle": "Come ottenere la tua chiave API",
+    "step1Title": "Accedi a Google AI Studio",
+    "step1Body": "Vai su Google AI Studio e accedi con il tuo account Google. Se non ne hai uno, puoi crearne uno gratuitamente.",
+    "step2Title": "Apri Google AI Studio",
+    "step2Body": "Visita",
+    "step3Title": "Crea una chiave API",
+    "step3Body": "Clicca su \"Get API key\" nel menu in alto a sinistra, poi clicca su \"Create API key\". Seleziona il progetto predefinito o creane uno nuovo. Copia la chiave generata.",
+    "step4Title": "Aggiungi la chiave a questa app",
+    "step4Body": "Vai su Impostazioni > Chiavi API in questa app, incolla la chiave nel campo di input e clicca su Salva Chiave. Sei pronto!",
+    "tipLabel": "Suggerimento:",
+    "tipBody": "Crea una chiave API dedicata solo per questa app. Usa il piano gratuito di Google per avere costo zero. Puoi revocare la chiave in qualsiasi momento da Google AI Studio.",
+    "goToSettings": "Vai alle Impostazioni"
   }
 }
