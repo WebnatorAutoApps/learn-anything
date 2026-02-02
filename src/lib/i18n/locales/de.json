@@ -265,7 +265,10 @@
     "toneBoringScholar": "Langweiliger Gelehrter",
     "toneBoringScholarDesc": "Trocken, akademisch und übermäßig förmlich — absichtlich ermüdend.",
     "tonePirate": "Pirat",
-    "tonePirateDesc": "Arrr! Nautischer Slang und verwegene Metaphern überall."
+    "tonePirateDesc": "Arrr! Nautischer Slang und verwegene Metaphern überall.",
+    "language": "Sprache",
+    "languageHelp": "Wähle die Anzeigesprache der App. Inhalte der Lernpfade bleiben in ihrer Originalsprache.",
+    "languageSaved": "Sprache aktualisiert."
   },
   "learn": {
     "title": "Neuen Lernpfad starten",

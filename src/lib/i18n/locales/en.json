@@ -265,7 +265,10 @@
     "toneBoringScholar": "Boring Scholar",
     "toneBoringScholarDesc": "Dry, academic, and excessively formal — intentionally tedious.",
     "tonePirate": "Pirate",
-    "tonePirateDesc": "Arrr! Nautical slang and swashbuckling metaphors abound."
+    "tonePirateDesc": "Arrr! Nautical slang and swashbuckling metaphors abound.",
+    "language": "Language",
+    "languageHelp": "Choose the display language for the app. Learning path content stays in its original language.",
+    "languageSaved": "Language updated."
   },
   "learn": {
     "title": "Start a New Learning Path",

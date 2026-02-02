@@ -265,7 +265,10 @@
     "toneBoringScholar": "Universitaire ennuyeux",
     "toneBoringScholarDesc": "Sec, académique et excessivement formel — volontairement fastidieux.",
     "tonePirate": "Pirate",
-    "tonePirateDesc": "Arrr ! Argot nautique et métaphores de flibustier à gogo."
+    "tonePirateDesc": "Arrr ! Argot nautique et métaphores de flibustier à gogo.",
+    "language": "Langue",
+    "languageHelp": "Choisissez la langue d'affichage de l'application. Le contenu des parcours d'apprentissage reste dans sa langue d'origine.",
+    "languageSaved": "Langue mise à jour."
   },
   "learn": {
     "title": "Démarrer un nouveau parcours",
