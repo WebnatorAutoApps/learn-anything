@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from "react";
 import {
-  LOADING_MESSAGES,
-  EXTENDED_WAIT_MESSAGE,
+  LOADING_MESSAGE_KEYS,
+  EXTENDED_WAIT_KEY,
   MESSAGE_ROTATION_INTERVAL_MS,
   EXTENDED_WAIT_THRESHOLD_MS,
 } from "@/lib/constants/loading-messages";
+import { useI18n } from "@/lib/i18n";
 
 interface ProgramCreationLoaderProps {
   error?: string | null;
@@ -17,8 +18,12 @@ export default function ProgramCreationLoader({
   error,
   onDismissError,
 }: ProgramCreationLoaderProps) {
+  const { t } = useI18n();
+  const loading = t.loading as Record<string, string>;
+  const errors = t.errors as Record<string, string>;
+
   const [messageIndex, setMessageIndex] = useState(() =>
-    Math.floor(Math.random() * LOADING_MESSAGES.length)
+    Math.floor(Math.random() * LOADING_MESSAGE_KEYS.length)
   );
   const [showExtendedWait, setShowExtendedWait] = useState(false);
   const [fadingOut, setFadingOut] = useState(false);
@@ -34,7 +39,7 @@ export default function ProgramCreationLoader({
           let next = prev;
           // Avoid repeating the same message consecutively
           while (next === prev) {
-            next = Math.floor(Math.random() * LOADING_MESSAGES.length);
+            next = Math.floor(Math.random() * LOADING_MESSAGE_KEYS.length);
           }
           return next;
         });
@@ -75,7 +80,7 @@ export default function ProgramCreationLoader({
             </svg>
           </div>
           <h3 className="text-lg font-semibold text-red-400 mb-2">
-            Something went wrong
+            {errors.somethingWentWrong}
           </h3>
           <p className="text-theme-primary text-sm mb-6">{error}</p>
           <button
@@ -83,7 +88,7 @@ export default function ProgramCreationLoader({
             onClick={onDismissError}
             className="px-6 py-2 rounded-lg bg-theme-accent text-theme-text-on-accent font-semibold hover:bg-theme-primary-hover transition-colors"
           >
-            Go Back
+            {errors.goBack}
           </button>
         </div>
       </div>
@@ -103,13 +108,13 @@ export default function ProgramCreationLoader({
             fadingOut ? "opacity-0" : "opacity-100"
           }`}
         >
-          {LOADING_MESSAGES[messageIndex]}
+          {loading[LOADING_MESSAGE_KEYS[messageIndex]]}
         </p>
 
         {/* Extended wait notice */}
         {showExtendedWait && (
           <p className="text-theme-muted text-sm animate-pulse">
-            {EXTENDED_WAIT_MESSAGE}
+            {loading[EXTENDED_WAIT_KEY]}
           </p>
         )}
       </div>

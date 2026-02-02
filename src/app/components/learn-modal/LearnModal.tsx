@@ -11,7 +11,6 @@ import type {
   Message,
 } from "./types";
 import {
-  QUESTIONS,
   TYPING_INDICATOR_DELAY_MS,
   calculateModules,
 } from "./constants";
@@ -26,9 +25,18 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
   const { t } = useI18n();
   const l = t.learn as Record<string, string>;
   const common = t.common as Record<string, string>;
+  const questions: Record<Exclude<StepKey, "done">, string> = {
+    topic: l.questionTopic,
+    details: l.questionDetails,
+    expertise: l.questionExpertise,
+    expertiseDetails: l.questionExpertiseDetails,
+    commitment: l.questionCommitment,
+    duration: l.questionDuration,
+  };
+
   const [step, setStep] = useState<StepKey>("topic");
   const [messages, setMessages] = useState<Message[]>([
-    { role: "system", text: QUESTIONS.topic },
+    { role: "system", text: l.questionTopic },
   ]);
   const [inputValue, setInputValue] = useState("");
 
@@ -68,7 +76,7 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
       setMessages((prev) => {
         const updated = [
           ...prev,
-          { role: "system" as const, text: QUESTIONS[nextStep] },
+          { role: "system" as const, text: questions[nextStep] },
         ];
         stepMessageIndex.current[nextStep] = updated.length - 1;
         return updated;
@@ -90,7 +98,7 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
       setDetails(trimmed);
       advanceToStep("expertise", trimmed);
     } else if (step === "expertiseDetails") {
-      const answer = trimmed || "(skipped)";
+      const answer = trimmed || l.skipped;
       setExpertiseDetails(trimmed);
       advanceToStep("commitment", answer);
     }
@@ -211,7 +219,7 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
       whatToLearn: topic,
       openDetail: details,
       currentExpertise: expertise as ExpertiseLevel,
-      expertiseDetail: expertiseDetails || "(none)",
+      expertiseDetail: expertiseDetails || l.none,
       totalModules: modules,
     });
   }
@@ -220,7 +228,7 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
     { label: l.topic, value: topic, targetStep: "topic" as StepKey },
     { label: l.details, value: details, targetStep: "details" as StepKey },
     { label: l.expertise, value: expertise, targetStep: "expertise" as StepKey },
-    { label: l.expertiseDetails, value: expertiseDetails || "(skipped)", targetStep: "expertiseDetails" as StepKey },
+    { label: l.expertiseDetails, value: expertiseDetails || l.skipped, targetStep: "expertiseDetails" as StepKey },
     { label: l.commitment, value: commitment, targetStep: "commitment" as StepKey },
     { label: l.duration, value: duration ? (duration === 1 ? l.month : `${duration} ${l.months}`) : "", targetStep: "duration" as StepKey },
   ];
