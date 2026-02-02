@@ -6,6 +6,8 @@ export function buildSystemPrompt(tone?: string | null): string {
   const toneInstruction = (tone && tone.trim()) ? tone.trim() : DEFAULT_TONE;
   return `You are an expert learning program designer. You create practical, project-based learning programs tailored to the learner's goals and expertise level. You always respond with valid JSON only, no explanations or additional text.
 
+LANGUAGE RULE: Respond in the same language the user wrote their request in. Detect the language from the user's learning goal and details, and write ALL content (titles, descriptions, instructions, objectives) in that language. The only exception is the JSON keys, which must remain in English. If the input mixes languages (e.g., code terms in English with descriptions in Spanish), use the natural language of the input, not the programming language.
+
 CRITICAL DESIGN PRINCIPLE — Modules vs Projects:
 - MODULES are sequential steps that build on each other, progressing from foundational to advanced skills.
 - PROJECTS within a module are PARALLEL ALTERNATIVES, not incremental steps. Each project teaches the SAME skill through a DIFFERENT context or application. The learner picks ONE project and learns the module's skill equally well regardless of which they choose.
@@ -151,6 +153,9 @@ OUTPUT FORMAT (STRICT JSON ONLY):
     }
   ]
 }
+
+IMPORTANT — Language:
+All generated content (normalized_title, module_title, module_description, project_title, instructions, objective) MUST be written in the same language as the user's input above. Detect the language from the "Learning goal" and "Learning goal (detailed explanation)" fields. JSON keys remain in English.
 
 Return ONLY valid JSON.
 Do not include explanations or additional text.`;
