@@ -68,7 +68,7 @@ export default function DashboardHeader({
               <div
                 ref={menuRef}
                 onMouseLeave={() => setIsMenuOpen(false)}
-                className="absolute right-0 top-full mt-2 w-48 rounded-lg border border-theme-border bg-theme-surface shadow-lg shadow-[color:var(--t-glow)] overflow-hidden"
+                className="absolute right-0 top-full z-30 mt-2 w-48 rounded-lg border border-theme-border bg-theme-surface shadow-lg shadow-[color:var(--t-glow)] overflow-hidden"
               >
                 {username && (
                   <div className="px-4 py-3 text-theme-primary text-sm font-semibold border-b border-theme-border truncate">
