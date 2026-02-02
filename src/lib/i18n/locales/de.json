@@ -420,7 +420,14 @@
     "somethingWentWrong": "Etwas ist schiefgelaufen",
     "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.",
     "tryAgain": "Erneut versuchen",
-    "goBack": "Zurück"
+    "goBack": "Zurück",
+    "retrySubmission": "Erneut versuchen",
+    "serviceOverloaded": "Der KI-Dienst ist vorübergehend überlastet. Bitte versuche es in wenigen Augenblicken erneut.",
+    "rateLimited": "Zu viele Anfragen. Bitte warte einen Moment, bevor du es erneut versuchst.",
+    "serviceUnavailable": "Der Dienst ist vorübergehend nicht verfügbar. Bitte versuche es in Kürze erneut.",
+    "requestTimeout": "Die Anfrage hat zu lange gedauert. Bitte versuche es erneut.",
+    "forbidden": "Zugriff verweigert. Bitte überprüfe deinen API-Schlüssel und versuche es erneut.",
+    "generic": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
   },
   "loading": {
     "msg1": "Beratung mit den besten Experten zum Thema\u2026",

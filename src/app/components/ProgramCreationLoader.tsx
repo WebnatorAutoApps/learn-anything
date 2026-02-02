@@ -11,11 +11,17 @@ import { useI18n } from "@/lib/i18n";
 
 interface ProgramCreationLoaderProps {
   error?: string | null;
+  errorKey?: string | null;
+  canRetry?: boolean;
+  onRetry?: () => void;
   onDismissError: () => void;
 }
 
 export default function ProgramCreationLoader({
   error,
+  errorKey,
+  canRetry,
+  onRetry,
   onDismissError,
 }: ProgramCreationLoaderProps) {
   const { t } = useI18n();
@@ -28,9 +34,11 @@ export default function ProgramCreationLoader({
   const [showExtendedWait, setShowExtendedWait] = useState(false);
   const [fadingOut, setFadingOut] = useState(false);
 
+  const hasError = !!(error || errorKey);
+
   // Rotate messages on interval
   useEffect(() => {
-    if (error) return;
+    if (hasError) return;
 
     const interval = setInterval(() => {
       setFadingOut(true);
@@ -48,20 +56,25 @@ export default function ProgramCreationLoader({
     }, MESSAGE_ROTATION_INTERVAL_MS);
 
     return () => clearInterval(interval);
-  }, [error]);
+  }, [hasError]);
 
   // Show extended wait message after threshold
   useEffect(() => {
-    if (error) return;
+    if (hasError) return;
 
     const timeout = setTimeout(() => {
       setShowExtendedWait(true);
     }, EXTENDED_WAIT_THRESHOLD_MS);
 
     return () => clearTimeout(timeout);
-  }, [error]);
+  }, [hasError]);
 
-  if (error) {
+  if (hasError) {
+    // Resolve display message: prefer i18n errorKey, fall back to raw error string
+    const displayMessage = errorKey
+      ? (errors[errorKey] || errors.generic || error)
+      : error;
+
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center">
         <div className="absolute inset-0 bg-black/80" />
@@ -82,14 +95,29 @@ export default function ProgramCreationLoader({
           <h3 className="text-lg font-semibold text-red-400 mb-2">
             {errors.somethingWentWrong}
           </h3>
-          <p className="text-theme-primary text-sm mb-6">{error}</p>
-          <button
-            type="button"
-            onClick={onDismissError}
-            className="px-6 py-2 rounded-lg bg-theme-accent text-theme-text-on-accent font-semibold hover:bg-theme-primary-hover transition-colors"
-          >
-            {errors.goBack}
-          </button>
+          <p className="text-theme-primary text-sm mb-6">{displayMessage}</p>
+          <div className="flex items-center justify-center gap-3">
+            {canRetry && onRetry && (
+              <button
+                type="button"
+                onClick={onRetry}
+                className="px-6 py-2 rounded-lg bg-theme-accent text-theme-text-on-accent font-semibold hover:bg-theme-primary-hover transition-colors"
+              >
+                {errors.retrySubmission}
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={onDismissError}
+              className={`px-6 py-2 rounded-lg font-semibold transition-colors ${
+                canRetry && onRetry
+                  ? "border border-theme-border text-theme-primary hover:bg-theme-surface-hover"
+                  : "bg-theme-accent text-theme-text-on-accent hover:bg-theme-primary-hover"
+              }`}
+            >
+              {errors.goBack}
+            </button>
+          </div>
         </div>
       </div>
     );

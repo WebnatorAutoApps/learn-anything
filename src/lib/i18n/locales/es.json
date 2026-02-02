@@ -420,7 +420,14 @@
     "somethingWentWrong": "Algo salió mal",
     "unexpectedError": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo.",
     "tryAgain": "Intentar de nuevo",
-    "goBack": "Volver"
+    "goBack": "Volver",
+    "retrySubmission": "Reintentar",
+    "serviceOverloaded": "El servicio de IA está temporalmente sobrecargado. Por favor, inténtalo de nuevo en unos momentos.",
+    "rateLimited": "Demasiadas solicitudes. Por favor, espera un momento antes de intentarlo de nuevo.",
+    "serviceUnavailable": "El servicio no está disponible temporalmente. Por favor, inténtalo de nuevo en breve.",
+    "requestTimeout": "La solicitud tardó demasiado. Por favor, inténtalo de nuevo.",
+    "forbidden": "Acceso denegado. Por favor, verifica tu clave API e inténtalo de nuevo.",
+    "generic": "Algo salió mal. Por favor, inténtalo de nuevo."
   },
   "loading": {
     "msg1": "Consultando con los mejores expertos en el tema\u2026",

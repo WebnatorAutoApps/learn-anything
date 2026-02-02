@@ -420,7 +420,14 @@
     "somethingWentWrong": "Qualcosa è andato storto",
     "unexpectedError": "Si è verificato un errore imprevisto. Per favore riprova.",
     "tryAgain": "Riprova",
-    "goBack": "Torna Indietro"
+    "goBack": "Torna Indietro",
+    "retrySubmission": "Riprova",
+    "serviceOverloaded": "Il servizio IA è temporaneamente sovraccarico. Per favore riprova tra qualche istante.",
+    "rateLimited": "Troppe richieste. Per favore attendi un momento prima di riprovare.",
+    "serviceUnavailable": "Il servizio è temporaneamente non disponibile. Per favore riprova tra poco.",
+    "requestTimeout": "La richiesta ha impiegato troppo tempo. Per favore riprova.",
+    "forbidden": "Accesso negato. Per favore controlla la tua chiave API e riprova.",
+    "generic": "Qualcosa è andato storto. Per favore riprova."
   },
   "loading": {
     "msg1": "Consultazione dei migliori esperti in materia\u2026",
