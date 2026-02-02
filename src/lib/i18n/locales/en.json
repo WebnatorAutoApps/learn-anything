@@ -287,6 +287,8 @@
     "month": "1 month",
     "months": "months",
     "mo": "mo",
+    "skipped": "(skipped)",
+    "none": "(none)",
     "questionTopic": "Hey! I'm here to help you start a new learning journey. What do you want to learn?",
     "questionDetails": "Nice choice! Can you tell me a bit more about what you'd like to accomplish?",
     "questionExpertise": "Got it! How would you rate your current level?",
@@ -418,5 +420,22 @@
     "unexpectedError": "An unexpected error occurred. Please try again.",
     "tryAgain": "Try again",
     "goBack": "Go Back"
+  },
+  "loading": {
+    "msg1": "Consulting with the best experts in the subject\u2026",
+    "msg2": "Building the path that will take you to the stars\u2026",
+    "msg3": "Mixing the perfect learning recipe\u2026",
+    "msg4": "Crafting bite-sized projects just for you\u2026",
+    "msg5": "Mapping out your knowledge journey\u2026",
+    "msg6": "Gathering the best resources from across the web\u2026",
+    "msg7": "Designing challenges to sharpen your skills\u2026",
+    "msg8": "Fine-tuning the difficulty curve\u2026",
+    "msg9": "Connecting the dots between theory and practice\u2026",
+    "msg10": "Assembling a roadmap you\u2019ll actually enjoy\u2026",
+    "msg11": "Teaching the AI to teach you\u2026",
+    "msg12": "Plotting your path to mastery\u2026",
+    "msg13": "Calibrating steps to your level\u2026",
+    "msg14": "Turning big ideas into small steps\u2026",
+    "extendedWait": "Still working on it, hang tight\u2026"
   }
 }

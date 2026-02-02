@@ -303,7 +303,9 @@
     "commitWeekly": "Wöchentlich",
     "commitBiWeekly": "Alle 2 Wochen",
     "commitMonthly": "Monatlich",
-    "minModulesError": "Diese Kombination ergibt nur {steps} Schritt(e), aber wir brauchen mindestens {min}, damit das Programm funktioniert. Versuchen wir es nochmal — wie oft kannst du dir Zeit dafür nehmen?"
+    "minModulesError": "Diese Kombination ergibt nur {steps} Schritt(e), aber wir brauchen mindestens {min}, damit das Programm funktioniert. Versuchen wir es nochmal — wie oft kannst du dir Zeit dafür nehmen?",
+    "skipped": "(übersprungen)",
+    "none": "(keine)"
   },
   "courses": {
     "title": "Lernpfade durchsuchen",
@@ -418,5 +420,22 @@
     "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.",
     "tryAgain": "Erneut versuchen",
     "goBack": "Zurück"
+  },
+  "loading": {
+    "msg1": "Beratung mit den besten Experten zum Thema\u2026",
+    "msg2": "Aufbau des Weges, der dich zu den Sternen führt\u2026",
+    "msg3": "Mischung des perfekten Lernrezepts\u2026",
+    "msg4": "Erstellung von Projekten in kleinen Häppchen nur für dich\u2026",
+    "msg5": "Kartierung deiner Wissensreise\u2026",
+    "msg6": "Sammlung der besten Ressourcen aus dem Web\u2026",
+    "msg7": "Gestaltung von Herausforderungen, um deine Fähigkeiten zu schärfen\u2026",
+    "msg8": "Feinabstimmung der Schwierigkeitskurve\u2026",
+    "msg9": "Verbindung der Punkte zwischen Theorie und Praxis\u2026",
+    "msg10": "Zusammenstellung einer Roadmap, die dir wirklich Spaß macht\u2026",
+    "msg11": "Der KI beibringen, dich zu unterrichten\u2026",
+    "msg12": "Planung deines Weges zur Meisterschaft\u2026",
+    "msg13": "Kalibrierung der Schritte auf dein Niveau\u2026",
+    "msg14": "Große Ideen in kleine Schritte verwandeln\u2026",
+    "extendedWait": "Wir arbeiten noch daran, bitte warte\u2026"
   }
 }

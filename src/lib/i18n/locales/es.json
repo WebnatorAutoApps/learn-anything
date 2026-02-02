@@ -303,7 +303,9 @@
     "commitWeekly": "Semanal",
     "commitBiWeekly": "Quincenal",
     "commitMonthly": "Mensual",
-    "minModulesError": "Esa combinación solo da {steps} paso(s), pero necesitamos al menos {min} para que el programa funcione. Intentemos de nuevo — ¿con qué frecuencia puedes dedicarle tiempo?"
+    "minModulesError": "Esa combinación solo da {steps} paso(s), pero necesitamos al menos {min} para que el programa funcione. Intentemos de nuevo — ¿con qué frecuencia puedes dedicarle tiempo?",
+    "skipped": "(omitido)",
+    "none": "(ninguno)"
   },
   "courses": {
     "title": "Explorar Caminos de Aprendizaje",
@@ -418,5 +420,22 @@
     "unexpectedError": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo.",
     "tryAgain": "Intentar de nuevo",
     "goBack": "Volver"
+  },
+  "loading": {
+    "msg1": "Consultando con los mejores expertos en el tema\u2026",
+    "msg2": "Construyendo el camino que te llevará a las estrellas\u2026",
+    "msg3": "Mezclando la receta perfecta de aprendizaje\u2026",
+    "msg4": "Creando proyectos a tu medida\u2026",
+    "msg5": "Trazando tu viaje de conocimiento\u2026",
+    "msg6": "Reuniendo los mejores recursos de toda la web\u2026",
+    "msg7": "Diseñando retos para afilar tus habilidades\u2026",
+    "msg8": "Ajustando la curva de dificultad\u2026",
+    "msg9": "Conectando los puntos entre la teoría y la práctica\u2026",
+    "msg10": "Armando una hoja de ruta que realmente disfrutarás\u2026",
+    "msg11": "Enseñándole a la IA a enseñarte\u2026",
+    "msg12": "Trazando tu camino hacia la maestría\u2026",
+    "msg13": "Calibrando los pasos a tu nivel\u2026",
+    "msg14": "Convirtiendo grandes ideas en pequeños pasos\u2026",
+    "extendedWait": "Seguimos trabajando, espera un momento\u2026"
   }
 }

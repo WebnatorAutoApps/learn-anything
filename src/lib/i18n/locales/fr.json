@@ -303,7 +303,9 @@
     "commitWeekly": "Hebdomadaire",
     "commitBiWeekly": "Bimensuel",
     "commitMonthly": "Mensuel",
-    "minModulesError": "Cette combinaison ne donne que {steps} étape(s), mais il en faut au moins {min} pour que le programme fonctionne. Réessayons — à quelle fréquence pouvez-vous y consacrer du temps ?"
+    "minModulesError": "Cette combinaison ne donne que {steps} étape(s), mais il en faut au moins {min} pour que le programme fonctionne. Réessayons — à quelle fréquence pouvez-vous y consacrer du temps ?",
+    "skipped": "(ignoré)",
+    "none": "(aucun)"
   },
   "courses": {
     "title": "Parcourir les parcours",
@@ -418,5 +420,22 @@
     "unexpectedError": "Une erreur inattendue s'est produite. Veuillez réessayer.",
     "tryAgain": "Réessayer",
     "goBack": "Retour"
+  },
+  "loading": {
+    "msg1": "Consultation des meilleurs experts dans le domaine\u2026",
+    "msg2": "Construction du chemin qui vous mènera aux étoiles\u2026",
+    "msg3": "Préparation de la recette d'apprentissage parfaite\u2026",
+    "msg4": "Création de projets sur mesure rien que pour vous\u2026",
+    "msg5": "Cartographie de votre parcours de connaissances\u2026",
+    "msg6": "Collecte des meilleures ressources sur le web\u2026",
+    "msg7": "Conception de défis pour aiguiser vos compétences\u2026",
+    "msg8": "Réglage fin de la courbe de difficulté\u2026",
+    "msg9": "Connexion des points entre théorie et pratique\u2026",
+    "msg10": "Assemblage d'une feuille de route que vous apprécierez vraiment\u2026",
+    "msg11": "Apprentissage de l'IA pour mieux vous enseigner\u2026",
+    "msg12": "Traçage de votre chemin vers la maîtrise\u2026",
+    "msg13": "Calibrage des étapes à votre niveau\u2026",
+    "msg14": "Transformation des grandes idées en petites étapes\u2026",
+    "extendedWait": "On y travaille encore, patience\u2026"
   }
 }

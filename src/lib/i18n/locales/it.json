@@ -303,7 +303,9 @@
     "commitWeekly": "Settimanale",
     "commitBiWeekly": "Ogni due settimane",
     "commitMonthly": "Mensile",
-    "minModulesError": "Questa combinazione dà solo {steps} passo/i, ma ne servono almeno {min} perché il programma funzioni. Riproviamo — quanto tempo puoi dedicare a questo?"
+    "minModulesError": "Questa combinazione dà solo {steps} passo/i, ma ne servono almeno {min} perché il programma funzioni. Riproviamo — quanto tempo puoi dedicare a questo?",
+    "skipped": "(saltato)",
+    "none": "(nessuno)"
   },
   "courses": {
     "title": "Esplora i Percorsi",
@@ -418,5 +420,22 @@
     "unexpectedError": "Si è verificato un errore imprevisto. Per favore riprova.",
     "tryAgain": "Riprova",
     "goBack": "Torna Indietro"
+  },
+  "loading": {
+    "msg1": "Consultazione dei migliori esperti in materia\u2026",
+    "msg2": "Costruzione del percorso che ti porterà alle stelle\u2026",
+    "msg3": "Preparazione della ricetta di apprendimento perfetta\u2026",
+    "msg4": "Creazione di progetti su misura solo per te\u2026",
+    "msg5": "Mappatura del tuo viaggio di conoscenza\u2026",
+    "msg6": "Raccolta delle migliori risorse dal web\u2026",
+    "msg7": "Progettazione di sfide per affinare le tue competenze\u2026",
+    "msg8": "Regolazione fine della curva di difficoltà\u2026",
+    "msg9": "Collegamento dei punti tra teoria e pratica\u2026",
+    "msg10": "Assemblaggio di una roadmap che apprezzerai davvero\u2026",
+    "msg11": "Insegnamento all'IA per insegnarti meglio\u2026",
+    "msg12": "Tracciamento del tuo percorso verso la padronanza\u2026",
+    "msg13": "Calibrazione dei passi al tuo livello\u2026",
+    "msg14": "Trasformazione di grandi idee in piccoli passi\u2026",
+    "extendedWait": "Ci stiamo ancora lavorando, un attimo\u2026"
   }
 }
