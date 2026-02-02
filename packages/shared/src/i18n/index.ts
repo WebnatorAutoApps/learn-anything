@@ -8,3 +8,4 @@ export {
   DEFAULT_LOCALE,
   LOCALE_STORAGE_KEY,
 } from "./types";
+export { translationMap } from "./translations";
