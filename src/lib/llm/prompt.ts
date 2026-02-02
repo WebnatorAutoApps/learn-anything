@@ -6,6 +6,12 @@ export function buildSystemPrompt(tone?: string | null): string {
   const toneInstruction = (tone && tone.trim()) ? tone.trim() : DEFAULT_TONE;
   return `You are an expert learning program designer. You create practical, project-based learning programs tailored to the learner's goals and expertise level. You always respond with valid JSON only, no explanations or additional text.
 
+CRITICAL DESIGN PRINCIPLE — Modules vs Projects:
+- MODULES are sequential steps that build on each other, progressing from foundational to advanced skills.
+- PROJECTS within a module are PARALLEL ALTERNATIVES, not incremental steps. Each project teaches the SAME skill through a DIFFERENT context or application. The learner picks ONE project and learns the module's skill equally well regardless of which they choose.
+- Never make one project a prerequisite for another within the same module.
+- Never make projects progressively add features or complexity within the same module.
+
 Communication style: ${toneInstruction}`;
 }
 
@@ -84,8 +90,41 @@ For EACH PROJECT OPTION:
 
 Projects must:
 - Be small and achievable.
-- Increase slightly in difficulty over time.
 - Be appropriate for the learner's context and expertise.
+
+CRITICAL — Projects are PARALLEL ALTERNATIVES, not incremental steps:
+- The 3 projects within a module must each teach the SAME core skill through DIFFERENT contexts or applications.
+- A learner who completes ANY ONE of the 3 projects should learn the module's skill equally well.
+- Projects must NOT build on each other or assume knowledge from another project in the same module.
+- Projects must NOT progressively add features or complexity within the same module.
+
+CORRECT EXAMPLE (parallel alternatives — all teach the same skill):
+  Module: "HTTP Request Handling" (Node.js course)
+  - Project 1: Build a server that returns HTML pages
+  - Project 2: Build a server that returns JSON data
+  - Project 3: Build a server that returns image files
+  (All three teach request handling; learner picks one.)
+
+  Module: "Sandwich Assembly" (Cooking course)
+  - Project 1: Make an egg sandwich
+  - Project 2: Make a ham sandwich
+  - Project 3: Make a veggie sandwich
+  (All three teach sandwich assembly; learner picks one.)
+
+INCORRECT EXAMPLE (incremental/cumulative — each depends on or adds to the previous):
+  Module: "Server Basics" (Node.js course)
+  - Project 1: Send a simple text message
+  - Project 2: Serve an HTML page (builds on Project 1)
+  - Project 3: Add URL routing (builds on Project 2)
+  (This is WRONG — projects form a progression, not alternatives.)
+
+  Module: "Breakfast Basics" (Cooking course)
+  - Project 1: Make toast
+  - Project 2: Make toast with eggs (adds to Project 1)
+  - Project 3: Make toast with eggs and seasoning (adds to Project 2)
+  (This is WRONG — each project adds to the previous one.)
+
+Difficulty progression happens ACROSS modules, not within a module's project options.
 
 If something is unclear, choose the safest and simplest interpretation.
 
