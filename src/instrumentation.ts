@@ -21,7 +21,7 @@ export async function register() {
           "  API key encryption/decryption will fail until this is resolved.\n"
       );
     } else {
-      console.log("[STARTUP] Encryption configuration health-check passed.");
+      console.info("[STARTUP] Encryption configuration health-check passed.");
     }
   }
 }

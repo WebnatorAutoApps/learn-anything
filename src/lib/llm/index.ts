@@ -3,12 +3,7 @@ import { LLMProvider } from "./types";
 
 export { DEFAULT_TONE } from "./prompt";
 export type { LearningRequest, LLMResponse, LLMModule, LLMProject, LLMProvider } from "./types";
-
-/**
- * Minimum likelihood_of_learning (0-100) required to store a course.
- * Courses below this threshold will show a warning and won't be saved.
- */
-export const LIKELIHOOD_THRESHOLD = 30;
+export { LIKELIHOOD_THRESHOLD } from "@/lib/constants/llm";
 
 export type LLMProviderType = "gemini";
 

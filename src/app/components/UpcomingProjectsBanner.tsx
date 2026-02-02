@@ -5,33 +5,15 @@ import { useRouter } from "next/navigation";
 import {
   useUpcomingProjects,
   useCompleteProject,
-} from "@/lib/hooks/queries";
-import type { UpcomingProject } from "@/lib/hooks/queries";
+  type UpcomingProject,
+} from "@/lib/hooks";
+
+import { formatDate, getDueStatus } from "@/lib/utils";
+import { useI18n } from "@/lib/i18n";
+import Spinner from "./ui/Spinner";
 
 const INITIAL_VISIBLE = 5;
 const PAGE_SIZE = 5;
-
-function formatDueDate(dateStr: string): string {
-  const date = new Date(dateStr + "T00:00:00Z");
-  return date.toLocaleDateString(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    timeZone: "UTC",
-  });
-}
-
-function getDueStatus(dueDate: string | null): "overdue" | "soon" | "normal" | "none" {
-  if (!dueDate) return "none";
-  const today = new Date().toISOString().slice(0, 10);
-  if (dueDate < today) return "overdue";
-  // "soon" if due within 2 days
-  const soon = new Date();
-  soon.setDate(soon.getDate() + 2);
-  const soonStr = soon.toISOString().slice(0, 10);
-  if (dueDate <= soonStr) return "soon";
-  return "normal";
-}
 
 function ProjectRow({
   project,
@@ -43,6 +25,9 @@ function ProjectRow({
   isCompleting: boolean;
 }) {
   const router = useRouter();
+  const { t } = useI18n();
+  const u = t.upcoming as Record<string, string>;
+  const c = t.common as Record<string, string>;
   const dueStatus = getDueStatus(project.dueDate);
 
   return (
@@ -58,25 +43,7 @@ function ProjectRow({
         aria-label={`Mark "${project.title}" as complete`}
       >
         {isCompleting && (
-          <svg
-            className="animate-spin h-3 w-3 text-theme-primary"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-            />
-          </svg>
+          <Spinner className="h-3 w-3 text-theme-primary" />
         )}
       </button>
 
@@ -95,7 +62,7 @@ function ProjectRow({
         </div>
         <div className="flex items-center gap-2 mt-0.5">
           <span className="text-xs text-theme-primary-faint">
-            Step {project.moduleIndex} &middot; Project {project.projectIndex}
+            {c.step || "Step"} {project.moduleIndex} &middot; {c.project || "Project"} {project.projectIndex}
           </span>
           {project.dueDate ? (
             <span
@@ -107,11 +74,11 @@ function ProjectRow({
                     : "text-theme-muted"
               }`}
             >
-              {dueStatus === "overdue" ? "Overdue — " : "Due "}
-              {formatDueDate(project.dueDate)}
+              {dueStatus === "overdue" ? (u.overdue || "Overdue — ") : (u.due || "Due") + " "}
+              {formatDate(project.dueDate)}
             </span>
           ) : (
-            <span className="text-xs text-theme-primary-faint italic">No due date</span>
+            <span className="text-xs text-theme-primary-faint italic">{u.noDueDate || "No due date"}</span>
           )}
         </div>
       </button>
@@ -133,6 +100,9 @@ function ProjectRow({
 }
 
 export default function UpcomingProjectsBanner() {
+  const { t } = useI18n();
+  const u = t.upcoming as Record<string, string>;
+  const c = t.common as Record<string, string>;
   const { data: projects, isLoading } = useUpcomingProjects();
   const completeMutation = useCompleteProject();
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
@@ -150,8 +120,10 @@ export default function UpcomingProjectsBanner() {
     }
   }
 
-  // Don't render anything while loading or if there are no projects
-  if (isLoading || !projects || projects.length === 0) {
+  // Don't render anything while loading, if there are no projects,
+  // or if no projects have a due date set
+  const hasDueProjects = projects?.some((p) => p.dueDate !== null) ?? false;
+  if (isLoading || !projects || projects.length === 0 || !hasDueProjects) {
     return null;
   }
 
@@ -173,10 +145,10 @@ export default function UpcomingProjectsBanner() {
           <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
         </svg>
         <h3 className="text-lg font-semibold text-theme-primary tracking-wide">
-          Upcoming Projects
+          {u.title || "Upcoming Projects"}
         </h3>
         <span className="text-xs text-theme-muted ml-1">
-          ({projects.length} remaining)
+          ({projects.length} {c.remaining || "remaining"})
         </span>
       </div>
 
@@ -193,10 +165,10 @@ export default function UpcomingProjectsBanner() {
 
       {hasMore && (
         <button
-          onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
+          onClick={() => setVisibleCount((prev) => prev + PAGE_SIZE)}
           className="mt-3 w-full py-2 text-sm text-theme-muted hover:text-theme-primary transition-colors border border-theme-border rounded-lg hover:bg-theme-surface-hover"
         >
-          Show more ({projects.length - visibleCount} remaining)
+          {u.showMore || "Show more"} ({projects.length - visibleCount} {c.remaining || "remaining"})
         </button>
       )}
     </div>

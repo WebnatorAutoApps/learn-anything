@@ -1,106 +1,83 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { withAuth } from "@/lib/api/withAuth";
+import { MAX_AVATAR_FILE_SIZE, ALLOWED_IMAGE_TYPES } from "@/lib/constants/validation";
+import { ERROR_MESSAGES } from "@/lib/constants/errors";
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
-const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
+export const POST = withAuth(async (request, { user, supabase }) => {
+  const formData = await request.formData();
+  const file = formData.get("file");
 
-export async function POST(request: Request) {
-  try {
-    const supabase = await createClient();
-
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      return NextResponse.json(
-        { success: false, error: "Not authenticated" },
-        { status: 401 }
-      );
-    }
-
-    const formData = await request.formData();
-    const file = formData.get("file");
-
-    if (!file || !(file instanceof File)) {
-      return NextResponse.json(
-        { success: false, error: "No file provided" },
-        { status: 400 }
-      );
-    }
-
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Invalid file type. Accepted formats: JPEG, PNG, WebP",
-        },
-        { status: 400 }
-      );
-    }
-
-    if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "File too large. Maximum size is 5 MB",
-        },
-        { status: 400 }
-      );
-    }
-
-    // Use a fixed filename so new uploads overwrite the old one
-    const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
-    const filePath = `${user.id}/avatar.${ext}`;
-
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = new Uint8Array(arrayBuffer);
-
-    const { error: uploadError } = await supabase.storage
-      .from("profile-avatars")
-      .upload(filePath, buffer, {
-        contentType: file.type,
-        upsert: true,
-      });
-
-    if (uploadError) {
-      console.error("Avatar upload error:", uploadError);
-      return NextResponse.json(
-        { success: false, error: "Failed to upload avatar" },
-        { status: 500 }
-      );
-    }
-
-    const {
-      data: { publicUrl },
-    } = supabase.storage
-      .from("profile-avatars")
-      .getPublicUrl(filePath);
-
-    // Add cache-bust parameter so browsers see the new image
-    const avatarUrl = `${publicUrl}?t=${Date.now()}`;
-
-    // Update the profile with the new avatar URL
-    const { error: updateError } = await supabase
-      .from("profiles")
-      .update({ avatar_url: avatarUrl })
-      .eq("id", user.id);
-
-    if (updateError) {
-      console.error("Profile avatar_url update error:", updateError);
-      return NextResponse.json(
-        { success: false, error: "Avatar uploaded but failed to update profile" },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json({ success: true, avatar_url: avatarUrl });
-  } catch (error) {
-    console.error("Avatar upload error:", error);
+  if (!file || !(file instanceof File)) {
     return NextResponse.json(
-      { success: false, error: "An unexpected error occurred" },
+      { success: false, error: ERROR_MESSAGES.NO_FILE_PROVIDED },
+      { status: 400 }
+    );
+  }
+
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: ERROR_MESSAGES.FILE_INVALID_TYPE,
+      },
+      { status: 400 }
+    );
+  }
+
+  if (file.size > MAX_AVATAR_FILE_SIZE) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: ERROR_MESSAGES.AVATAR_FILE_TOO_LARGE,
+      },
+      { status: 400 }
+    );
+  }
+
+  // Use a fixed filename so new uploads overwrite the old one
+  const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+  const filePath = `${user.id}/avatar.${ext}`;
+
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = new Uint8Array(arrayBuffer);
+
+  const { error: uploadError } = await supabase.storage
+    .from("profile-avatars")
+    .upload(filePath, buffer, {
+      contentType: file.type,
+      upsert: true,
+    });
+
+  if (uploadError) {
+    console.error("Avatar upload error:", uploadError);
+    return NextResponse.json(
+      { success: false, error: ERROR_MESSAGES.AVATAR_UPLOAD_FAILED },
       { status: 500 }
     );
   }
-}
+
+  const {
+    data: { publicUrl },
+  } = supabase.storage
+    .from("profile-avatars")
+    .getPublicUrl(filePath);
+
+  // Add cache-bust parameter so browsers see the new image
+  const avatarUrl = `${publicUrl}?t=${Date.now()}`;
+
+  // Update the profile with the new avatar URL
+  const { error: updateError } = await supabase
+    .from("profiles")
+    .update({ avatar_url: avatarUrl })
+    .eq("id", user.id);
+
+  if (updateError) {
+    console.error("Profile avatar_url update error:", updateError);
+    return NextResponse.json(
+      { success: false, error: ERROR_MESSAGES.AVATAR_UPLOAD_OK_PROFILE_FAILED },
+      { status: 500 }
+    );
+  }
+
+  return NextResponse.json({ success: true, avatar_url: avatarUrl });
+});

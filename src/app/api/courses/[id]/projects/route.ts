@@ -1,36 +1,22 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { withAuthParams } from "@/lib/api/withAuth";
+import { MAX_COMMENT_LENGTH } from "@/lib/constants/validation";
+import { ERROR_MESSAGES } from "@/lib/constants/errors";
 
 /**
  * POST /api/courses/[id]/projects — Select a project for a module
  * Body: { moduleId: string, projectId: string }
  */
-export async function POST(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id: courseId } = await params;
-    const supabase = await createClient();
-
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      return NextResponse.json(
-        { success: false, error: "Not authenticated" },
-        { status: 401 }
-      );
-    }
+export const POST = withAuthParams<{ id: string }>(
+  async (request, { user, supabase, params }) => {
+    const { id: courseId } = params;
 
     const body = await request.json();
     const { moduleId, projectId } = body;
 
     if (!moduleId || !projectId) {
       return NextResponse.json(
-        { success: false, error: "moduleId and projectId are required" },
+        { success: false, error: ERROR_MESSAGES.MODULE_PROJECT_REQUIRED },
         { status: 400 }
       );
     }
@@ -45,7 +31,7 @@ export async function POST(
 
     if (modError || !mod) {
       return NextResponse.json(
-        { success: false, error: "Module not found in this course" },
+        { success: false, error: ERROR_MESSAGES.MODULE_NOT_FOUND },
         { status: 404 }
       );
     }
@@ -60,7 +46,7 @@ export async function POST(
 
     if (projError || !project) {
       return NextResponse.json(
-        { success: false, error: "Project not found in this module" },
+        { success: false, error: ERROR_MESSAGES.PROJECT_NOT_FOUND },
         { status: 404 }
       );
     }
@@ -84,51 +70,29 @@ export async function POST(
     if (upsertError) {
       console.error("Project selection error:", upsertError);
       return NextResponse.json(
-        { success: false, error: "Failed to select project" },
+        { success: false, error: ERROR_MESSAGES.PROJECT_SELECT_FAILED },
         { status: 500 }
       );
     }
 
     return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Project selection error:", error);
-    return NextResponse.json(
-      { success: false, error: "An unexpected error occurred" },
-      { status: 500 }
-    );
   }
-}
+);
 
 /**
  * PATCH /api/courses/[id]/projects — Mark a project as completed
  * Body: { moduleId: string, comment?: string, imageUrl?: string }
  */
-export async function PATCH(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id: courseId } = await params;
-    const supabase = await createClient();
-
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      return NextResponse.json(
-        { success: false, error: "Not authenticated" },
-        { status: 401 }
-      );
-    }
+export const PATCH = withAuthParams<{ id: string }>(
+  async (request, { user, supabase, params }) => {
+    const { id: courseId } = params;
 
     const body = await request.json();
     const { moduleId, comment, imageUrl } = body;
 
     if (!moduleId) {
       return NextResponse.json(
-        { success: false, error: "moduleId is required" },
+        { success: false, error: ERROR_MESSAGES.MODULE_ID_REQUIRED },
         { status: 400 }
       );
     }
@@ -137,13 +101,13 @@ export async function PATCH(
     if (comment !== undefined && comment !== null) {
       if (typeof comment !== "string") {
         return NextResponse.json(
-          { success: false, error: "comment must be a string" },
+          { success: false, error: ERROR_MESSAGES.COMMENT_MUST_BE_STRING },
           { status: 400 }
         );
       }
-      if (comment.length > 2000) {
+      if (comment.length > MAX_COMMENT_LENGTH) {
         return NextResponse.json(
-          { success: false, error: "Comment must be 2000 characters or fewer" },
+          { success: false, error: `Comment must be ${MAX_COMMENT_LENGTH} characters or fewer` },
           { status: 400 }
         );
       }
@@ -153,7 +117,7 @@ export async function PATCH(
     if (imageUrl !== undefined && imageUrl !== null) {
       if (typeof imageUrl !== "string") {
         return NextResponse.json(
-          { success: false, error: "imageUrl must be a string" },
+          { success: false, error: ERROR_MESSAGES.IMAGE_URL_MUST_BE_STRING },
           { status: 400 }
         );
       }
@@ -169,7 +133,7 @@ export async function PATCH(
 
     if (modError || !mod) {
       return NextResponse.json(
-        { success: false, error: "Module not found in this course" },
+        { success: false, error: ERROR_MESSAGES.MODULE_NOT_FOUND },
         { status: 404 }
       );
     }
@@ -184,7 +148,7 @@ export async function PATCH(
 
     if (selError || !selection) {
       return NextResponse.json(
-        { success: false, error: "No project selected for this module" },
+        { success: false, error: ERROR_MESSAGES.NO_PROJECT_SELECTED },
         { status: 404 }
       );
     }
@@ -218,17 +182,11 @@ export async function PATCH(
     if (updateError) {
       console.error("Project completion error:", updateError);
       return NextResponse.json(
-        { success: false, error: "Failed to mark project as completed" },
+        { success: false, error: ERROR_MESSAGES.PROJECT_COMPLETE_FAILED },
         { status: 500 }
       );
     }
 
     return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Project completion error:", error);
-    return NextResponse.json(
-      { success: false, error: "An unexpected error occurred" },
-      { status: 500 }
-    );
   }
-}
+);

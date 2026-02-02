@@ -1,26 +1,12 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { withAuthParams } from "@/lib/api/withAuth";
 import { generateModuleSchedule, todayUTC, validateCommitment } from "@/lib/schedule";
+import { DEFAULT_COMMITMENT_INTERVAL_DAYS } from "@/lib/constants/validation";
+import { ERROR_MESSAGES } from "@/lib/constants/errors";
 
-export async function DELETE(
-  _request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await params;
-    const supabase = await createClient();
-
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      return NextResponse.json(
-        { success: false, error: "Not authenticated" },
-        { status: 401 }
-      );
-    }
+export const DELETE = withAuthParams<{ id: string }>(
+  async (_request, { user, supabase, params }) => {
+    const { id } = params;
 
     // Check if the user is the course owner
     const { data: course } = await supabase
@@ -31,7 +17,7 @@ export async function DELETE(
 
     if (!course) {
       return NextResponse.json(
-        { success: false, error: "Course not found" },
+        { success: false, error: ERROR_MESSAGES.COURSE_NOT_FOUND_404 },
         { status: 404 }
       );
     }
@@ -56,7 +42,7 @@ export async function DELETE(
       if (updateError) {
         console.error("Owner unenroll error:", updateError);
         return NextResponse.json(
-          { success: false, error: "Failed to unenroll" },
+          { success: false, error: ERROR_MESSAGES.UNENROLL_FAILED_500 },
           { status: 500 }
         );
       }
@@ -100,44 +86,22 @@ export async function DELETE(
       if (deleteError) {
         console.error("Enrollment delete error:", deleteError);
         return NextResponse.json(
-          { success: false, error: "Failed to unenroll" },
+          { success: false, error: ERROR_MESSAGES.UNENROLL_FAILED_500 },
           { status: 500 }
         );
       }
     }
 
     return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Unenroll error:", error);
-    return NextResponse.json(
-      { success: false, error: "An unexpected error occurred" },
-      { status: 500 }
-    );
   }
-}
+);
 
-export async function POST(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await params;
-    const supabase = await createClient();
-
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      return NextResponse.json(
-        { success: false, error: "Not authenticated" },
-        { status: 401 }
-      );
-    }
+export const POST = withAuthParams<{ id: string }>(
+  async (request, { user, supabase, params }) => {
+    const { id } = params;
 
     // Parse commitmentIntervalDays from request body
-    let commitmentIntervalDays = 3; // default
+    let commitmentIntervalDays = DEFAULT_COMMITMENT_INTERVAL_DAYS;
     try {
       const body = await request.json();
       if (
@@ -160,7 +124,7 @@ export async function POST(
 
     if (courseError || !course) {
       return NextResponse.json(
-        { success: false, error: "Course not found" },
+        { success: false, error: ERROR_MESSAGES.COURSE_NOT_FOUND_404 },
         { status: 404 }
       );
     }
@@ -174,7 +138,7 @@ export async function POST(
       return NextResponse.json(
         {
           success: false,
-          error: "commitment_too_long",
+          error: ERROR_MESSAGES.COMMITMENT_TOO_LONG,
           projectedDays: validation.projectedDays,
           projectedYears: validation.projectedYears,
           suggestedIntervalDays: validation.suggestedIntervalDays,
@@ -213,7 +177,7 @@ export async function POST(
     if (enrollError || !enrollment) {
       console.error("Enrollment error:", enrollError);
       return NextResponse.json(
-        { success: false, error: "Failed to enroll" },
+        { success: false, error: ERROR_MESSAGES.ENROLL_FAILED_500 },
         { status: 500 }
       );
     }
@@ -252,41 +216,19 @@ export async function POST(
     }
 
     return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Enrollment error:", error);
-    return NextResponse.json(
-      { success: false, error: "An unexpected error occurred" },
-      { status: 500 }
-    );
   }
-}
+);
 
-export async function PATCH(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await params;
-    const supabase = await createClient();
-
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      return NextResponse.json(
-        { success: false, error: "Not authenticated" },
-        { status: 401 }
-      );
-    }
+export const PATCH = withAuthParams<{ id: string }>(
+  async (request, { user, supabase, params }) => {
+    const { id } = params;
 
     const body = await request.json();
     const { action, commitmentIntervalDays } = body;
 
     if (action !== "enroll" && action !== "unenroll") {
       return NextResponse.json(
-        { success: false, error: "Invalid action. Use 'enroll' or 'unenroll'." },
+        { success: false, error: ERROR_MESSAGES.INVALID_ENROLL_ACTION },
         { status: 400 }
       );
     }
@@ -301,7 +243,7 @@ export async function PATCH(
 
     if (courseError || !course) {
       return NextResponse.json(
-        { success: false, error: "Course not found" },
+        { success: false, error: ERROR_MESSAGES.COURSE_NOT_FOUND_404 },
         { status: 404 }
       );
     }
@@ -315,8 +257,8 @@ export async function PATCH(
           success: false,
           error:
             action === "enroll"
-              ? "Course is already started"
-              : "Course is already unenrolled",
+              ? ERROR_MESSAGES.ALREADY_STARTED
+              : ERROR_MESSAGES.ALREADY_UNENROLLED,
         },
         { status: 409 }
       );
@@ -325,7 +267,7 @@ export async function PATCH(
     const intervalDays =
       typeof commitmentIntervalDays === "number" && commitmentIntervalDays >= 1
         ? commitmentIntervalDays
-        : 3;
+        : DEFAULT_COMMITMENT_INTERVAL_DAYS;
 
     // Validate commitment duration for enrollment (must fit within 1 year)
     if (action === "enroll") {
@@ -334,7 +276,7 @@ export async function PATCH(
         return NextResponse.json(
           {
             success: false,
-            error: "commitment_too_long",
+            error: ERROR_MESSAGES.COMMITMENT_TOO_LONG,
             projectedDays: validation.projectedDays,
             projectedYears: validation.projectedYears,
             suggestedIntervalDays: validation.suggestedIntervalDays,
@@ -361,7 +303,7 @@ export async function PATCH(
     if (updateError) {
       console.error("Enrollment update error:", updateError);
       return NextResponse.json(
-        { success: false, error: "Failed to update enrollment status" },
+        { success: false, error: ERROR_MESSAGES.ENROLLMENT_UPDATE_FAILED },
         { status: 500 }
       );
     }
@@ -408,11 +350,5 @@ export async function PATCH(
     }
 
     return NextResponse.json({ success: true, status: newStatus });
-  } catch (error) {
-    console.error("Enrollment error:", error);
-    return NextResponse.json(
-      { success: false, error: "An unexpected error occurred" },
-      { status: 500 }
-    );
   }
-}
+);

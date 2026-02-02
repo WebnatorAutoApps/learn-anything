@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { resolveModuleStatuses, type ModuleScheduleEntry } from "@/lib/schedule";
+import { ERROR_MESSAGES } from "@/lib/constants/errors";
 
 export async function GET(
   _request: Request,
@@ -25,7 +26,7 @@ export async function GET(
 
     if (courseError || !courseRow) {
       return NextResponse.json(
-        { success: false, error: "Course not found" },
+        { success: false, error: ERROR_MESSAGES.COURSE_NOT_FOUND_404 },
         { status: 404 }
       );
     }
@@ -77,7 +78,7 @@ export async function GET(
 
     if (modulesError) {
       return NextResponse.json(
-        { success: false, error: "Failed to fetch modules" },
+        { success: false, error: ERROR_MESSAGES.MODULES_FETCH_FAILED },
         { status: 500 }
       );
     }
@@ -176,7 +177,7 @@ export async function GET(
 
         if (projectsError) {
           return NextResponse.json(
-            { success: false, error: "Failed to fetch projects" },
+            { success: false, error: ERROR_MESSAGES.PROJECTS_FETCH_FAILED },
             { status: 500 }
           );
         }
@@ -244,7 +245,7 @@ export async function GET(
   } catch (error) {
     console.error("Course fetch error:", error);
     return NextResponse.json(
-      { success: false, error: "An unexpected error occurred" },
+      { success: false, error: ERROR_MESSAGES.UNEXPECTED },
       { status: 500 }
     );
   }

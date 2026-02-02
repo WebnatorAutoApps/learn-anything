@@ -1,7 +1,6 @@
 import { LLMProvider, LearningRequest, LLMResponse } from "./types";
 import { buildSystemPrompt, buildUserPrompt } from "./prompt";
-
-const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent";
+import { GEMINI_API_URL, GEMINI_TEMPERATURE } from "@/lib/constants/llm";
 
 export class GeminiProvider implements LLMProvider {
   private apiKey: string;
@@ -29,7 +28,7 @@ export class GeminiProvider implements LLMProvider {
         ],
         generationConfig: {
           responseMimeType: "application/json",
-          temperature: 0.7,
+          temperature: GEMINI_TEMPERATURE,
         },
       }),
     });

@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useSaveSettings, type Profile } from "@/lib/hooks/queries";
+import { useSaveSettings, type Profile } from "@/lib/hooks";
+import { ERROR_MESSAGES } from "@/lib/constants/errors";
+import type { FeedbackMessage } from "@/lib/types";
+import { useI18n } from "@/lib/i18n";
 import ApiKeySecurityModal from "../ApiKeySecurityModal";
 
 interface ApiKeysSettingsProps {
@@ -9,11 +12,11 @@ interface ApiKeysSettingsProps {
 }
 
 export default function ApiKeysSettings({ profile }: ApiKeysSettingsProps) {
+  const { t } = useI18n();
+  const s = t.settings as Record<string, string>;
+  const c = t.common as Record<string, string>;
   const [apiKey, setApiKey] = useState("");
-  const [message, setMessage] = useState<{
-    type: "success" | "error";
-    text: string;
-  } | null>(null);
+  const [message, setMessage] = useState<FeedbackMessage>(null);
   const [showSecurityInfo, setShowSecurityInfo] = useState(false);
   const saveMutation = useSaveSettings();
 
@@ -30,12 +33,12 @@ export default function ApiKeysSettings({ profile }: ApiKeysSettingsProps) {
     try {
       await saveMutation.mutateAsync({ gemini_api_key: apiKey.trim() });
       setApiKey("");
-      setMessage({ type: "success", text: "API key saved successfully." });
+      setMessage({ type: "success", text: s.apiKeySaved || "API key saved successfully." });
     } catch (err) {
       const text =
         err instanceof Error && err.message
           ? err.message
-          : "Failed to save API key.";
+          : ERROR_MESSAGES.API_KEY_SAVE_FAILED;
       setMessage({ type: "error", text });
     }
   }
@@ -46,12 +49,12 @@ export default function ApiKeysSettings({ profile }: ApiKeysSettingsProps) {
     try {
       await saveMutation.mutateAsync({ gemini_api_key: "" });
       setApiKey("");
-      setMessage({ type: "success", text: "API key cleared." });
+      setMessage({ type: "success", text: s.apiKeyCleared || "API key cleared." });
     } catch (err) {
       const text =
         err instanceof Error && err.message
           ? err.message
-          : "Failed to clear API key.";
+          : ERROR_MESSAGES.API_KEY_CLEAR_FAILED;
       setMessage({ type: "error", text });
     }
   }
@@ -63,13 +66,13 @@ export default function ApiKeysSettings({ profile }: ApiKeysSettingsProps) {
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <label className="text-sm font-medium text-theme-primary">
-              Gemini API Key
+              {s.geminiApiKey || "Gemini API Key"}
             </label>
             <button
               type="button"
               onClick={() => setShowSecurityInfo(true)}
               className="flex h-5 w-5 items-center justify-center rounded-full text-theme-muted hover:text-theme-primary hover:bg-theme-surface-hover transition-colors"
-              aria-label="API key security information"
+              aria-label={s.apiKeySecurityInfo || "API key security information"}
             >
               <svg
                 className="h-4 w-4"
@@ -86,15 +89,14 @@ export default function ApiKeysSettings({ profile }: ApiKeysSettingsProps) {
           </div>
 
           <p className="text-xs text-theme-muted">
-            This key is used to generate learning plans and communicate
-            with the Gemini API. You can get one from{" "}
+            {s.apiKeyHelpText || "This key is used to generate learning plans and communicate with the Gemini API. You can get one from"}{" "}
             <a
               href="https://aistudio.google.com/apikey"
               target="_blank"
               rel="noopener noreferrer"
               className="text-theme-secondary underline hover:text-theme-primary"
             >
-              Google AI Studio
+              {s.googleAiStudio || "Google AI Studio"}
             </a>
             .
           </p>
@@ -106,7 +108,7 @@ export default function ApiKeysSettings({ profile }: ApiKeysSettingsProps) {
                 {maskedKey}
               </span>
               <span className="text-xs text-theme-primary-faint">
-                (currently set)
+                {s.currentlySet || "(currently set)"}
               </span>
             </div>
           )}
@@ -118,8 +120,8 @@ export default function ApiKeysSettings({ profile }: ApiKeysSettingsProps) {
             onChange={(e) => setApiKey(e.target.value)}
             placeholder={
               hasExistingKey
-                ? "Enter a new key to replace the current one"
-                : "Enter your Gemini API key"
+                ? (s.replaceKeyPlaceholder || "Enter a new key to replace the current one")
+                : (s.enterKeyPlaceholder || "Enter your Gemini API key")
             }
             className="w-full rounded-lg border border-theme-border bg-theme-surface px-3 py-2 text-theme-primary placeholder-theme-primary-faint focus:border-theme-primary focus:outline-none focus:ring-1 focus:ring-theme-primary transition-colors font-mono text-sm"
           />
@@ -145,14 +147,14 @@ export default function ApiKeysSettings({ profile }: ApiKeysSettingsProps) {
             disabled={!hasExistingKey || saveMutation.isPending}
             className="px-4 py-2 rounded-lg border border-theme-border text-theme-primary hover:bg-theme-surface-hover transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
           >
-            {saveMutation.isPending ? "Clearing..." : "Clear Key"}
+            {saveMutation.isPending ? (s.clearing || "Clearing...") : (s.clearKey || "Clear Key")}
           </button>
           <button
             onClick={handleSave}
             disabled={!apiKey.trim() || saveMutation.isPending}
             className="px-4 py-2 rounded-lg bg-theme-accent text-theme-text-on-accent font-semibold hover:bg-theme-primary-hover transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
           >
-            {saveMutation.isPending ? "Saving..." : "Save Key"}
+            {saveMutation.isPending ? (c.saving || "Saving...") : (s.saveKey || "Save Key")}
           </button>
         </div>
       </div>

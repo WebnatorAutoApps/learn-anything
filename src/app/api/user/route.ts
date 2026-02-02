@@ -1,111 +1,90 @@
 import { NextResponse } from "next/server";
+import { withAuth } from "@/lib/api/withAuth";
 import { createClient } from "@/lib/supabase/server";
 import { generateUsername } from "@/lib/username";
 
-export async function GET() {
-  try {
-    const supabase = await createClient();
+export const GET = withAuth(async (_request, { user, supabase }) => {
+  // Only select non-sensitive columns — encrypted_api_key is never fetched
+  const profileSelect = "id, full_name, email, avatar_url, api_key_last4, username, tone, theme, created_at, updated_at";
+  const meta = user.user_metadata ?? {};
 
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
+  let { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select(profileSelect)
+    .eq("id", user.id)
+    .single();
 
-    if (authError || !user) {
-      return NextResponse.json(
-        { success: false, error: "Not authenticated" },
-        { status: 401 }
-      );
-    }
+  // If profile doesn't exist, create it from auth user metadata.
+  // This handles cases where the handle_new_user trigger didn't fire
+  // (e.g., user created before trigger existed, or trigger failed).
+  if (profileError && profileError.code === "PGRST116") {
+    const fullName = meta.full_name || meta.name || null;
+    const username = await generateUniqueUsername(supabase, fullName);
 
-    // Only select non-sensitive columns — encrypted_api_key is never fetched
-    const profileSelect = "id, full_name, email, avatar_url, api_key_last4, username, tone, theme, created_at, updated_at";
-    const meta = user.user_metadata ?? {};
-
-    let { data: profile, error: profileError } = await supabase
+    const { data: newProfile, error: upsertError } = await supabase
       .from("profiles")
+      .upsert({
+        id: user.id,
+        full_name: fullName,
+        email: user.email || null,
+        avatar_url: meta.avatar_url || meta.picture || null,
+        username,
+      })
       .select(profileSelect)
-      .eq("id", user.id)
       .single();
 
-    // If profile doesn't exist, create it from auth user metadata.
-    // This handles cases where the handle_new_user trigger didn't fire
-    // (e.g., user created before trigger existed, or trigger failed).
-    if (profileError && profileError.code === "PGRST116") {
-      const fullName = meta.full_name || meta.name || null;
-      const username = await generateUniqueUsername(supabase, fullName);
-
-      const { data: newProfile, error: upsertError } = await supabase
-        .from("profiles")
-        .upsert({
-          id: user.id,
-          full_name: fullName,
-          email: user.email || null,
-          avatar_url: meta.avatar_url || meta.picture || null,
-          username,
-        })
-        .select(profileSelect)
-        .single();
-
-      if (!upsertError && newProfile) {
-        profile = newProfile;
-        profileError = null;
-      } else {
-        console.error("Profile auto-create failed:", upsertError);
-      }
-    } else if (profileError) {
-      console.error("Profile fetch error:", profileError);
+    if (!upsertError && newProfile) {
+      profile = newProfile;
+      profileError = null;
+    } else {
+      console.error("Profile auto-create failed:", upsertError);
     }
+  } else if (profileError) {
+    console.error("Profile fetch error:", profileError);
+  }
 
-    // Determine auth provider (email vs OAuth)
-    const authProvider = user.app_metadata?.provider || "email";
+  // Determine auth provider (email vs OAuth)
+  const authProvider = user.app_metadata?.provider || "email";
 
-    // If we still don't have a profile (DB down, RLS issue, etc.),
-    // return auth metadata so the frontend isn't left with nothing.
-    if (!profile) {
-      return NextResponse.json({
-        success: true,
-        profile: {
-          id: user.id,
-          full_name: meta.full_name || meta.name || null,
-          email: user.email || null,
-          avatar_url: meta.avatar_url || meta.picture || null,
-          api_key_last4: null,
-          has_gemini_api_key: false,
-          username: null,
-          tone: null,
-          theme: null,
-          auth_provider: authProvider,
-          created_at: null,
-          updated_at: null,
-        },
-      });
-    }
-
-    // Fall back to auth metadata for avatar if not in profile
-    const avatarUrl =
-      profile.avatar_url ||
-      user.user_metadata?.avatar_url ||
-      user.user_metadata?.picture ||
-      null;
-
+  // If we still don't have a profile (DB down, RLS issue, etc.),
+  // return auth metadata so the frontend isn't left with nothing.
+  if (!profile) {
     return NextResponse.json({
       success: true,
       profile: {
-        ...profile,
-        avatar_url: avatarUrl,
-        has_gemini_api_key: !!profile.api_key_last4,
+        id: user.id,
+        full_name: meta.full_name || meta.name || null,
+        email: user.email || null,
+        avatar_url: meta.avatar_url || meta.picture || null,
+        api_key_last4: null,
+        has_gemini_api_key: false,
+        username: null,
+        tone: null,
+        theme: null,
         auth_provider: authProvider,
+        created_at: null,
+        updated_at: null,
       },
     });
-  } catch (error) {
-    console.error("User fetch error:", error);
-    return NextResponse.json(
-      { success: false, error: "An unexpected error occurred" },
-      { status: 500 }
-    );
   }
-}
+
+  // Fall back to auth metadata for avatar if not in profile
+  const avatarUrl =
+    profile.avatar_url ||
+    user.user_metadata?.avatar_url ||
+    user.user_metadata?.picture ||
+    null;
+
+  return NextResponse.json({
+    success: true,
+    profile: {
+      ...profile,
+      avatar_url: avatarUrl,
+      has_gemini_api_key: !!profile.api_key_last4,
+      auth_provider: authProvider,
+    },
+  });
+});
 
 /**
  * Generate a unique username with retry logic.

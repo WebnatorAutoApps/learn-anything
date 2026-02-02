@@ -1,87 +1,95 @@
 "use client";
 
 import { useState } from "react";
-import { useSaveTone, type Profile } from "@/lib/hooks/queries";
+import { useSaveTone, type Profile } from "@/lib/hooks";
+import { MAX_TONE_LENGTH } from "@/lib/constants/validation";
 import { DEFAULT_TONE } from "@/lib/llm";
+import { ERROR_MESSAGES } from "@/lib/constants/errors";
+import type { FeedbackMessage } from "@/lib/types";
+import { useI18n } from "@/lib/i18n";
 
 interface ToneSettingsProps {
   profile: Profile;
 }
 
-const TONE_PRESETS = [
+interface TonePreset {
+  labelKey: string;
+  descKey: string;
+  value: string;
+}
+
+const TONE_PRESETS: TonePreset[] = [
   {
-    label: "Upbeat & Motivational",
-    description: "Energetic and encouraging — keeps you pumped to learn.",
+    labelKey: "toneUpbeat",
+    descKey: "toneUpbeatDesc",
     value:
       "You are fun, supportive, motivational, and upbeat. Encourage the user and keep the energy high.",
   },
   {
-    label: "Professional & Direct",
-    description: "Clear, concise, and no-nonsense — straight to the point.",
+    labelKey: "toneProfessional",
+    descKey: "toneProfessionalDesc",
     value:
       "You are professional, concise, and direct. Focus on clarity and efficiency without unnecessary filler.",
   },
   {
-    label: "Calm & Reassuring",
-    description: "Patient and soothing — makes learning feel stress-free.",
+    labelKey: "toneCalm",
+    descKey: "toneCalmDesc",
     value:
       "You are calm, patient, and reassuring. Help the user feel at ease and confident in their learning journey.",
   },
   {
-    label: "Casual & Friendly",
-    description: "Warm and relaxed — like chatting with a knowledgeable friend.",
+    labelKey: "toneCasual",
+    descKey: "toneCasualDesc",
     value:
       "You are casual, warm, and friendly. Talk like a knowledgeable friend who genuinely wants to help.",
   },
   {
-    label: "Loving Mom",
-    description: "Warm and nurturing — always believes in you, sweetie.",
+    labelKey: "toneLovingMom",
+    descKey: "toneLovingMomDesc",
     value:
       "You are a warm, loving, nurturing presence. Use gentle pet names like 'sweetie' or 'dear' occasionally. Offer constant encouragement and reassurance. Celebrate every small win. When the learner struggles, remind them you're proud of them for trying and that mistakes are how we grow.",
   },
   {
-    label: "Drill Sergeant",
-    description: "Tough love and intensity — no excuses, only results.",
+    labelKey: "toneDrillSergeant",
+    descKey: "toneDrillSergeantDesc",
     value:
       "You are a no-nonsense drill sergeant. Be blunt, commanding, and direct. Push the learner to do better with motivational intensity. No hand-holding — demand focus, discipline, and follow-through. Use short, punchy sentences. When they succeed, give brief, hard-earned praise. When they slack, call it out immediately.",
   },
   {
-    label: "Boring Scholar",
-    description: "Dry, academic, and excessively formal — intentionally tedious.",
+    labelKey: "toneBoringScholar",
+    descKey: "toneBoringScholarDesc",
     value:
       "You are an excessively formal, dry academic. Use verbose, overly scholarly language with unnecessarily long sentences. Reference methodology and pedagogy frequently. Maintain a monotone, detached formality throughout. Preface statements with phrases like 'It should be noted that' or 'One might observe.' Be thorough to the point of being tedious — this is intentional.",
   },
   {
-    label: "Pirate",
-    description: "Arrr! Nautical slang and swashbuckling metaphors abound.",
+    labelKey: "tonePirate",
+    descKey: "tonePirateDesc",
     value:
       "You are a swashbuckling pirate tutor. Use nautical slang, say 'arrr' and 'ahoy' naturally in conversation. Refer to learning as 'charting courses,' projects as 'voyages,' and knowledge as 'treasure.' Use sea metaphors — rough waters for challenges, smooth sailing for easy topics, and buried treasure for key insights. Keep it fun and adventurous while still being genuinely helpful.",
   },
-] as const;
-
-const MAX_TONE_LENGTH = 500;
+];
 
 export default function ToneSettings({ profile }: ToneSettingsProps) {
+  const { t } = useI18n();
+  const s = t.settings as Record<string, string>;
+  const c = t.common as Record<string, string>;
   const currentTone = profile.tone || DEFAULT_TONE;
 
   const matchingPreset = TONE_PRESETS.find((p) => p.value === currentTone);
   const isCustom = !matchingPreset && currentTone !== DEFAULT_TONE;
 
   const [selectedPreset, setSelectedPreset] = useState<string | "custom">(
-    isCustom ? "custom" : (matchingPreset?.label ?? TONE_PRESETS[0].label)
+    isCustom ? "custom" : (matchingPreset?.labelKey ?? TONE_PRESETS[0].labelKey)
   );
   const [customTone, setCustomTone] = useState(isCustom ? currentTone : "");
-  const [message, setMessage] = useState<{
-    type: "success" | "error";
-    text: string;
-  } | null>(null);
+  const [message, setMessage] = useState<FeedbackMessage>(null);
   const saveToneMutation = useSaveTone();
 
   function getEffectiveTone(): string {
     if (selectedPreset === "custom") {
       return customTone.trim();
     }
-    const preset = TONE_PRESETS.find((p) => p.label === selectedPreset);
+    const preset = TONE_PRESETS.find((p) => p.labelKey === selectedPreset);
     return preset?.value ?? "";
   }
 
@@ -95,14 +103,14 @@ export default function ToneSettings({ profile }: ToneSettingsProps) {
     const effective = getEffectiveTone();
 
     if (selectedPreset === "custom" && !effective) {
-      setMessage({ type: "error", text: "Custom tone cannot be empty." });
+      setMessage({ type: "error", text: ERROR_MESSAGES.TONE_EMPTY });
       return;
     }
 
     if (effective.length > MAX_TONE_LENGTH) {
       setMessage({
         type: "error",
-        text: `Tone must be ${MAX_TONE_LENGTH} characters or less.`,
+        text: `${s.aiTone || "Tone"} must be ${MAX_TONE_LENGTH} characters or less.`,
       });
       return;
     }
@@ -111,12 +119,12 @@ export default function ToneSettings({ profile }: ToneSettingsProps) {
 
     try {
       await saveToneMutation.mutateAsync(effective);
-      setMessage({ type: "success", text: "Tone preference saved." });
+      setMessage({ type: "success", text: s.toneSaved || "Tone preference saved." });
     } catch (err) {
       setMessage({
         type: "error",
         text:
-          err instanceof Error ? err.message : "Failed to save tone preference.",
+          err instanceof Error ? err.message : ERROR_MESSAGES.TONE_SAVE_FAILED,
       });
     }
   }
@@ -127,14 +135,14 @@ export default function ToneSettings({ profile }: ToneSettingsProps) {
     try {
       // Sending empty string clears the tone (server sets to null, app uses default)
       await saveToneMutation.mutateAsync("");
-      setSelectedPreset(TONE_PRESETS[0].label);
+      setSelectedPreset(TONE_PRESETS[0].labelKey);
       setCustomTone("");
-      setMessage({ type: "success", text: "Tone reset to default." });
+      setMessage({ type: "success", text: s.toneReset || "Tone reset to default." });
     } catch (err) {
       setMessage({
         type: "error",
         text:
-          err instanceof Error ? err.message : "Failed to reset tone preference.",
+          err instanceof Error ? err.message : ERROR_MESSAGES.TONE_RESET_FAILED,
       });
     }
   }
@@ -142,10 +150,9 @@ export default function ToneSettings({ profile }: ToneSettingsProps) {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h4 className="text-sm font-medium text-theme-primary">AI Tone</h4>
+        <h4 className="text-sm font-medium text-theme-primary">{s.aiTone || "AI Tone"}</h4>
         <p className="text-xs text-theme-muted">
-          Choose how the AI communicates with you when building learning plans.
-          This takes effect on your next interaction.
+          {s.toneHelp || "Choose how the AI communicates with you when building learning plans. This takes effect on your next interaction."}
         </p>
       </div>
 
@@ -153,17 +160,17 @@ export default function ToneSettings({ profile }: ToneSettingsProps) {
       <div className="space-y-2">
         {TONE_PRESETS.map((preset) => (
           <button
-            key={preset.label}
+            key={preset.labelKey}
             type="button"
-            onClick={() => setSelectedPreset(preset.label)}
+            onClick={() => setSelectedPreset(preset.labelKey)}
             className={`w-full text-left rounded-lg border px-4 py-3 transition-colors ${
-              selectedPreset === preset.label
+              selectedPreset === preset.labelKey
                 ? "border-theme-primary bg-theme-surface-hover text-theme-primary"
                 : "border-theme-border bg-theme-surface text-theme-secondary hover:border-theme-primary-dim hover:text-theme-primary"
             }`}
           >
-            <span className="text-sm font-medium">{preset.label}</span>
-            <p className="text-xs mt-1 opacity-70">{preset.description}</p>
+            <span className="text-sm font-medium">{s[preset.labelKey] || preset.labelKey}</span>
+            <p className="text-xs mt-1 opacity-70">{s[preset.descKey] || preset.descKey}</p>
           </button>
         ))}
 
@@ -177,9 +184,9 @@ export default function ToneSettings({ profile }: ToneSettingsProps) {
               : "border-theme-border bg-theme-surface text-theme-secondary hover:border-theme-primary-dim hover:text-theme-primary"
           }`}
         >
-          <span className="text-sm font-medium">Custom</span>
+          <span className="text-sm font-medium">{s.toneCustom || "Custom"}</span>
           <p className="text-xs mt-1 opacity-70">
-            Write your own tone instructions for the AI.
+            {s.toneCustomDesc || "Write your own tone instructions for the AI."}
           </p>
         </button>
       </div>
@@ -190,7 +197,7 @@ export default function ToneSettings({ profile }: ToneSettingsProps) {
           <textarea
             value={customTone}
             onChange={(e) => setCustomTone(e.target.value)}
-            placeholder="Describe how you want the AI to communicate with you..."
+            placeholder={s.toneCustomPlaceholder || "Describe how you want the AI to communicate with you..."}
             maxLength={MAX_TONE_LENGTH}
             rows={3}
             className="w-full rounded-lg border border-theme-border-strong bg-theme-surface px-3 py-2 text-theme-primary placeholder-theme-muted focus:border-theme-primary focus:outline-none focus:ring-1 focus:ring-theme-primary transition-colors text-sm resize-none"
@@ -220,7 +227,7 @@ export default function ToneSettings({ profile }: ToneSettingsProps) {
           disabled={saveToneMutation.isPending}
           className="px-4 py-2 rounded-lg border border-theme-border-strong text-theme-primary hover:bg-theme-surface-hover transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
         >
-          {saveToneMutation.isPending ? "Resetting..." : "Reset to Default"}
+          {saveToneMutation.isPending ? (s.resetting || "Resetting...") : (s.resetToDefault || "Reset to Default")}
         </button>
         <button
           type="button"
@@ -232,7 +239,7 @@ export default function ToneSettings({ profile }: ToneSettingsProps) {
           }
           className="px-4 py-2 rounded-lg bg-theme-accent text-theme-text-on-accent font-semibold hover:bg-theme-primary-hover transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
         >
-          {saveToneMutation.isPending ? "Saving..." : "Save"}
+          {saveToneMutation.isPending ? (c.saving || "Saving...") : (c.save || "Save")}
         </button>
       </div>
     </div>

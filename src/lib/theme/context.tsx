@@ -8,10 +8,9 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
-import type { ThemeKey } from "@/lib/hooks/queries";
+import { type ThemeKey, DEFAULT_THEME } from "@/lib/constants/themes";
 
 const STORAGE_KEY = "learn-anything-theme";
-const DEFAULT_THEME: ThemeKey = "terminal";
 
 interface ThemeContextValue {
   theme: ThemeKey;

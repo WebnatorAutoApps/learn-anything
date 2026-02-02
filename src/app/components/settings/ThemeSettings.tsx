@@ -1,13 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { useSaveTheme, type ThemeKey } from "@/lib/hooks/queries";
+import { useSaveTheme } from "@/lib/hooks";
+import type { ThemeKey } from "@/lib/constants/themes";
 import { useTheme } from "@/lib/theme/context";
+import { ERROR_MESSAGES } from "@/lib/constants/errors";
+import type { FeedbackMessage } from "@/lib/types";
+import { useI18n } from "@/lib/i18n";
 
 interface ThemeOption {
   key: ThemeKey;
-  name: string;
-  description: string;
+  nameKey: string;
+  descKey: string;
   colors: {
     bg: string;
     surface: string;
@@ -20,8 +24,8 @@ interface ThemeOption {
 const THEMES: ThemeOption[] = [
   {
     key: "terminal",
-    name: "Terminal",
-    description: "Dark, monospace, hacker aesthetic",
+    nameKey: "themeTerminal",
+    descKey: "themeTerminalDesc",
     colors: {
       bg: "#0a0f0a",
       surface: "#0d1a0d",
@@ -32,8 +36,8 @@ const THEMES: ThemeOption[] = [
   },
   {
     key: "space",
-    name: "Space",
-    description: "Deep-space palette, cosmic vibes",
+    nameKey: "themeSpace",
+    descKey: "themeSpaceDesc",
     colors: {
       bg: "#0b0d1a",
       surface: "#0f0f28",
@@ -44,8 +48,8 @@ const THEMES: ThemeOption[] = [
   },
   {
     key: "school",
-    name: "School",
-    description: "Notebook textures, chalkboard colors",
+    nameKey: "themeSchool",
+    descKey: "themeSchoolDesc",
     colors: {
       bg: "#1c1a17",
       surface: "#231e19",
@@ -56,8 +60,8 @@ const THEMES: ThemeOption[] = [
   },
   {
     key: "gym",
-    name: "Gym",
-    description: "Bold, energetic, sporty accents",
+    nameKey: "themeGym",
+    descKey: "themeGymDesc",
     colors: {
       bg: "#0f0a0b",
       surface: "#1e0c0f",
@@ -68,8 +72,8 @@ const THEMES: ThemeOption[] = [
   },
   {
     key: "90s-internet",
-    name: "90s Internet",
-    description: "Retro web, bright colors, pixel vibes",
+    nameKey: "theme90s",
+    descKey: "theme90sDesc",
     colors: {
       bg: "#0c0a1a",
       surface: "#0f0c23",
@@ -81,12 +85,11 @@ const THEMES: ThemeOption[] = [
 ];
 
 export default function ThemeSettings() {
+  const { t } = useI18n();
+  const s = t.settings as Record<string, string>;
   const { theme: activeTheme, setTheme } = useTheme();
   const saveThemeMutation = useSaveTheme();
-  const [message, setMessage] = useState<{
-    type: "success" | "error";
-    text: string;
-  } | null>(null);
+  const [message, setMessage] = useState<FeedbackMessage>(null);
 
   async function handleSelectTheme(themeKey: ThemeKey) {
     if (themeKey === activeTheme) return;
@@ -97,14 +100,14 @@ export default function ThemeSettings() {
 
     try {
       await saveThemeMutation.mutateAsync(themeKey);
-      setMessage({ type: "success", text: "Theme saved." });
+      setMessage({ type: "success", text: s.themeSaved || "Theme saved." });
     } catch (err) {
       // Revert on failure
       setTheme(activeTheme);
       setMessage({
         type: "error",
         text:
-          err instanceof Error ? err.message : "Failed to save theme.",
+          err instanceof Error ? err.message : ERROR_MESSAGES.THEME_SAVE_FAILED,
       });
     }
   }
@@ -112,33 +115,35 @@ export default function ThemeSettings() {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h4 className="text-sm font-medium text-theme-primary">Themes</h4>
+        <h4 className="text-sm font-medium text-theme-primary">{s.themes || "Themes"}</h4>
         <p className="text-xs text-theme-muted">
-          Choose a visual theme for the app. Changes apply immediately.
+          {s.themesHelp || "Choose a visual theme for the app. Changes apply immediately."}
         </p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {THEMES.map((t) => {
-          const isActive = t.key === activeTheme;
+        {THEMES.map((theme) => {
+          const isActive = theme.key === activeTheme;
+          const name = s[theme.nameKey] || theme.nameKey;
+          const desc = s[theme.descKey] || theme.descKey;
           return (
             <button
-              key={t.key}
+              key={theme.key}
               type="button"
-              onClick={() => handleSelectTheme(t.key)}
+              onClick={() => handleSelectTheme(theme.key)}
               disabled={saveThemeMutation.isPending}
               className={`relative text-left rounded-lg border-2 p-3 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 ${
                 isActive
                   ? "border-theme-primary shadow-[0_0_12px_var(--t-glow)]"
                   : "border-theme-border hover:border-theme-primary-dim"
               }`}
-              style={{ background: t.colors.bg }}
+              style={{ background: theme.colors.bg }}
               aria-pressed={isActive}
-              aria-label={`${t.name} theme${isActive ? " (selected)" : ""}`}
+              aria-label={`${name} ${s.theme || "theme"}${isActive ? ` (${s.selected || "selected"})` : ""}`}
             >
               {/* Color swatch row */}
               <div className="flex gap-1.5 mb-3">
-                {Object.values(t.colors).map((color, i) => (
+                {Object.values(theme.colors).map((color, i) => (
                   <div
                     key={i}
                     className="h-6 flex-1 rounded-sm"
@@ -151,15 +156,15 @@ export default function ThemeSettings() {
               <div>
                 <span
                   className="text-sm font-semibold block"
-                  style={{ color: t.colors.primary }}
+                  style={{ color: theme.colors.primary }}
                 >
-                  {t.name}
+                  {name}
                 </span>
                 <span
                   className="text-xs block mt-0.5"
-                  style={{ color: t.colors.secondary }}
+                  style={{ color: theme.colors.secondary }}
                 >
-                  {t.description}
+                  {desc}
                 </span>
               </div>
 
@@ -167,14 +172,14 @@ export default function ThemeSettings() {
               {isActive && (
                 <div
                   className="absolute top-2 right-2 h-5 w-5 rounded-full flex items-center justify-center"
-                  style={{ background: t.colors.primary }}
+                  style={{ background: theme.colors.primary }}
                 >
                   <svg
                     className="h-3 w-3"
                     fill="none"
                     strokeWidth="3"
                     viewBox="0 0 24 24"
-                    stroke={t.colors.bg}
+                    stroke={theme.colors.bg}
                   >
                     <path
                       strokeLinecap="round"

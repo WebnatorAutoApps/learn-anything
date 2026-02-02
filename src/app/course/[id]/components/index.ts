@@ -1,0 +1,13 @@
+export { default as CourseHeader } from "./CourseHeader";
+export { default as PathDetailModal } from "./PathDetailModal";
+export { default as ProgressBar } from "./ProgressBar";
+export { getMotivationalMessage } from "./ProgressBar";
+export { default as CompletionCelebration } from "./CompletionCelebration";
+export { default as HeroProjectCard } from "./HeroProjectCard";
+export { default as ModuleTimeline } from "./ModuleTimeline";
+export { default as TimelineItem } from "./TimelineItem";
+export { default as ProjectSelectionArea } from "./ProjectSelectionArea";
+export { default as ProjectCompletionForm } from "./ProjectCompletionForm";
+export { default as EnrollmentSection } from "./EnrollmentSection";
+export { default as UnenrollDialog } from "./UnenrollDialog";
+export { default as UnenrolledModuleList } from "./UnenrolledModuleList";

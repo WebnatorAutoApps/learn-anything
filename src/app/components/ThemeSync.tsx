@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { useProfile, VALID_THEMES, type ThemeKey } from "@/lib/hooks/queries";
+import { useProfile } from "@/lib/hooks";
+import { VALID_THEMES, type ThemeKey } from "@/lib/constants/themes";
 import { useTheme } from "@/lib/theme/context";
 
 const STORAGE_KEY = "learn-anything-theme";
