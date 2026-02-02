@@ -330,6 +330,7 @@
     "pathDetails": "路径详情",
     "aboutThisPath": "关于此路径",
     "studyCadence": "学习节奏",
+    "studyCadenceEvery": "每{days}天",
     "howOften": "你多久学习一次？",
     "enrolling": "加入中...",
     "currentFocus": "当前重点",

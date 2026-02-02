@@ -330,6 +330,7 @@
     "pathDetails": "Pfaddetails",
     "aboutThisPath": "Über diesen Pfad",
     "studyCadence": "Lernrhythmus",
+    "studyCadenceEvery": "Alle {days} Tag(e)",
     "howOften": "Wie oft wirst du lernen?",
     "enrolling": "Einschreibung läuft...",
     "currentFocus": "Aktueller Fokus",

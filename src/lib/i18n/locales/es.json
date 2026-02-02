@@ -330,6 +330,7 @@
     "pathDetails": "Detalles del Camino",
     "aboutThisPath": "Sobre Este Camino",
     "studyCadence": "Ritmo de Estudio",
+    "studyCadenceEvery": "Cada {days} día(s)",
     "howOften": "¿Con qué frecuencia vas a estudiar?",
     "enrolling": "Inscribiendo...",
     "currentFocus": "Enfoque Actual",

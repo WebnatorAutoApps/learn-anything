@@ -25,6 +25,23 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
   const { t } = useI18n();
   const l = t.learn as Record<string, string>;
   const common = t.common as Record<string, string>;
+
+  const expertiseLabels: Record<string, string> = {
+    "No clue": l.expertiseNoClue,
+    "Beginner": l.expertiseBeginner,
+    "Intermediate": l.expertiseIntermediate,
+    "Advanced": l.expertiseAdvanced,
+    "Expert": l.expertiseExpert,
+  };
+
+  const commitmentLabels: Record<string, string> = {
+    "Daily": l.commitDaily,
+    "Every 3 days": l.commitEvery3Days,
+    "Weekly": l.commitWeekly,
+    "Bi-weekly": l.commitBiWeekly,
+    "Monthly": l.commitMonthly,
+  };
+
   const questions: Record<Exclude<StepKey, "done">, string> = {
     topic: l.questionTopic,
     details: l.questionDetails,
@@ -106,12 +123,12 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
 
   function handleExpertiseSelect(level: ExpertiseLevel) {
     setExpertise(level);
-    advanceToStep("expertiseDetails", level);
+    advanceToStep("expertiseDetails", expertiseLabels[level] || level);
   }
 
   function handleCommitmentSelect(freq: CommitmentFrequency) {
     setCommitment(freq);
-    advanceToStep("duration", freq);
+    advanceToStep("duration", commitmentLabels[freq] || freq);
   }
 
   function handleDurationSelect(months: number) {
@@ -227,9 +244,9 @@ export default function LearnModal({ onClose, onSubmit }: LearnModalProps) {
   const summaryItems = [
     { label: l.topic, value: topic, targetStep: "topic" as StepKey },
     { label: l.details, value: details, targetStep: "details" as StepKey },
-    { label: l.expertise, value: expertise, targetStep: "expertise" as StepKey },
+    { label: l.expertise, value: expertise ? (expertiseLabels[expertise] || expertise) : "", targetStep: "expertise" as StepKey },
     { label: l.expertiseDetails, value: expertiseDetails || l.skipped, targetStep: "expertiseDetails" as StepKey },
-    { label: l.commitment, value: commitment, targetStep: "commitment" as StepKey },
+    { label: l.commitment, value: commitment ? (commitmentLabels[commitment] || commitment) : "", targetStep: "commitment" as StepKey },
     { label: l.duration, value: duration ? (duration === 1 ? l.month : `${duration} ${l.months}`) : "", targetStep: "duration" as StepKey },
   ];
   return (

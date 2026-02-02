@@ -21,6 +21,15 @@ export default function PathDetailModal({ course, onClose }: PathDetailModalProp
   const { t } = useI18n();
   const cr = t.course as Record<string, string>;
   const c = t.common as Record<string, string>;
+  const l = t.learn as Record<string, string>;
+
+  const expertiseLevelLabels: Record<string, string> = {
+    "No clue": l.expertiseNoClue,
+    "Beginner": l.expertiseBeginner,
+    "Intermediate": l.expertiseIntermediate,
+    "Advanced": l.expertiseAdvanced,
+    "Expert": l.expertiseExpert,
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -82,7 +91,7 @@ export default function PathDetailModal({ course, onClose }: PathDetailModalProp
                 {cr.yourLevel || "Your Level"}
               </p>
               <p className="text-sm font-semibold text-theme-primary">
-                {course.expertise_level}
+                {expertiseLevelLabels[course.expertise_level] || course.expertise_level}
               </p>
             </div>
             <div className="rounded border border-theme-border bg-theme-surface p-3">
@@ -112,8 +121,8 @@ export default function PathDetailModal({ course, onClose }: PathDetailModalProp
                 {cr.studyCadence || "Study Cadence"}
               </p>
               <p className="text-theme-secondary text-sm">
-                Every {course.commitment_interval_days} day
-                {course.commitment_interval_days !== 1 ? "s" : ""}
+                {(cr.studyCadenceEvery || "Every {days} day(s)")
+                  .replace("{days}", String(course.commitment_interval_days))}
               </p>
             </div>
           )}

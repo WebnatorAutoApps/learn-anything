@@ -330,6 +330,7 @@
     "pathDetails": "Détails du parcours",
     "aboutThisPath": "À propos de ce parcours",
     "studyCadence": "Rythme d'étude",
+    "studyCadenceEvery": "Tous les {days} jour(s)",
     "howOften": "À quelle fréquence allez-vous étudier ?",
     "enrolling": "Inscription...",
     "currentFocus": "Focus actuel",
