@@ -265,7 +265,10 @@
     "toneBoringScholar": "无聊学者",
     "toneBoringScholarDesc": "枯燥、学术、过分正式——故意乏味。",
     "tonePirate": "海盗",
-    "tonePirateDesc": "嘿呀！满是航海俚语和冒险比喻。"
+    "tonePirateDesc": "嘿呀！满是航海俚语和冒险比喻。",
+    "language": "语言",
+    "languageHelp": "选择应用的显示语言。学习路径内容保持其原始语言不变。",
+    "languageSaved": "语言已更新。"
   },
   "learn": {
     "title": "开始新的学习路径",

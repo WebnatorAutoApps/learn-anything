@@ -265,7 +265,10 @@
     "toneBoringScholar": "Studioso Noioso",
     "toneBoringScholarDesc": "Secco, accademico ed eccessivamente formale — intenzionalmente tedioso.",
     "tonePirate": "Pirata",
-    "tonePirateDesc": "Arrr! Gergo nautico e metafore da bucaniere a profusione."
+    "tonePirateDesc": "Arrr! Gergo nautico e metafore da bucaniere a profusione.",
+    "language": "Lingua",
+    "languageHelp": "Scegli la lingua dell'interfaccia. I contenuti dei percorsi di apprendimento restano nella lingua originale.",
+    "languageSaved": "Lingua aggiornata."
   },
   "learn": {
     "title": "Inizia un Nuovo Percorso",

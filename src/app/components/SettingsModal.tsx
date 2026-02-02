@@ -8,6 +8,7 @@ import GeneralSettings from "./settings/GeneralSettings";
 import ApiKeysSettings from "./settings/ApiKeysSettings";
 import ToneSettings from "./settings/ToneSettings";
 import ThemeSettings from "./settings/ThemeSettings";
+import LanguageSettings from "./settings/LanguageSettings";
 
 interface SettingsModalProps {
   onClose: () => void;
@@ -98,6 +99,8 @@ export default function SettingsModal({ onClose, initialTab = "general" }: Setti
                     <ToneSettings profile={profile!} />
                     <div className="border-t border-theme-border" />
                     <ThemeSettings />
+                    <div className="border-t border-theme-border" />
+                    <LanguageSettings />
                   </div>
                 )}
               </ErrorBoundary>

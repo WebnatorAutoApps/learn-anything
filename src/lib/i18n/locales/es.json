@@ -265,7 +265,10 @@
     "toneBoringScholar": "Académico Aburrido",
     "toneBoringScholarDesc": "Seco, académico y excesivamente formal — intencionalmente tedioso.",
     "tonePirate": "Pirata",
-    "tonePirateDesc": "¡Arrr! Jerga náutica y metáforas de bucanero por doquier."
+    "tonePirateDesc": "¡Arrr! Jerga náutica y metáforas de bucanero por doquier.",
+    "language": "Idioma",
+    "languageHelp": "Elige el idioma de la interfaz. El contenido de las rutas de aprendizaje se mantiene en su idioma original.",
+    "languageSaved": "Idioma actualizado."
   },
   "learn": {
     "title": "Comienza un Nuevo Camino de Aprendizaje",
