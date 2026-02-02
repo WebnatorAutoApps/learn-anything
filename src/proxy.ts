@@ -18,9 +18,7 @@ export async function proxy(request: NextRequest) {
   if (!supabaseUrl || !supabaseAnonKey) {
     if (!PUBLIC_PATHS.some((path) => pathname.startsWith(path))) {
       const loginUrl = new URL("/login", request.url);
-      const response = NextResponse.redirect(loginUrl);
-      response.headers.set("Cache-Control", "no-store, max-age=0");
-      return response;
+      return NextResponse.redirect(loginUrl);
     }
     return NextResponse.next();
   }
@@ -31,9 +29,7 @@ export async function proxy(request: NextRequest) {
   // Redirect logged-in users away from auth pages
   if (user && AUTH_PAGES.some((path) => pathname === path)) {
     const homeUrl = new URL("/app", request.url);
-    const response = NextResponse.redirect(homeUrl);
-    response.headers.set("Cache-Control", "no-store, max-age=0");
-    return response;
+    return NextResponse.redirect(homeUrl);
   }
 
   // Allow root (landing page) without authentication
@@ -54,9 +50,7 @@ export async function proxy(request: NextRequest) {
   if (!user) {
     // User is not authenticated, redirect to login
     const loginUrl = new URL("/login", request.url);
-    const response = NextResponse.redirect(loginUrl);
-    response.headers.set("Cache-Control", "no-store, max-age=0");
-    return response;
+    return NextResponse.redirect(loginUrl);
   }
 
   return supabaseResponse;
