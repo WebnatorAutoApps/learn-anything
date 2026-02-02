@@ -2,13 +2,17 @@
 
 import { Suspense, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCourses } from "@/lib/hooks/queries";
+import { useCourses } from "@/lib/hooks";
+import { useI18n } from "@/lib/i18n";
 import { CourseGridSkeleton } from "../components/PageLoader";
 
 type Tab = "my-courses" | "public";
 
 function MyCoursesTab() {
   const router = useRouter();
+  const { t } = useI18n();
+  const cs = t.courses as Record<string, string>;
+  const c = t.common as Record<string, string>;
   const { data: courses = [], isLoading } = useCourses("all");
   if (isLoading) {
     return <CourseGridSkeleton count={3} />;
@@ -18,14 +22,13 @@ function MyCoursesTab() {
     return (
       <div className="rounded-lg border border-theme-border bg-theme-surface p-8 text-center">
         <p className="text-theme-muted mb-4">
-          No learning paths yet. Create your first learning path from the
-          Dashboard.
+          {cs.emptyState || "No learning paths yet. Create your first learning path from the Dashboard."}
         </p>
         <button
-          onClick={() => router.push("/")}
+          onClick={() => router.push("/app")}
           className="px-4 py-2 rounded-lg border border-theme-border text-theme-primary hover:bg-theme-surface-hover transition-colors"
         >
-          Go to Dashboard
+          {c.goToDashboard || "Go to Dashboard"}
         </button>
       </div>
     );
@@ -53,7 +56,7 @@ function MyCoursesTab() {
                   {course.normalized_title}
                 </h3>
                 <p className="text-sm text-theme-muted">
-                  {course.total_modules} steps
+                  {course.total_modules} {c.steps || "steps"}
                 </p>
               </div>
             </div>
@@ -63,14 +66,14 @@ function MyCoursesTab() {
               disabled
               className="w-full px-4 py-2 rounded-lg border border-theme-border bg-theme-surface text-theme-muted font-semibold text-sm cursor-default opacity-70"
             >
-              Already Enrolled
+              {cs.alreadyEnrolled || "Already Enrolled"}
             </button>
           ) : (
             <button
               onClick={() => router.push(`/course/${course.id}`)}
               className="w-full px-4 py-2 rounded-lg bg-theme-accent text-theme-text-on-accent font-semibold hover:bg-theme-primary-hover transition-colors text-sm"
             >
-              Start Learning Path
+              {cs.startPath || "Start Learning Path"}
             </button>
           )}
         </div>
@@ -80,6 +83,9 @@ function MyCoursesTab() {
 }
 
 function PublicCoursesTab() {
+  const { t } = useI18n();
+  const cs = t.courses as Record<string, string>;
+
   return (
     <div className="flex flex-col items-center justify-center py-16 px-4">
       {/* Globe/network illustration */}
@@ -99,10 +105,10 @@ function PublicCoursesTab() {
         </svg>
       </div>
       <h3 className="text-xl font-semibold text-theme-primary mb-2 tracking-wide">
-        Nothing here yet
+        {cs.publicEmpty || "Nothing here yet"}
       </h3>
       <p className="text-theme-muted text-center max-w-md">
-        Public learning paths are coming soon &mdash; stay tuned!
+        {cs.publicEmptyDesc || "Public learning paths are coming soon \u2014 stay tuned!"}
       </p>
     </div>
   );
@@ -110,6 +116,9 @@ function PublicCoursesTab() {
 
 function CoursesPageContent() {
   const router = useRouter();
+  const { t } = useI18n();
+  const cs = t.courses as Record<string, string>;
+  const c = t.common as Record<string, string>;
   const searchParams = useSearchParams();
 
   const activeTab: Tab =
@@ -130,8 +139,8 @@ function CoursesPageContent() {
   );
 
   const tabs: { key: Tab; label: string }[] = [
-    { key: "my-courses", label: "My Learning Paths" },
-    { key: "public", label: "Public Learning Paths" },
+    { key: "my-courses", label: cs.myPaths || "My Learning Paths" },
+    { key: "public", label: cs.publicPaths || "Public Learning Paths" },
   ];
 
   return (
@@ -143,7 +152,7 @@ function CoursesPageContent() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center gap-4">
             <button
-              onClick={() => router.push("/")}
+              onClick={() => router.push("/app")}
               className="text-theme-muted hover:text-theme-primary transition-colors flex items-center gap-2"
             >
               <svg
@@ -157,11 +166,11 @@ function CoursesPageContent() {
               >
                 <path d="M15 19l-7-7 7-7" />
               </svg>
-              <span className="text-sm">Dashboard</span>
+              <span className="text-sm">{c.goToDashboard || "Dashboard"}</span>
             </button>
             <div className="h-6 w-px bg-theme-surface-hover" />
             <h1 className="text-xl font-semibold text-theme-primary tracking-wider">
-              Browse Learning Paths
+              {cs.title || "Browse Learning Paths"}
             </h1>
           </div>
         </div>

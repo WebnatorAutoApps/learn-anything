@@ -12,7 +12,7 @@ export default function TermsAndConditionsPage() {
       <nav className="border-b border-gray-100 bg-white">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link
-            href="/landing"
+            href="/"
             className="flex items-center gap-2 text-lg font-bold text-gray-900"
           >
             <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-green-600 text-white text-xs font-bold">
@@ -21,7 +21,7 @@ export default function TermsAndConditionsPage() {
             LearnAnything
           </Link>
           <Link
-            href="/landing"
+            href="/"
             className="text-sm text-green-600 hover:text-green-700 font-medium transition-colors"
           >
             &larr; Back to Home

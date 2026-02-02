@@ -14,7 +14,7 @@ export default function HreflangTags() {
 
   if (!baseUrl) return null;
 
-  const path = "/landing";
+  const path = "/";
 
   return (
     <>
