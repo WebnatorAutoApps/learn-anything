@@ -1,15 +1,26 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { API_KEY_SECURITY_SECTIONS } from "@/lib/constants/api-key-security";
+import { useI18n } from "@/lib/i18n";
 
 interface ApiKeySecurityModalProps {
   onClose: () => void;
 }
 
+const SECTION_KEYS = [
+  { titleKey: "howWeStoreTitle", bodyKey: "howWeStoreBody" },
+  { titleKey: "noSystemTitle", bodyKey: "noSystemBody" },
+  { titleKey: "dedicatedKeyTitle", bodyKey: "dedicatedKeyBody" },
+  { titleKey: "freeTierTitle", bodyKey: "freeTierBody" },
+  { titleKey: "revokeTitle", bodyKey: "revokeBody" },
+] as const;
+
 export default function ApiKeySecurityModal({
   onClose,
 }: ApiKeySecurityModalProps) {
+  const { t } = useI18n();
+  const c = t.common as Record<string, string>;
+  const sec = t.apiKeySecurity as Record<string, string>;
   const modalRef = useRef<HTMLDivElement>(null);
 
   // Close on Escape key
@@ -54,12 +65,12 @@ export default function ApiKeySecurityModal({
             id="security-modal-title"
             className="text-lg font-semibold text-theme-primary tracking-wide"
           >
-            <span className="text-theme-secondary">{">"}</span> API Key Security
+            <span className="text-theme-secondary">{">"}</span> {sec.title}
           </h3>
           <button
             onClick={onClose}
             className="flex h-8 w-8 items-center justify-center rounded-md text-theme-muted hover:text-theme-primary hover:bg-theme-surface-hover transition-colors"
-            aria-label="Close"
+            aria-label={c.close}
           >
             <svg
               className="h-5 w-5"
@@ -77,13 +88,13 @@ export default function ApiKeySecurityModal({
 
         {/* Scrollable content */}
         <div className="px-6 py-5 space-y-5 overflow-y-auto">
-          {API_KEY_SECURITY_SECTIONS.map((section) => (
-            <div key={section.title} className="space-y-1.5">
+          {SECTION_KEYS.map((section) => (
+            <div key={section.titleKey} className="space-y-1.5">
               <h4 className="text-sm font-semibold text-theme-primary">
-                {section.title}
+                {sec[section.titleKey]}
               </h4>
               <p className="text-xs leading-relaxed text-theme-muted">
-                {section.body}
+                {sec[section.bodyKey]}
               </p>
             </div>
           ))}

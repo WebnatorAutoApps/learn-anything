@@ -437,5 +437,31 @@
     "msg13": "Kalibrierung der Schritte auf dein Niveau\u2026",
     "msg14": "Große Ideen in kleine Schritte verwandeln\u2026",
     "extendedWait": "Wir arbeiten noch daran, bitte warte\u2026"
+  },
+  "tips": {
+    "dismissTip": "Tipp ausblenden",
+    "themeMessage": "Wusstest du, dass du dein Design anpassen kannst? Probiere Weltraum, Schule, Fitnessstudio oder 90er Internet.",
+    "themeCta": "Design ändern",
+    "personalityMessage": "Möchtest du von einem Piraten unterrichtet werden? Passe den KI-Ton für ein einzigartiges Lernerlebnis an.",
+    "personalityCta": "Ton wählen",
+    "browseMessage": "Entdecke Lernpfade der Community und starte heute eine neue Lernreise.",
+    "browseCta": "Pfade durchsuchen",
+    "profileMessage": "Richte dein Profil mit Anzeigename, Benutzername und Avatar ein, um dein Erlebnis zu personalisieren.",
+    "profileCta": "Profil bearbeiten",
+    "apiKeyMessage": "Füge deinen eigenen Gemini API-Schlüssel hinzu, um die KI-gestützte Kurserstellung freizuschalten.",
+    "apiKeyCta": "API-Schlüssel hinzufügen"
+  },
+  "apiKeySecurity": {
+    "title": "API-Schlüssel-Sicherheit",
+    "howWeStoreTitle": "Wie wir deinen Schlüssel speichern",
+    "howWeStoreBody": "Dein API-Schlüssel wird vor der Speicherung in unserer Datenbank mit AES-256-GCM verschlüsselt. Er wird niemals protokolliert oder im Klartext gespeichert. Nur die letzten vier Zeichen werden unverschlüsselt aufbewahrt, damit du erkennen kannst, welcher Schlüssel hinterlegt ist.",
+    "noSystemTitle": "Kein System ist unverwundbar",
+    "noSystemBody": "Wir nehmen Sicherheit ernst, aber kein Online-Dienst kann garantieren, dass er niemals kompromittiert wird — selbst große Unternehmen wie Sony PlayStation und viele andere haben Datenlecks erlebt. Wir glauben an Transparenz über diese Realität, anstatt Versprechen zu machen, die wir nicht halten können.",
+    "dedicatedKeyTitle": "Erstelle einen dedizierten Schlüssel",
+    "dedicatedKeyBody": "Wir empfehlen dringend, einen separaten API-Schlüssel speziell für diese Anwendung zu generieren. So kannst du ihn bei Bedarf widerrufen, ohne deine anderen Projekte oder Dienste zu beeinträchtigen.",
+    "freeTierTitle": "Nutze nur den kostenlosen Plan",
+    "freeTierBody": "Verknüpfe deinen API-Schlüssel mit Googles kostenlosem Plan, damit selbst im schlimmsten Fall eines Sicherheitsvorfalls kein finanzielles Risiko besteht. Der kostenlose Plan reicht für die Nutzung dieser Anwendung aus.",
+    "revokeTitle": "Widerrufe, wenn nicht mehr benötigt",
+    "revokeBody": "Wenn du diese Anwendung nicht mehr nutzt, gehe zu Google AI Studio und lösche den Schlüssel, den du dafür erstellt hast. Unbenutzte Zugangsdaten aktiv zu lassen ist ein unnötiges Risiko."
   }
 }

@@ -1,7 +1,7 @@
 export interface Tip {
   id: string;
-  message: string;
-  ctaLabel: string;
+  messageKey: string;
+  ctaLabelKey: string;
   /** Settings tab to open, or a route path to navigate to */
   ctaAction:
     | { type: "settings"; tab: "general" | "api-keys" | "customization" }
@@ -11,32 +11,32 @@ export interface Tip {
 export const tips: Tip[] = [
   {
     id: "theme",
-    message: "Did you know you can customize your theme? Try Space, School, Gym, or 90s Internet.",
-    ctaLabel: "Change Theme",
+    messageKey: "themeMessage",
+    ctaLabelKey: "themeCta",
     ctaAction: { type: "settings", tab: "customization" },
   },
   {
     id: "personality",
-    message: "Want to be taught by a pirate? Customize your AI tone for a unique learning experience.",
-    ctaLabel: "Choose a Tone",
+    messageKey: "personalityMessage",
+    ctaLabelKey: "personalityCta",
     ctaAction: { type: "settings", tab: "customization" },
   },
   {
     id: "browse",
-    message: "Explore learning paths created by the community and start a new journey today.",
-    ctaLabel: "Browse Paths",
+    messageKey: "browseMessage",
+    ctaLabelKey: "browseCta",
     ctaAction: { type: "route", path: "/courses" },
   },
   {
     id: "profile",
-    message: "Set up your profile with a display name, username, and avatar to personalize your experience.",
-    ctaLabel: "Edit Profile",
+    messageKey: "profileMessage",
+    ctaLabelKey: "profileCta",
     ctaAction: { type: "settings", tab: "general" },
   },
   {
     id: "api-key",
-    message: "Add your own Gemini API key to unlock AI-powered course generation.",
-    ctaLabel: "Add API Key",
+    messageKey: "apiKeyMessage",
+    ctaLabelKey: "apiKeyCta",
     ctaAction: { type: "settings", tab: "api-keys" },
   },
 ];

@@ -34,8 +34,8 @@ describe("tips config", () => {
   it("each tip has the required fields", () => {
     for (const tip of tips) {
       expect(tip.id).toBeTruthy();
-      expect(typeof tip.message).toBe("string");
-      expect(typeof tip.ctaLabel).toBe("string");
+      expect(typeof tip.messageKey).toBe("string");
+      expect(typeof tip.ctaLabelKey).toBe("string");
       expect(tip.ctaAction).toBeDefined();
       expect(["settings", "route"]).toContain(tip.ctaAction.type);
     }
@@ -61,8 +61,8 @@ describe("pickRandomTip", () => {
     const pool: Tip[] = [
       {
         id: "only",
-        message: "Only tip",
-        ctaLabel: "Go",
+        messageKey: "themeMessage",
+        ctaLabelKey: "themeCta",
         ctaAction: { type: "route", path: "/test" },
       },
     ];
@@ -87,14 +87,14 @@ describe("pickRandomTip", () => {
     const pool: Tip[] = [
       {
         id: "a",
-        message: "Tip A",
-        ctaLabel: "Go A",
+        messageKey: "themeMessage",
+        ctaLabelKey: "themeCta",
         ctaAction: { type: "route", path: "/a" },
       },
       {
         id: "b",
-        message: "Tip B",
-        ctaLabel: "Go B",
+        messageKey: "browseMessage",
+        ctaLabelKey: "browseCta",
         ctaAction: { type: "route", path: "/b" },
       },
     ];
@@ -111,8 +111,8 @@ describe("pickRandomTip", () => {
     const pool: Tip[] = [
       {
         id: "solo",
-        message: "Solo",
-        ctaLabel: "Go",
+        messageKey: "themeMessage",
+        ctaLabelKey: "themeCta",
         ctaAction: { type: "route", path: "/solo" },
       },
     ];
