@@ -57,6 +57,15 @@ export default function CourseView() {
   const { t } = useI18n();
   const cr = t.course as Record<string, string>;
   const c = t.common as Record<string, string>;
+  const l = t.learn as Record<string, string>;
+
+  const expertiseLevelLabels: Record<string, string> = {
+    "No clue": l.expertiseNoClue,
+    "Beginner": l.expertiseBeginner,
+    "Intermediate": l.expertiseIntermediate,
+    "Advanced": l.expertiseAdvanced,
+    "Expert": l.expertiseExpert,
+  };
 
   if (loading) {
     return <CourseDetailSkeleton />;
@@ -198,7 +207,7 @@ export default function CourseView() {
                 {cr.yourLevel || "Your Level"}
               </p>
               <p className="text-sm font-semibold text-theme-primary">
-                {course.expertise_level}
+                {expertiseLevelLabels[course.expertise_level] || course.expertise_level}
               </p>
             </div>
             <div className="rounded-lg border border-theme-border bg-theme-surface p-4">

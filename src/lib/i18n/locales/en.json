@@ -330,6 +330,7 @@
     "pathDetails": "Path Details",
     "aboutThisPath": "About This Path",
     "studyCadence": "Study Cadence",
+    "studyCadenceEvery": "Every {days} day(s)",
     "howOften": "How often will you study?",
     "enrolling": "Enrolling...",
     "currentFocus": "Current Focus",
