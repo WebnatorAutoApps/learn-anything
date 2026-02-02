@@ -73,26 +73,9 @@ export default function ActiveModuleCarousel() {
     );
   }
 
-  // Empty state: no active modules
+  // Hide section entirely when there are no active modules
   if (!projects || projects.length === 0) {
-    return (
-      <div className="mb-8 rounded-lg border border-dashed border-theme-border bg-theme-surface p-6 text-center">
-        <svg
-          className="h-8 w-8 text-theme-primary-faint mx-auto mb-3"
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="1.5"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <p className="text-theme-muted text-sm">
-          {d.noActiveSteps}
-        </p>
-      </div>
-    );
+    return null;
   }
 
   return (
