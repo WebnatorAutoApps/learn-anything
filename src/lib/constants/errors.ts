@@ -107,4 +107,33 @@ export const ERROR_MESSAGES = {
 
   // Settings loading
   SETTINGS_LOAD_FAILED: "Failed to load settings. Please try again later.",
+
+  // HTTP status-specific (course creation / LLM)
+  SERVICE_OVERLOADED: "The AI service is temporarily overloaded. Please try again in a few moments.",
+  RATE_LIMITED: "Too many requests. Please wait a moment before trying again.",
+  SERVICE_UNAVAILABLE: "The service is temporarily unavailable. Please try again shortly.",
+  REQUEST_TIMEOUT: "The request took too long. Please try again.",
+  FORBIDDEN: "Access denied. Please check your API key and try again.",
 } as const;
+
+/**
+ * Maps HTTP status codes to user-friendly i18n error keys.
+ * Falls back to "generic" for unmapped codes.
+ */
+const HTTP_STATUS_ERROR_MAP: Record<number, string> = {
+  429: "rateLimited",
+  503: "serviceOverloaded",
+  502: "serviceUnavailable",
+  504: "requestTimeout",
+  408: "requestTimeout",
+  403: "forbidden",
+};
+
+/**
+ * Returns an i18n error key based on an HTTP status code.
+ * Used by the client to display translated, user-friendly error messages.
+ */
+export function getErrorKeyForStatus(status: number | undefined): string | null {
+  if (!status) return null;
+  return HTTP_STATUS_ERROR_MAP[status] ?? null;
+}

@@ -420,7 +420,14 @@
     "somethingWentWrong": "Une erreur est survenue",
     "unexpectedError": "Une erreur inattendue s'est produite. Veuillez réessayer.",
     "tryAgain": "Réessayer",
-    "goBack": "Retour"
+    "goBack": "Retour",
+    "retrySubmission": "Réessayer",
+    "serviceOverloaded": "Le service d'IA est temporairement surchargé. Veuillez réessayer dans quelques instants.",
+    "rateLimited": "Trop de requêtes. Veuillez patienter un moment avant de réessayer.",
+    "serviceUnavailable": "Le service est temporairement indisponible. Veuillez réessayer sous peu.",
+    "requestTimeout": "La requête a pris trop de temps. Veuillez réessayer.",
+    "forbidden": "Accès refusé. Veuillez vérifier votre clé API et réessayer.",
+    "generic": "Une erreur est survenue. Veuillez réessayer."
   },
   "loading": {
     "msg1": "Consultation des meilleurs experts dans le domaine\u2026",

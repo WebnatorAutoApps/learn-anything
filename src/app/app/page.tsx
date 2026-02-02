@@ -42,7 +42,10 @@ export default function Home() {
   const {
     isCreating,
     creationError,
+    creationErrorKey,
+    lastPlanData,
     handleProgramSubmit,
+    retryCreation,
     dismissCreationError,
   } = useCourseCreation();
 
@@ -216,6 +219,9 @@ export default function Home() {
       {isCreating && (
         <ProgramCreationLoader
           error={creationError}
+          errorKey={creationErrorKey}
+          canRetry={!!lastPlanData}
+          onRetry={retryCreation}
           onDismissError={dismissCreationError}
         />
       )}

@@ -420,7 +420,14 @@
     "somethingWentWrong": "Something went wrong",
     "unexpectedError": "An unexpected error occurred. Please try again.",
     "tryAgain": "Try again",
-    "goBack": "Go Back"
+    "goBack": "Go Back",
+    "retrySubmission": "Retry",
+    "serviceOverloaded": "The AI service is temporarily overloaded. Please try again in a few moments.",
+    "rateLimited": "Too many requests. Please wait a moment before trying again.",
+    "serviceUnavailable": "The service is temporarily unavailable. Please try again shortly.",
+    "requestTimeout": "The request took too long. Please try again.",
+    "forbidden": "Access denied. Please check your API key and try again.",
+    "generic": "Something went wrong. Please try again."
   },
   "loading": {
     "msg1": "Consulting with the best experts in the subject\u2026",
