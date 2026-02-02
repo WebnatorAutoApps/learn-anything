@@ -8,6 +8,7 @@ const testimonialsMeta = [
   { nameKey: "t2Name", skillKey: "t2Skill", quoteKey: "t2Quote", avatar: "PM" },
   { nameKey: "t3Name", skillKey: "t3Skill", quoteKey: "t3Quote", avatar: "JK" },
   { nameKey: "t4Name", skillKey: "t4Skill", quoteKey: "t4Quote", avatar: "ST" },
+  { nameKey: "t5Name", skillKey: "t5Skill", quoteKey: "t5Quote", avatar: "SL" },
 ];
 
 export default function TestimonialsSection() {
@@ -28,7 +29,7 @@ export default function TestimonialsSection() {
           </div>
         </ScrollReveal>
 
-        <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {testimonialsMeta.map((item, i) => (
             <ScrollReveal key={i} delay={i * 120}>
               <div className="flex flex-col rounded-2xl bg-white p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300 h-full">

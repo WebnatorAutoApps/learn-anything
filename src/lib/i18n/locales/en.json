@@ -96,7 +96,10 @@
     "t3Quote": "The step-by-step baking projects were amazing. I now make bakery-quality sourdough at home, and I actually understand the science behind every rise.",
     "t4Name": "Sam T.",
     "t4Skill": "Woodworking",
-    "t4Quote": "I built my first bookshelf following a LearnAnything project. It's still standing! The hands-on approach gave me confidence to tackle bigger projects."
+    "t4Quote": "I built my first bookshelf following a LearnAnything project. It's still standing! The hands-on approach gave me confidence to tackle bigger projects.",
+    "t5Name": "Sara L.",
+    "t5Skill": "Building AI Apps",
+    "t5Quote": "I had no machine learning background, but LearnAnything walked me through building my own AI apps step by step. Within weeks I deployed a working chatbot and an image classifier — skills I now use at work every day."
   },
   "pricing": {
     "title": "Simple Pricing",

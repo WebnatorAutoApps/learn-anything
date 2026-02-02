@@ -96,7 +96,10 @@
     "t3Quote": "Les projets de boulangerie étape par étape étaient incroyables. Je fais maintenant du pain au levain de qualité boulangerie à la maison, et je comprends vraiment la science derrière chaque levée.",
     "t4Name": "Sam T.",
     "t4Skill": "Menuiserie",
-    "t4Quote": "J'ai construit ma première étagère en suivant un projet LearnAnything. Elle tient toujours ! L'approche pratique m'a donné la confiance pour m'attaquer à des projets plus grands."
+    "t4Quote": "J'ai construit ma première étagère en suivant un projet LearnAnything. Elle tient toujours ! L'approche pratique m'a donné la confiance pour m'attaquer à des projets plus grands.",
+    "t5Name": "Sara L.",
+    "t5Skill": "Création d'Apps IA",
+    "t5Quote": "Je n'avais aucune expérience en apprentissage automatique, mais LearnAnything m'a guidée étape par étape pour créer mes propres applications d'IA. En quelques semaines, j'ai déployé un chatbot et un classificateur d'images — des compétences que j'utilise maintenant au travail tous les jours."
   },
   "pricing": {
     "title": "Tarification Simple",
