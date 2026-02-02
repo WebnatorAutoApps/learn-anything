@@ -12,6 +12,7 @@ import DashboardHeader from "@/app/components/DashboardHeader";
 import CourseGrid from "@/app/components/CourseGrid";
 import LogoutConfirmDialog from "@/app/components/LogoutConfirmDialog";
 import ApiKeyWarningDialog from "@/app/components/ApiKeyWarningDialog";
+import ApiKeyBanner from "@/app/components/ApiKeyBanner";
 import ErrorBoundary from "@/app/components/ErrorBoundary";
 import {
   useProfile,
@@ -142,6 +143,9 @@ export default function Home() {
           </div>
         </div>
       )}
+
+      {/* API Key Setup Banner */}
+      <ApiKeyBanner onOpenSettings={openSettings} />
 
       {/* Tip Banner */}
       <TipBanner

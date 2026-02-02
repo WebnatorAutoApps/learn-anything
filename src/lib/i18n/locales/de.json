@@ -471,5 +471,25 @@
     "freeTierBody": "Verknüpfe deinen API-Schlüssel mit Googles kostenlosem Plan, damit selbst im schlimmsten Fall eines Sicherheitsvorfalls kein finanzielles Risiko besteht. Der kostenlose Plan reicht für die Nutzung dieser Anwendung aus.",
     "revokeTitle": "Widerrufe, wenn nicht mehr benötigt",
     "revokeBody": "Wenn du diese Anwendung nicht mehr nutzt, gehe zu Google AI Studio und lösche den Schlüssel, den du dafür erstellt hast. Unbenutzte Zugangsdaten aktiv zu lassen ist ein unnötiges Risiko."
+  },
+  "apiKeyGuide": {
+    "title": "API-Schlüssel Einrichtungsanleitung",
+    "bannerText": "Kein API-Schlüssel konfiguriert — du brauchst einen, um Lernpfade zu erstellen.",
+    "bannerCta": "Erfahre, wie du deinen API-Schlüssel erhältst",
+    "intro": "Um personalisierte Lernpfade zu erstellen, nutzt diese App Googles Gemini-KI. Du benötigst einen kostenlosen API-Schlüssel, um loszulegen.",
+    "whatIsTitle": "Was ist ein Gemini-API-Schlüssel?",
+    "whatIsBody": "Ein API-Schlüssel ist ein einzigartiger Code, der es dieser App ermöglicht, in deinem Namen mit Googles Gemini-KI zu kommunizieren. Er ist kostenlos zu erstellen und innerhalb von Googles kostenlosem Plan zu nutzen.",
+    "stepsTitle": "So erhältst du deinen API-Schlüssel",
+    "step1Title": "Bei Google AI Studio anmelden",
+    "step1Body": "Gehe zu Google AI Studio und melde dich mit deinem Google-Konto an. Wenn du keins hast, kannst du kostenlos eins erstellen.",
+    "step2Title": "Google AI Studio öffnen",
+    "step2Body": "Besuche",
+    "step3Title": "API-Schlüssel erstellen",
+    "step3Body": "Klicke auf 'Get API key' im Men\u00fc oben links, dann auf 'Create API key'. W\u00e4hle das Standardprojekt oder erstelle ein neues. Kopiere den generierten Schl\u00fcssel.",
+    "step4Title": "Schlüssel in dieser App hinzufügen",
+    "step4Body": "Gehe zu Einstellungen > API-Schlüssel in dieser App, füge deinen Schlüssel in das Eingabefeld ein und klicke auf Schlüssel speichern. Fertig!",
+    "tipLabel": "Tipp:",
+    "tipBody": "Erstelle einen dedizierten API-Schlüssel nur für diese App. Nutze Googles kostenlosen Plan, damit keine Kosten entstehen. Du kannst den Schlüssel jederzeit über Google AI Studio widerrufen.",
+    "goToSettings": "Zu den Einstellungen"
   }
 }

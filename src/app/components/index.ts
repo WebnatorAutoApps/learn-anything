@@ -1,5 +1,7 @@
 export { default as ActiveModuleCarousel } from "./ActiveModuleCarousel";
+export { default as ApiKeyBanner } from "./ApiKeyBanner";
 export { default as ApiKeySecurityModal } from "./ApiKeySecurityModal";
+export { default as ApiKeySetupGuide } from "./ApiKeySetupGuide";
 export { default as ApiKeyWarningDialog } from "./ApiKeyWarningDialog";
 export { default as CompletionModal } from "./CompletionModal";
 export { default as CourseGrid } from "./CourseGrid";
