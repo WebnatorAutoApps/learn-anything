@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { tips, pickRandomTip, type Tip } from "@/lib/tips";
+import { useI18n } from "@/lib/i18n";
 
 const DISMISSED_KEY = "learn-anything-tip-dismissed";
 
@@ -21,6 +22,8 @@ interface TipBannerProps {
 }
 
 export default function TipBanner({ onOpenSettings, onNavigate }: TipBannerProps) {
+  const { t } = useI18n();
+  const tipsT = t.tips as Record<string, string>;
   const [tip] = useState<Tip | null>(getInitialTip);
   const [dismissed, setDismissed] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -87,7 +90,7 @@ export default function TipBanner({ onOpenSettings, onNavigate }: TipBannerProps
               <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
             </svg>
             <p className="text-sm text-theme-primary truncate">
-              {tip.message}
+              {tipsT[tip.messageKey]}
             </p>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
@@ -95,12 +98,12 @@ export default function TipBanner({ onOpenSettings, onNavigate }: TipBannerProps
               onClick={handleCtaClick}
               className="rounded-md border border-theme-border-strong px-3 py-1 text-xs font-medium text-theme-primary hover:bg-theme-surface-hover transition-colors whitespace-nowrap"
             >
-              {tip.ctaLabel}
+              {tipsT[tip.ctaLabelKey]}
             </button>
             <button
               onClick={handleDismiss}
               className="flex h-6 w-6 items-center justify-center rounded-md text-theme-muted hover:text-theme-primary hover:bg-theme-surface-hover transition-colors"
-              aria-label="Dismiss tip"
+              aria-label={tipsT.dismissTip}
             >
               <svg
                 className="h-4 w-4"

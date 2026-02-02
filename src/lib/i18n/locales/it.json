@@ -437,5 +437,31 @@
     "msg13": "Calibrazione dei passi al tuo livello\u2026",
     "msg14": "Trasformazione di grandi idee in piccoli passi\u2026",
     "extendedWait": "Ci stiamo ancora lavorando, un attimo\u2026"
+  },
+  "tips": {
+    "dismissTip": "Ignora il consiglio",
+    "themeMessage": "Sapevi che puoi personalizzare il tuo tema? Prova Spazio, Scuola, Palestra o Internet Anni '90.",
+    "themeCta": "Cambia Tema",
+    "personalityMessage": "Vuoi essere insegnato da un pirata? Personalizza il tono della tua IA per un'esperienza di apprendimento unica.",
+    "personalityCta": "Scegli un Tono",
+    "browseMessage": "Esplora i percorsi di apprendimento creati dalla comunità e inizia un nuovo viaggio oggi.",
+    "browseCta": "Esplora i Percorsi",
+    "profileMessage": "Configura il tuo profilo con un nome visualizzato, nome utente e avatar per personalizzare la tua esperienza.",
+    "profileCta": "Modifica Profilo",
+    "apiKeyMessage": "Aggiungi la tua chiave API Gemini per sbloccare la generazione di corsi con IA.",
+    "apiKeyCta": "Aggiungi Chiave API"
+  },
+  "apiKeySecurity": {
+    "title": "Sicurezza della Chiave API",
+    "howWeStoreTitle": "Come conserviamo la tua chiave",
+    "howWeStoreBody": "La tua chiave API viene crittografata a riposo con AES-256-GCM prima di essere salvata nel nostro database. Non viene mai registrata né memorizzata in chiaro. Solo gli ultimi quattro caratteri vengono conservati non crittografati per permetterti di identificare quale chiave è in archivio.",
+    "noSystemTitle": "Nessun sistema è invulnerabile",
+    "noSystemBody": "Prendiamo la sicurezza sul serio, ma nessun servizio online può garantire che non sarà mai violato — anche grandi aziende come Sony PlayStation e molte altre hanno subito fughe di dati. Crediamo nella trasparenza su questa realtà piuttosto che fare promesse che non possiamo mantenere.",
+    "dedicatedKeyTitle": "Crea una chiave dedicata",
+    "dedicatedKeyBody": "Raccomandiamo fortemente di generare una chiave API separata specificamente per questa applicazione. In questo modo, se dovessi revocarla, puoi farlo senza influire sui tuoi altri progetti o servizi.",
+    "freeTierTitle": "Usa solo il piano gratuito",
+    "freeTierBody": "Collega la tua chiave API al piano gratuito di Google in modo che, anche nel peggiore scenario di violazione, non ci sia esposizione finanziaria. Il piano gratuito è sufficiente per utilizzare questa applicazione.",
+    "revokeTitle": "Revoca quando non è più necessaria",
+    "revokeBody": "Se smetti di usare questa applicazione, vai su Google AI Studio ed elimina la chiave che hai creato per essa. Mantenere credenziali inutilizzate attive è un rischio non necessario."
   }
 }

@@ -437,5 +437,31 @@
     "msg13": "Calibrage des étapes à votre niveau\u2026",
     "msg14": "Transformation des grandes idées en petites étapes\u2026",
     "extendedWait": "On y travaille encore, patience\u2026"
+  },
+  "tips": {
+    "dismissTip": "Ignorer le conseil",
+    "themeMessage": "Saviez-vous que vous pouvez personnaliser votre thème ? Essayez Espace, École, Salle de sport ou Internet des années 90.",
+    "themeCta": "Changer le thème",
+    "personalityMessage": "Envie d'être enseigné par un pirate ? Personnalisez le ton de votre IA pour une expérience d'apprentissage unique.",
+    "personalityCta": "Choisir un ton",
+    "browseMessage": "Explorez les parcours d'apprentissage créés par la communauté et commencez un nouveau voyage aujourd'hui.",
+    "browseCta": "Parcourir les parcours",
+    "profileMessage": "Configurez votre profil avec un nom d'affichage, un nom d'utilisateur et un avatar pour personnaliser votre expérience.",
+    "profileCta": "Modifier le profil",
+    "apiKeyMessage": "Ajoutez votre propre clé API Gemini pour débloquer la génération de cours par IA.",
+    "apiKeyCta": "Ajouter une clé API"
+  },
+  "apiKeySecurity": {
+    "title": "Sécurité de la clé API",
+    "howWeStoreTitle": "Comment nous stockons votre clé",
+    "howWeStoreBody": "Votre clé API est chiffrée au repos avec AES-256-GCM avant d'être enregistrée dans notre base de données. Elle n'est jamais journalisée ni stockée en clair. Seuls les quatre derniers caractères sont conservés non chiffrés pour vous permettre d'identifier la clé enregistrée.",
+    "noSystemTitle": "Aucun système n'est invulnérable",
+    "noSystemBody": "Nous prenons la sécurité au sérieux, mais aucun service en ligne ne peut garantir qu'il ne sera jamais compromis — même de grandes entreprises comme Sony PlayStation et bien d'autres ont subi des fuites de données. Nous préférons être transparents sur cette réalité plutôt que de faire des promesses que nous ne pouvons pas tenir.",
+    "dedicatedKeyTitle": "Créez une clé dédiée",
+    "dedicatedKeyBody": "Nous recommandons fortement de générer une clé API distincte spécifiquement pour cette application. Ainsi, si vous devez la révoquer, vous pourrez le faire sans affecter vos autres projets ou services.",
+    "freeTierTitle": "Utilisez uniquement le plan gratuit",
+    "freeTierBody": "Associez votre clé API au plan gratuit de Google afin que, même dans le pire des scénarios de violation, il n'y ait aucune exposition financière. Le plan gratuit est suffisant pour utiliser cette application.",
+    "revokeTitle": "Révoquez quand elle n'est plus nécessaire",
+    "revokeBody": "Si vous cessez d'utiliser cette application, rendez-vous sur Google AI Studio et supprimez la clé que vous avez créée pour elle. Garder des identifiants inutilisés actifs est un risque inutile."
   }
 }
