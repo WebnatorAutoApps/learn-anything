@@ -1,0 +1,70 @@
+{
+  "common": {
+    "save": "保存",
+    "saving": "保存中...",
+    "cancel": "取消",
+    "close": "关闭",
+    "loading": "加载中...",
+    "retry": "重试",
+    "retrying": "重试中...",
+    "back": "返回",
+    "steps": "步骤",
+    "step": "步骤",
+    "projects": "项目",
+    "project": "项目",
+    "or": "或",
+    "remaining": "剩余",
+    "goToDashboard": "前往主页",
+    "confirm": "确认",
+    "send": "发送",
+    "active": "进行中",
+    "escButton": "ESC"
+  },
+  "errors": {
+    "somethingWentWrong": "出了点问题",
+    "unexpectedError": "发生了意外错误。请重试。",
+    "tryAgain": "重试",
+    "goBack": "返回",
+    "retrySubmission": "重试",
+    "serviceOverloaded": "AI服务暂时过载。请稍后再试。",
+    "rateLimited": "请求过于频繁。请稍等片刻后再试。",
+    "serviceUnavailable": "服务暂时不可用。请稍后再试。",
+    "requestTimeout": "请求超时。请重试。",
+    "forbidden": "访问被拒绝。请检查你的API密钥后重试。",
+    "generic": "出了点问题。请重试。",
+    "errorPrefix": "错误："
+  },
+  "loading": {
+    "msg1": "正在咨询该领域最优秀的专家…",
+    "msg2": "正在构建带你通往星辰的学习路径…",
+    "msg3": "正在调配完美的学习配方…",
+    "msg4": "正在为你量身打造小型项目…",
+    "msg5": "正在规划你的知识之旅…",
+    "msg6": "正在从网络各处收集最佳资源…",
+    "msg7": "正在设计磨练你技能的挑战…",
+    "msg8": "正在微调难度曲线…",
+    "msg9": "正在连接理论与实践的桥梁…",
+    "msg10": "正在组装一份你会真正喜欢的学习路线图…",
+    "msg11": "正在教AI如何教你…",
+    "msg12": "正在规划你的精通之路…",
+    "msg13": "正在根据你的水平校准步骤…",
+    "msg14": "正在将大想法转化为小步骤…",
+    "extendedWait": "还在努力中，请稍等…"
+  },
+  "dialogs": {
+    "confirmLogout": "确认退出",
+    "logoutMessage": "确定要退出登录吗？",
+    "loggingOut": "退出中...",
+    "apiKeyRequired": "需要 API 密钥",
+    "apiKeyWarning": "你尚未配置 API 密钥。我们将无法为你创建学习路径。请前往设置添加密钥。",
+    "goToSettings": "前往设置"
+  },
+  "progress": {
+    "journeyBegins": "你的旅程现在开始。迈出第一步吧！",
+    "almostThere": "马上就到了！终点就在眼前。",
+    "halfway": "已经完成一半了！保持势头继续前进。",
+    "greatProgress": "进展很棒！你正在建立真正的技能。",
+    "firstStep": "第一步完成！你已经在路上了。",
+    "keepGoing": "继续加油！每一步都很重要。"
+  }
+}

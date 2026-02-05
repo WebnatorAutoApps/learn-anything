@@ -68,7 +68,7 @@ export default function ProgramCreationLoader({
 
     return (
       <RNModal visible transparent animationType="fade">
-        <View className="flex-1 bg-theme-bg/95 items-center justify-center px-6">
+        <View className="flex-1 items-center justify-center px-6 bg-theme-bg/90">
           <View className="w-full max-w-md border border-theme-error/30 bg-theme-bg p-6">
             <Text className="font-mono text-base text-theme-error font-bold mb-2">
               {">"} ERROR
@@ -101,7 +101,7 @@ export default function ProgramCreationLoader({
 
   return (
     <RNModal visible transparent animationType="fade">
-      <View className="flex-1 bg-theme-bg/95 items-center justify-center px-6">
+      <View className="flex-1 items-center justify-center px-6 bg-theme-bg/90">
         <View className="items-center max-w-lg">
           <Text className="font-mono text-xl text-theme-primary animate-blink mb-6">
             [GENERATING]

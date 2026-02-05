@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text } from "react-native";
 import type { Module } from "@learn-anything/shared";
 import { formatDate } from "@learn-anything/shared";
+import { useI18n } from "../../i18n/I18nProvider";
 import ProjectSelectionArea from "./ProjectSelectionArea";
 
 interface HeroProjectCardProps {
@@ -25,11 +26,11 @@ interface HeroProjectCardProps {
   isCompleteLoading: boolean;
 }
 
-function getStatusLabel(mod: Module): string {
-  if (mod.selectedProject?.completed) return "COMPLETED";
-  if (mod.selectedProject) return "IN PROGRESS";
-  if (mod.schedule?.status === "CURRENT") return "ACTIVE";
-  return "READY TO START";
+function getStatusLabel(mod: Module, cr: Record<string, string>): string {
+  if (mod.selectedProject?.completed) return cr.completed || "COMPLETED";
+  if (mod.selectedProject) return cr.inProgress || "IN PROGRESS";
+  if (mod.schedule?.status === "CURRENT") return cr.currentFocus || "ACTIVE";
+  return cr.readyToStart || "READY TO START";
 }
 
 function getStatusColor(mod: Module): string {
@@ -49,7 +50,9 @@ export default function HeroProjectCard({
   isSelectLoading,
   isCompleteLoading,
 }: HeroProjectCardProps) {
-  const statusLabel = getStatusLabel(mod);
+  const { t } = useI18n();
+  const cr = t.course as Record<string, string>;
+  const statusLabel = getStatusLabel(mod, cr);
   const statusColor = getStatusColor(mod);
 
   return (
@@ -59,7 +62,7 @@ export default function HeroProjectCard({
           [{String(index + 1).padStart(2, "0")}]
         </Text>
         <Text className="font-mono text-xs text-theme-primary font-bold">
-          * CURRENT FOCUS
+          * {cr.currentFocus || "CURRENT FOCUS"}
         </Text>
       </View>
 
@@ -73,7 +76,7 @@ export default function HeroProjectCard({
         </Text>
         {mod.schedule?.dueDate && !mod.selectedProject?.completed && (
           <Text className="font-mono text-xs text-theme-muted">
-            Due: {formatDate(mod.schedule.dueDate)}
+            {cr.dueLabel || "Due:"} {formatDate(mod.schedule.dueDate)}
           </Text>
         )}
       </View>
@@ -98,10 +101,10 @@ export default function HeroProjectCard({
       {heroIsLastCompleted && nextModuleTitle && (
         <View className="mt-4 border-t border-theme-primary/20 pt-3">
           <Text className="font-mono text-sm text-theme-primary">
-            {">"} Ready for the next step?
+            {">"} {cr.readyForNext || "Ready for the next step?"}
           </Text>
           <Text className="font-mono text-xs text-theme-muted mt-1">
-            {"// "}Up next: {nextModuleTitle}
+            {"// "}{cr.upNext || "Up next:"} {nextModuleTitle}
           </Text>
         </View>
       )}

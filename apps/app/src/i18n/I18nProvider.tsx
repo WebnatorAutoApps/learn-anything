@@ -1,17 +1,12 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
 import { Platform } from "react-native";
 import type { Locale, Translations } from "@learn-anything/shared";
-import { DEFAULT_LOCALE, LOCALE_STORAGE_KEY, SUPPORTED_LOCALES } from "@learn-anything/shared";
-
-import en from "@learn-anything/shared/i18n/locales/en.json";
-import es from "@learn-anything/shared/i18n/locales/es.json";
-import fr from "@learn-anything/shared/i18n/locales/fr.json";
-import de from "@learn-anything/shared/i18n/locales/de.json";
-import it from "@learn-anything/shared/i18n/locales/it.json";
-import zh from "@learn-anything/shared/i18n/locales/zh.json";
-import ja from "@learn-anything/shared/i18n/locales/ja.json";
-
-const translationMap: Record<Locale, Translations> = { en, es, fr, de, it, zh, ja };
+import {
+  DEFAULT_LOCALE,
+  LOCALE_STORAGE_KEY,
+  SUPPORTED_LOCALES,
+  translationMap,
+} from "@learn-anything/shared";
 
 const SUPPORTED_CODES = new Set<string>(SUPPORTED_LOCALES.map((l) => l.code));
 

@@ -188,15 +188,16 @@ export default function DashboardScreen() {
         initialTab={settingsInitialTab}
       />
 
-      <LearnModal
-        visible={showLearnModal}
-        onClose={() => setShowLearnModal(false)}
-        onSubmit={(planData: LearningPlanData) => {
-          setShowLearnModal(false);
-          handleProgramSubmit(planData);
-        }}
-        initialData={lastPlanData}
-      />
+      {showLearnModal && (
+        <LearnModal
+          onClose={() => setShowLearnModal(false)}
+          onSubmit={(planData: LearningPlanData) => {
+            setShowLearnModal(false);
+            handleProgramSubmit(planData);
+          }}
+          initialData={lastPlanData}
+        />
+      )}
 
       {previewData && lastPlanData && (
         <CoursePreview

@@ -75,7 +75,7 @@ export default function ThemeSettings() {
               </Text>
               {isSelected && (
                 <Text className="font-mono text-sm text-theme-primary mt-1 font-bold">
-                  * ACTIVE
+                  * {s.selected || "ACTIVE"}
                 </Text>
               )}
             </Pressable>

@@ -1,0 +1,51 @@
+{
+  "dashboard": {
+    "heading": "今日は何を学びたいですか？",
+    "subheading": "アクティブな学習パス。前回の続きから始めましょう。",
+    "browsePaths": "学習パスを閲覧",
+    "errorBanner": "現在問題が発生しています。一部の機能が正常に動作しない場合があります。",
+    "learnSomethingNew": "新しいことを学ぶ",
+    "addNewTopic": "新しいトピックを追加",
+    "activeStep": "進行中のステップ",
+    "noActiveSteps": "アクティブなステップがありません。学習パスを始めるか、既存のパスに登録してください。",
+    "previousProject": "前のプロジェクト",
+    "nextProject": "次のプロジェクト",
+    "carouselLabel": "アクティブステップのカルーセル",
+    "goToProject": "{name}へ移動",
+    "markComplete": "ステップを完了にする",
+    "carouselIndicators": "カルーセルインジケーター",
+    "loadingProcesses": "プロセスを読み込み中...",
+    "running": "実行中",
+    "modulesLoaded": "モジュール読み込み済み",
+    "loadingConfig": "設定を読み込み中...",
+    "activeProcessCount": "{count} 件のアクティブなプロセス",
+    "processIdPrefix": "PID:"
+  },
+  "header": {
+    "title": "Learn Anything",
+    "profile": "プロフィール",
+    "settings": "設定",
+    "logout": "ログアウト",
+    "menuLabel": "メニュー"
+  },
+  "upcoming": {
+    "title": "今後のプロジェクト",
+    "overdue": "期限超過 —",
+    "due": "期限",
+    "noDueDate": "期限なし",
+    "showMore": "もっと表示"
+  },
+  "tips": {
+    "dismissTip": "ヒントを閉じる",
+    "themeMessage": "テーマをカスタマイズできることをご存知ですか？スペース、スクール、ジム、90年代インターネットを試してみてください。",
+    "themeCta": "テーマを変更",
+    "personalityMessage": "海賊に教えてもらいたい？AIトーンをカスタマイズして、ユニークな学習体験を楽しみましょう。",
+    "personalityCta": "トーンを選ぶ",
+    "browseMessage": "コミュニティが作成した学習パスを探索して、新しい旅を始めましょう。",
+    "browseCta": "パスを閲覧",
+    "profileMessage": "表示名、ユーザー名、アバターを設定してプロフィールをカスタマイズしましょう。",
+    "profileCta": "プロフィールを編集",
+    "apiKeyMessage": "Gemini APIキーを追加して、AI搭載のコース生成をアンロックしましょう。",
+    "apiKeyCta": "APIキーを追加"
+  }
+}

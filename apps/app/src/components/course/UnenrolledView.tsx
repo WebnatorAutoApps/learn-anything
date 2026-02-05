@@ -64,8 +64,8 @@ export default function UnenrolledView({
         onBack={onBack}
         labels={{
           back: commonLabels.back || "back",
-          info: "INFO",
-          quit: "QUIT",
+          info: labels.info || "INFO",
+          quit: labels.unenroll || "QUIT",
         }}
       />
 
@@ -88,10 +88,10 @@ export default function UnenrolledView({
 
         {/* Info Grid */}
         <View className="flex-row flex-wrap gap-2 mb-6">
-          <InfoCard label="STEPS" value={String(course.total_modules)} />
-          <InfoCard label="LEVEL" value={course.expertise_level} />
-          <InfoCard label="TARGET" value={course.expected_skill_level} />
-          <InfoCard label="PROB" value={`${course.likelihood_of_learning}%`} />
+          <InfoCard label={labels.stepsLabel || "STEPS"} value={String(course.total_modules)} />
+          <InfoCard label={labels.yourLevel || "LEVEL"} value={course.expertise_level} />
+          <InfoCard label={labels.targetLevel || "TARGET"} value={course.expected_skill_level} />
+          <InfoCard label={labels.prob || "PROB"} value={`${course.likelihood_of_learning}%`} />
         </View>
 
         {/* Expertise details */}
@@ -168,7 +168,7 @@ export default function UnenrolledView({
                     )}
                     {isSelected && (
                       <Text className="font-mono text-sm text-theme-primary font-bold">
-                        * ACTIVE
+                        * {commonLabels.active || "ACTIVE"}
                       </Text>
                     )}
                   </View>
@@ -181,7 +181,7 @@ export default function UnenrolledView({
           {!commitment.valid && (
             <View className="border border-theme-warning/30 bg-theme-warning/10 p-3 mb-4">
               <Text className="font-mono text-sm text-theme-warning mb-1">
-                {">"} WARNING
+                {">"} {labels.warningLabel || "WARNING"}
               </Text>
               {commitment.suggestedIntervalDays ? (
                 <Text className="font-mono text-sm text-theme-muted leading-relaxed">
@@ -208,8 +208,7 @@ export default function UnenrolledView({
           {commitment.valid && (
             <View className="border border-theme-primary/20 p-3 mb-4">
               <Text className="font-mono text-sm text-theme-muted">
-                {"// "}Projected completion: ~{commitment.projectedDays} days (
-                {commitment.projectedYears} yr)
+                {"// "}{(labels.projectedCompletion || "Projected completion: ~{days} days ({years} yr)").replace("{days}", String(commitment.projectedDays)).replace("{years}", String(commitment.projectedYears))}
               </Text>
             </View>
           )}

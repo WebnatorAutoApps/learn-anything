@@ -115,7 +115,7 @@ export default function EnrolledView({
         onQuit={() => setShowUnenrollConfirm(true)}
         labels={{
           back: commonLabels.back || "back",
-          info: "INFO",
+          info: labels.info || "INFO",
           quit: labels.unenroll || "QUIT",
         }}
       />

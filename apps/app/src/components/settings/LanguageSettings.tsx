@@ -37,7 +37,7 @@ export default function LanguageSettings() {
               <Text className="font-mono text-sm text-theme-muted">{loc.name}</Text>
             </View>
             {locale === loc.code && (
-              <Text className="font-mono text-sm text-theme-primary font-bold">* ACTIVE</Text>
+              <Text className="font-mono text-sm text-theme-primary font-bold">* {s.selected || "ACTIVE"}</Text>
             )}
           </Pressable>
         ))}

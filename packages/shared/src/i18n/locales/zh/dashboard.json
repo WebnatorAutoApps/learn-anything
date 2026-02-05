@@ -1,0 +1,51 @@
+{
+  "dashboard": {
+    "heading": "你今天想学什么？",
+    "subheading": "你正在进行的学习路径。从上次中断的地方继续。",
+    "browsePaths": "浏览学习路径",
+    "errorBanner": "我们遇到了一些问题。部分功能可能无法正常使用。",
+    "learnSomethingNew": "学习新内容",
+    "addNewTopic": "添加新主题",
+    "activeStep": "当前步骤",
+    "noActiveSteps": "没有进行中的步骤。开始一条学习路径或加入一条来开始吧。",
+    "previousProject": "上一个项目",
+    "nextProject": "下一个项目",
+    "carouselLabel": "活跃步骤轮播",
+    "goToProject": "前往{name}",
+    "markComplete": "标记步骤为已完成",
+    "carouselIndicators": "轮播指示器",
+    "loadingProcesses": "加载进程中...",
+    "running": "运行中",
+    "modulesLoaded": "个模块已加载",
+    "loadingConfig": "加载配置中...",
+    "activeProcessCount": "发现 {count} 个活跃进程",
+    "processIdPrefix": "进程:"
+  },
+  "header": {
+    "title": "Learn Anything",
+    "profile": "个人资料",
+    "settings": "设置",
+    "logout": "退出登录",
+    "menuLabel": "菜单"
+  },
+  "upcoming": {
+    "title": "即将到来的项目",
+    "overdue": "已逾期 —",
+    "due": "截止",
+    "noDueDate": "无截止日期",
+    "showMore": "查看更多"
+  },
+  "tips": {
+    "dismissTip": "关闭提示",
+    "themeMessage": "你知道你可以自定义主题吗？试试太空、校园、健身或90年代互联网主题。",
+    "themeCta": "更换主题",
+    "personalityMessage": "想让一个海盗来教你吗？自定义AI语气，获得独特的学习体验。",
+    "personalityCta": "选择语气",
+    "browseMessage": "探索社区创建的学习路径，今天就开始新的学习之旅。",
+    "browseCta": "浏览路径",
+    "profileMessage": "设置你的个人资料，包括显示名称、用户名和头像，打造个性化体验。",
+    "profileCta": "编辑个人资料",
+    "apiKeyMessage": "添加你的 Gemini API 密钥，解锁AI驱动的课程生成功能。",
+    "apiKeyCta": "添加 API 密钥"
+  }
+}

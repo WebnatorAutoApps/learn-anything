@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text } from "react-native";
 import type { Module } from "@learn-anything/shared";
 import { formatDate } from "@learn-anything/shared";
+import { useI18n } from "../../i18n/I18nProvider";
 
 interface TimelineItemProps {
   mod: Module;
@@ -9,6 +10,8 @@ interface TimelineItemProps {
 }
 
 export default function TimelineItem({ mod, index }: TimelineItemProps) {
+  const { t } = useI18n();
+  const cr = t.course as Record<string, string>;
   const isCurrent = mod.schedule?.status === "CURRENT";
   const isLocked = mod.schedule?.status === "LOCKED";
 
@@ -17,9 +20,9 @@ export default function TimelineItem({ mod, index }: TimelineItemProps) {
     : "border-theme-primary/10";
 
   const statusLabel = isCurrent
-    ? "UP NEXT"
+    ? cr.upNext || "UP NEXT"
     : isLocked
-    ? "LOCKED"
+    ? cr.locked || "LOCKED"
     : "";
 
   const statusColor = isCurrent
@@ -29,9 +32,9 @@ export default function TimelineItem({ mod, index }: TimelineItemProps) {
   const opacity = isLocked ? "opacity-40" : "";
 
   const dateText = isCurrent && mod.schedule?.dueDate
-    ? `due ${formatDate(mod.schedule.dueDate)}`
+    ? `${cr.duePrefix || "due"} ${formatDate(mod.schedule.dueDate)}`
     : mod.schedule?.unlockDate
-    ? `unlocks ${formatDate(mod.schedule.unlockDate)}`
+    ? `${cr.unlocksPrefix || "unlocks"} ${formatDate(mod.schedule.unlockDate)}`
     : "";
 
   return (

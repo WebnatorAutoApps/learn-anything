@@ -1,0 +1,51 @@
+{
+  "dashboard": {
+    "heading": "¿Qué quieres aprender hoy?",
+    "subheading": "Tus caminos de aprendizaje activos. Continúa donde lo dejaste.",
+    "browsePaths": "Explorar Caminos de Aprendizaje",
+    "errorBanner": "Estamos teniendo problemas en este momento. Algunas funciones pueden no funcionar correctamente.",
+    "learnSomethingNew": "Aprende Algo Nuevo",
+    "addNewTopic": "Agregar un nuevo tema",
+    "activeStep": "Paso Activo",
+    "noActiveSteps": "No hay pasos activos. Comienza un camino de aprendizaje o inscríbete en uno para empezar.",
+    "previousProject": "Proyecto anterior",
+    "nextProject": "Proyecto siguiente",
+    "carouselLabel": "Carrusel de pasos activos",
+    "goToProject": "Ir a {name}",
+    "markComplete": "Marcar paso como completado",
+    "carouselIndicators": "Indicadores del carrusel",
+    "loadingProcesses": "Cargando procesos...",
+    "running": "EN EJECUCIÓN",
+    "modulesLoaded": "módulos cargados",
+    "loadingConfig": "Cargando configuración...",
+    "activeProcessCount": "{count} proceso(s) activo(s) encontrado(s)",
+    "processIdPrefix": "PID:"
+  },
+  "header": {
+    "title": "Learn Anything",
+    "profile": "Perfil",
+    "settings": "Configuración",
+    "logout": "Cerrar sesión",
+    "menuLabel": "MENÚ"
+  },
+  "upcoming": {
+    "title": "Próximos Proyectos",
+    "overdue": "Atrasado —",
+    "due": "Vence",
+    "noDueDate": "Sin fecha de entrega",
+    "showMore": "Mostrar más"
+  },
+  "tips": {
+    "dismissTip": "Descartar consejo",
+    "themeMessage": "¿Sabías que puedes personalizar tu tema? Prueba Espacio, Escuela, Gimnasio o Internet de los 90s.",
+    "themeCta": "Cambiar Tema",
+    "personalityMessage": "¿Quieres que te enseñe un pirata? Personaliza el tono de tu IA para una experiencia de aprendizaje única.",
+    "personalityCta": "Elige un Tono",
+    "browseMessage": "Explora caminos de aprendizaje creados por la comunidad y comienza un nuevo camino hoy.",
+    "browseCta": "Explorar Caminos",
+    "profileMessage": "Configura tu perfil con un nombre, nombre de usuario y avatar para personalizar tu experiencia.",
+    "profileCta": "Editar Perfil",
+    "apiKeyMessage": "Agrega tu propia clave API de Gemini para desbloquear la generación de cursos con IA.",
+    "apiKeyCta": "Agregar Clave API"
+  }
+}

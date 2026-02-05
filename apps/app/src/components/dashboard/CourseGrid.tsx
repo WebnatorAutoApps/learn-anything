@@ -14,12 +14,13 @@ export default function CourseGrid({ courses, isLoading, onLearnClick }: CourseG
   const router = useRouter();
   const { t } = useI18n();
   const d = t.dashboard as Record<string, string>;
+  const c = t.common as Record<string, string>;
 
   if (isLoading) {
     return (
       <View className="py-12 items-center">
         <Text className="font-mono text-base text-theme-muted animate-blink">
-          Loading processes...
+          {d.loadingProcesses || "Loading processes..."}
         </Text>
       </View>
     );
@@ -28,7 +29,7 @@ export default function CourseGrid({ courses, isLoading, onLearnClick }: CourseG
   return (
     <View>
       <Text className="font-mono text-sm text-theme-muted mb-3">
-        {">"} {courses.length} active process{courses.length !== 1 ? "es" : ""} found
+        {">"} {(d.activeProcessCount || "{count} active process(es) found").replace("{count}", String(courses.length))}
       </Text>
 
       <View className="flex-row flex-wrap gap-3">
@@ -40,11 +41,11 @@ export default function CourseGrid({ courses, isLoading, onLearnClick }: CourseG
           >
             <View className="flex-row items-center mb-2">
               <Text className="font-mono text-sm text-theme-primary">
-                PID:{String(index + 1).padStart(3, "0")}
+                {d.processIdPrefix || "PID:"}{String(index + 1).padStart(3, "0")}
               </Text>
               <View className="ml-2 h-2 w-2 rounded-full bg-theme-primary" />
               <Text className="font-mono text-sm text-theme-muted ml-1">
-                RUNNING
+                {d.running || "RUNNING"}
               </Text>
             </View>
             <Text
@@ -54,7 +55,7 @@ export default function CourseGrid({ courses, isLoading, onLearnClick }: CourseG
               {course.normalized_title}
             </Text>
             <Text className="font-mono text-theme-muted text-sm">
-              {course.total_modules} modules loaded
+              {course.total_modules} {d.modulesLoaded || "modules loaded"}
             </Text>
           </Pressable>
         ))}
