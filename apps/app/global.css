@@ -1,0 +1,171 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── CRT monitor simulation ── */
+
+/* Phosphor glow background — radial gradient from center like a real CRT */
+:root body {
+  background:
+    radial-gradient(
+      ellipse at 50% 50%,
+      #0d1a0d 0%,
+      #0a120a 35%,
+      #060d06 60%,
+      #020502 85%,
+      #000000 100%
+    ) !important;
+}
+
+/* Scanlines */
+:root #root::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.08) 0px,
+    rgba(0, 0, 0, 0.08) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+/* CRT vignette — gentle darkening at edges */
+:root #root::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9998;
+  background:
+    radial-gradient(
+      ellipse at 50% 50%,
+      transparent 60%,
+      rgba(0, 0, 0, 0.15) 80%,
+      rgba(0, 0, 0, 0.3) 100%
+    );
+}
+
+/* Ambient green phosphor glow on text-heavy areas */
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.8; }
+  94% { opacity: 1; }
+  97% { opacity: 0.9; }
+  98% { opacity: 1; }
+}
+
+:root #root {
+  animation: flicker 8s infinite;
+  text-shadow: 0 0 3px rgba(74, 222, 128, 0.15);
+}
+
+:root {
+  --t-primary: #4ade80;
+  --t-primary-hover: #22c55e;
+  --t-primary-dim: #0f3d1f;
+  --t-primary-faint: rgba(74, 222, 128, 0.06);
+  --t-secondary: #a8c4a8;
+  --t-muted: #4a6a4a;
+  --t-bg: #050d05;
+  --t-surface: #0a140a;
+  --t-surface-hover: #0f1f0f;
+  --t-border: #1a2e1a;
+  --t-border-strong: #2a4a2a;
+  --t-accent: #4ade80;
+  --t-glow: rgba(74, 222, 128, 0.2);
+  --t-text-on-accent: #000000;
+  --t-success: #4ade80;
+  --t-error: #f87171;
+  --t-warning: #fbbf24;
+}
+
+[data-theme="space"] {
+  --t-primary: #a78bfa;
+  --t-primary-hover: #8b5cf6;
+  --t-primary-dim: #4c1d95;
+  --t-primary-faint: rgba(167, 139, 250, 0.08);
+  --t-secondary: #d1d5db;
+  --t-muted: #6b7280;
+  --t-bg: #0a0a14;
+  --t-surface: #12121e;
+  --t-surface-hover: #1a1a2e;
+  --t-border: #1e1e30;
+  --t-border-strong: #2e2e48;
+  --t-accent: #a78bfa;
+  --t-glow: rgba(167, 139, 250, 0.15);
+  --t-text-on-accent: #000000;
+  --t-success: #34d399;
+  --t-error: #f87171;
+  --t-warning: #fbbf24;
+}
+
+[data-theme="school"] {
+  --t-primary: #f59e0b;
+  --t-primary-hover: #d97706;
+  --t-primary-dim: #92400e;
+  --t-primary-faint: rgba(245, 158, 11, 0.08);
+  --t-secondary: #78716c;
+  --t-muted: #a8a29e;
+  --t-bg: #faf5ee;
+  --t-surface: #f5efe6;
+  --t-surface-hover: #efe7d8;
+  --t-border: #e7dcc9;
+  --t-border-strong: #d6c8a8;
+  --t-accent: #f59e0b;
+  --t-glow: rgba(245, 158, 11, 0.1);
+  --t-text-on-accent: #000000;
+  --t-success: #22c55e;
+  --t-error: #ef4444;
+  --t-warning: #d97706;
+}
+
+[data-theme="gym"] {
+  --t-primary: #f43f5e;
+  --t-primary-hover: #e11d48;
+  --t-primary-dim: #9f1239;
+  --t-primary-faint: rgba(244, 63, 94, 0.08);
+  --t-secondary: #d1d5db;
+  --t-muted: #6b7280;
+  --t-bg: #0a0a0a;
+  --t-surface: #121212;
+  --t-surface-hover: #1a1a1a;
+  --t-border: #1f1f1f;
+  --t-border-strong: #333333;
+  --t-accent: #f43f5e;
+  --t-glow: rgba(244, 63, 94, 0.15);
+  --t-text-on-accent: #ffffff;
+  --t-success: #4ade80;
+  --t-error: #f87171;
+  --t-warning: #fbbf24;
+}
+
+[data-theme="90s-internet"] {
+  --t-primary: #06b6d4;
+  --t-primary-hover: #0891b2;
+  --t-primary-dim: #155e75;
+  --t-primary-faint: rgba(6, 182, 212, 0.08);
+  --t-secondary: #d1d5db;
+  --t-muted: #6b7280;
+  --t-bg: #0c0c1a;
+  --t-surface: #14142a;
+  --t-surface-hover: #1c1c3a;
+  --t-border: #22224a;
+  --t-border-strong: #333366;
+  --t-accent: #06b6d4;
+  --t-glow: rgba(6, 182, 212, 0.15);
+  --t-text-on-accent: #000000;
+  --t-success: #34d399;
+  --t-error: #f87171;
+  --t-warning: #fbbf24;
+}
