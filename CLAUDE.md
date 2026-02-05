@@ -64,7 +64,7 @@ See [`docs/architecture.md`](docs/architecture.md) for the full reference.
 - **Direct Supabase calls** — Mutations and queries call Supabase directly from shared hooks (no API proxy layer)
 - **RLS on all tables** — defense in depth; never bypass from client code
 - **Theme system** via NativeWind `vars()` + CSS custom properties (`--t-*`) mapped to `theme-*` Tailwind classes
-- **i18n** — 6 locales (en, es, fr, de, it, zh); translations in `packages/shared/src/i18n/locales/`, provider in each app
+- **i18n** — 7 locales (en, es, fr, de, it, zh, ja); translations in `packages/shared/src/i18n/locales/`, provider in each app
 - **Barrel exports** — Every directory with 2+ sibling files has an `index.ts` barrel export
 - **Centralized error messages** — All user-facing error strings must be imported from `packages/shared/src/constants/errors.ts`; never hardcode error text in components
 - **Shared UI primitives** — Reusable components (`Spinner`, `Button`, `Input`, `Modal`) in `apps/app/src/components/ui/`
@@ -208,7 +208,7 @@ pnpm --filter @learn-anything/shared test:watch  # Watch mode
 | `packages/shared/src/schedule.ts` | Module schedule generation and status resolution |
 | `packages/shared/src/supabase.ts` | `setSupabaseClient()` / `getSupabaseClient()` injection |
 | `packages/shared/src/storage.ts` | `setStorageAdapter()` / `getStorage()` platform abstraction |
-| `packages/shared/src/i18n/` | Translations (6 locales) and i18n types |
+| `packages/shared/src/i18n/` | Translations (7 locales) and i18n types |
 | `apps/landing/` | Landing page (Next.js 15) |
 
 ## CI/CD Pipeline
@@ -254,7 +254,7 @@ Every change **must** be verified locally before committing or pushing. This pre
 - All changes go through pull requests; CI must pass before merging
 - 5 themes: terminal (default), space, school, gym, 90s-internet
 - 6 personality tones available for LLM-generated content
-- 6 locales: en (default), es, fr, de, it, zh
+- 7 locales: en (default), es, fr, de, it, zh, ja
 
 ## Documentation
 

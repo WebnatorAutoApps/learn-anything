@@ -6,5 +6,6 @@ import fr from "./locales/fr.json";
 import de from "./locales/de.json";
 import it from "./locales/it.json";
 import zh from "./locales/zh.json";
+import ja from "./locales/ja.json";
 
-export const translationMap: Record<Locale, Translations> = { en, es, fr, de, it, zh };
+export const translationMap: Record<Locale, Translations> = { en, es, fr, de, it, zh, ja };
