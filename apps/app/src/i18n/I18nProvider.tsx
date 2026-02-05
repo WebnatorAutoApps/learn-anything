@@ -9,8 +9,9 @@ import fr from "@learn-anything/shared/i18n/locales/fr.json";
 import de from "@learn-anything/shared/i18n/locales/de.json";
 import it from "@learn-anything/shared/i18n/locales/it.json";
 import zh from "@learn-anything/shared/i18n/locales/zh.json";
+import ja from "@learn-anything/shared/i18n/locales/ja.json";
 
-const translationMap: Record<Locale, Translations> = { en, es, fr, de, it, zh };
+const translationMap: Record<Locale, Translations> = { en, es, fr, de, it, zh, ja };
 
 const SUPPORTED_CODES = new Set<string>(SUPPORTED_LOCALES.map((l) => l.code));
 
