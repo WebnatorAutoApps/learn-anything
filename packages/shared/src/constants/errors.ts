@@ -130,6 +130,10 @@ export const ERROR_MESSAGES = {
   // Low likelihood warning
   LOW_LIKELIHOOD_WARNING: "This learning goal has a low likelihood of success",
 
+  // Course generation / save (two-step flow)
+  COURSE_GENERATE_FAILED: "Failed to generate learning path. Please try again.",
+  COURSE_SAVE_FAILED: "Failed to save learning path. Please try again.",
+
   // Platform initialization
   SUPABASE_NOT_INITIALIZED: "SupabaseClient not initialized. Call setSupabaseClient() at app startup.",
   STORAGE_NOT_INITIALIZED: "StorageAdapter not initialized. Call setStorageAdapter() at app startup.",

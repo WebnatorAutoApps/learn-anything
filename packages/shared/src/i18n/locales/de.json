@@ -491,5 +491,19 @@
     "tipLabel": "Tipp:",
     "tipBody": "Erstelle einen dedizierten API-Schlüssel nur für diese App. Nutze Googles kostenlosen Plan, damit keine Kosten entstehen. Du kannst den Schlüssel jederzeit über Google AI Studio widerrufen.",
     "goToSettings": "Zu den Einstellungen"
+  },
+  "preview": {
+    "title": "VORSCHAU",
+    "subtitle": "Überpr\u00fcfe deinen generierten Lernpfad, bevor du ihn speicherst.",
+    "expectedLevel": "Erwartetes Niveau",
+    "likelihood": "Wahrscheinlichkeit",
+    "modules": "Schritte",
+    "projects": "Projekte",
+    "projectOption": "Option",
+    "objective": "Ziel",
+    "confirm": "Best\u00e4tigen & Speichern",
+    "goBack": "Zur\u00fcck",
+    "saving": "Speichern...",
+    "moduleLabel": "SCHRITT"
   }
 }

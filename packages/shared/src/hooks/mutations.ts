@@ -147,6 +147,179 @@ export function useCreateCourse() {
   });
 }
 
+export function useGenerateCourse() {
+  return useMutation({
+    mutationFn: async ({
+      planData,
+      apiKey,
+      tone,
+      locale,
+    }: {
+      planData: {
+        whatToLearn: string;
+        openDetail: string;
+        currentExpertise: string;
+        expertiseDetail: string;
+        totalModules: number;
+      };
+      apiKey: string;
+      tone?: string | null;
+      locale?: string | null;
+    }) => {
+      const request: LearningRequest = {
+        learning_goal_short: planData.whatToLearn,
+        learning_goal_long: planData.openDetail,
+        expertise_level: planData.currentExpertise,
+        expertise_details: planData.expertiseDetail || "",
+        number_of_modules: planData.totalModules,
+        tone,
+        locale,
+      };
+
+      const llmResponse = await callGemini(apiKey, request);
+
+      if (llmResponse.likelihood_of_learning < LIKELIHOOD_THRESHOLD) {
+        return {
+          success: false as const,
+          low_likelihood: true,
+          likelihood_of_learning: llmResponse.likelihood_of_learning,
+          normalized_title: llmResponse.normalized_title,
+          error: `${ERROR_MESSAGES.LOW_LIKELIHOOD_WARNING} (${llmResponse.likelihood_of_learning}%). The AI determined that meaningful progress through small practical projects is unlikely for this goal. Consider refining your learning goal, adjusting the scope, or choosing a more project-oriented skill.`,
+        };
+      }
+
+      return {
+        success: true as const,
+        llmResponse,
+      };
+    },
+  });
+}
+
+export function useSaveCourse() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      planData,
+      llmResponse,
+    }: {
+      planData: {
+        whatToLearn: string;
+        openDetail: string;
+        currentExpertise: string;
+        expertiseDetail: string;
+        totalModules: number;
+      };
+      llmResponse: {
+        normalized_title: string;
+        expected_skill_level: string;
+        likelihood_of_learning: number;
+        program: {
+          module_index: number;
+          module_title: string;
+          module_description: string;
+          projects: {
+            project_title: string;
+            instructions: string;
+            objective: string;
+          }[];
+        }[];
+      };
+    }) => {
+      const supabase = getSupabaseClient();
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) throw new Error(ERROR_MESSAGES.NOT_AUTHENTICATED);
+
+      // Insert course
+      const { data: course, error: courseError } = await supabase
+        .from("courses")
+        .insert({
+          user_id: user.id,
+          normalized_title: llmResponse.normalized_title,
+          learning_goal: planData.whatToLearn,
+          learning_goal_details: planData.openDetail,
+          expertise_level: planData.currentExpertise,
+          expertise_details: planData.expertiseDetail || null,
+          expected_skill_level: llmResponse.expected_skill_level,
+          likelihood_of_learning: llmResponse.likelihood_of_learning,
+          total_modules: planData.totalModules,
+          status: "created",
+        })
+        .select("id")
+        .single();
+
+      if (courseError || !course) {
+        console.error("Course insert error:", courseError);
+        throw new Error(ERROR_MESSAGES.COURSE_SAVE_FAILED);
+      }
+
+      // Insert modules
+      const modulesData = llmResponse.program.map((mod) => ({
+        course_id: course.id,
+        module_index: mod.module_index,
+        title: mod.module_title,
+        description: mod.module_description,
+      }));
+
+      const { data: modules, error: modulesError } = await supabase
+        .from("modules")
+        .insert(modulesData)
+        .select("id, module_index");
+
+      if (modulesError || !modules) {
+        console.error("Modules insert error:", modulesError);
+        await supabase.from("courses").delete().eq("id", course.id);
+        throw new Error(ERROR_MESSAGES.MODULES_INSERT_FAILED);
+      }
+
+      // Build module_index -> module id map
+      const moduleIdMap = new Map<number, string>();
+      for (const mod of modules) {
+        moduleIdMap.set(mod.module_index, mod.id);
+      }
+
+      // Insert projects
+      const projectsData = llmResponse.program.flatMap((mod) =>
+        mod.projects.map((proj, projIdx) => ({
+          module_id: moduleIdMap.get(mod.module_index)!,
+          project_index: projIdx + 1,
+          title: proj.project_title,
+          instructions: proj.instructions,
+          objective: proj.objective,
+        }))
+      );
+
+      const { error: projectsError } = await supabase
+        .from("projects")
+        .insert(projectsData);
+
+      if (projectsError) {
+        console.error("Projects insert error:", projectsError);
+        await supabase.from("courses").delete().eq("id", course.id);
+        throw new Error(ERROR_MESSAGES.PROJECTS_INSERT_FAILED);
+      }
+
+      return {
+        success: true as const,
+        course: {
+          id: course.id,
+          normalized_title: llmResponse.normalized_title,
+          expected_skill_level: llmResponse.expected_skill_level,
+          likelihood_of_learning: llmResponse.likelihood_of_learning,
+          total_modules: planData.totalModules,
+        },
+      };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.coursesAll });
+    },
+  });
+}
+
 export function useEnrollCourse() {
   const queryClient = useQueryClient();
 

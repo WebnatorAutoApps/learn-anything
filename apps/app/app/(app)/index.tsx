@@ -12,6 +12,7 @@ import {
   ProgramCreationLoader,
   LogoutConfirmDialog,
   ApiKeyWarningDialog,
+  CoursePreview,
 } from "../../src/components/dashboard";
 import { Button } from "../../src/components/ui";
 import { SettingsModal } from "../../src/components/settings";
@@ -36,12 +37,16 @@ export default function DashboardScreen() {
 
   const {
     isCreating,
+    isSaving,
     handleProgramSubmit,
     retryCreation,
     dismissCreationError,
     creationError,
     creationErrorKey,
     lastPlanData,
+    previewData,
+    confirmCourse,
+    goBackFromPreview,
   } = useCourseCreation();
 
   const {
@@ -190,7 +195,21 @@ export default function DashboardScreen() {
           setShowLearnModal(false);
           handleProgramSubmit(planData);
         }}
+        initialData={lastPlanData}
       />
+
+      {previewData && lastPlanData && (
+        <CoursePreview
+          llmResponse={previewData}
+          planData={lastPlanData}
+          onConfirm={confirmCourse}
+          onGoBack={() => {
+            goBackFromPreview();
+            setShowLearnModal(true);
+          }}
+          isSaving={isSaving}
+        />
+      )}
 
       {isCreating && (
         <ProgramCreationLoader
