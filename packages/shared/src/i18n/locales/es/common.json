@@ -32,6 +32,8 @@
     "requestTimeout": "La solicitud tardó demasiado. Por favor, inténtalo de nuevo.",
     "forbidden": "Acceso denegado. Por favor, verifica tu clave API e inténtalo de nuevo.",
     "generic": "Algo salió mal. Por favor, inténtalo de nuevo.",
+    "lowLikelihood": "Baja probabilidad de éxito ({pct}%)",
+    "lowLikelihoodDetail": "La IA determinó que es poco probable lograr un progreso significativo con pequeños proyectos prácticos para este objetivo. Considera refinar tu meta de aprendizaje, ajustar el alcance o elegir una habilidad más orientada a proyectos.",
     "errorPrefix": "ERROR:"
   },
   "loading": {

@@ -27,6 +27,7 @@ export default function ProgramCreationLoader({
   const { t } = useI18n();
   const loading = t.loading as Record<string, string>;
   const errors = t.errors as Record<string, string>;
+  const cr = t.course as Record<string, string>;
 
   const [messageIndex, setMessageIndex] = useState(() =>
     Math.floor(Math.random() * LOADING_MESSAGE_KEYS.length)
@@ -62,22 +63,30 @@ export default function ProgramCreationLoader({
   }, [hasError]);
 
   if (hasError) {
-    const displayMessage = errorKey
-      ? (errors[errorKey] || errors.generic || error)
-      : error;
+    const isLowLikelihood = errorKey === "lowLikelihood";
+    const headerLabel = isLowLikelihood
+      ? (errors.lowLikelihood || "Low likelihood of success ({pct}%)").replace("{pct}", error || "")
+      : (errors.somethingWentWrong || "Something went wrong");
+    const detailMessage = isLowLikelihood
+      ? (errors.lowLikelihoodDetail || "The AI determined that meaningful progress through small practical projects is unlikely for this goal. Consider refining your learning goal, adjusting the scope, or choosing a more project-oriented skill.")
+      : errorKey
+        ? (errors[errorKey] || errors.generic || error)
+        : error;
+    const borderColor = isLowLikelihood ? "border-theme-primary/30" : "border-theme-error/30";
+    const headerColor = isLowLikelihood ? "text-theme-primary" : "text-theme-error";
 
     return (
       <RNModal visible transparent animationType="fade">
         <View className="flex-1 items-center justify-center px-6 bg-theme-bg">
-          <View className="w-full max-w-md border border-theme-error/30 bg-theme-bg p-6">
-            <Text className="font-mono text-base text-theme-error font-bold mb-2">
-              {">"} ERROR
+          <View className={`w-full max-w-md border ${borderColor} bg-theme-bg p-6`}>
+            <Text className={`font-mono text-base ${headerColor} font-bold mb-2`}>
+              {">"} {isLowLikelihood ? (cr.warningLabel || "WARNING") : (errors.errorPrefix || "ERROR:")}
             </Text>
-            <Text className="font-mono text-sm text-theme-error mb-4">
-              {errors.somethingWentWrong || "Something went wrong"}
+            <Text className={`font-mono text-sm ${headerColor} mb-4`}>
+              {headerLabel}
             </Text>
             <Text className="font-mono text-sm text-theme-muted mb-6 leading-relaxed">
-              {"// "}{displayMessage}
+              {"// "}{detailMessage}
             </Text>
             <View className="flex-row gap-3">
               {canRetry && onRetry && (

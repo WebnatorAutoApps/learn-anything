@@ -32,6 +32,8 @@
     "requestTimeout": "Die Anfrage hat zu lange gedauert. Bitte versuche es erneut.",
     "forbidden": "Zugriff verweigert. Bitte überprüfe deinen API-Schlüssel und versuche es erneut.",
     "generic": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
+    "lowLikelihood": "Geringe Erfolgswahrscheinlichkeit ({pct}%)",
+    "lowLikelihoodDetail": "Die KI hat festgestellt, dass bedeutender Fortschritt durch kleine praktische Projekte für dieses Ziel unwahrscheinlich ist. Erwäge, dein Lernziel zu verfeinern, den Umfang anzupassen oder eine stärker projektorientierte Fähigkeit zu wählen.",
     "errorPrefix": "FEHLER:"
   },
   "loading": {

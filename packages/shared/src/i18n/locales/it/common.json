@@ -32,6 +32,8 @@
     "requestTimeout": "La richiesta ha impiegato troppo tempo. Per favore riprova.",
     "forbidden": "Accesso negato. Per favore controlla la tua chiave API e riprova.",
     "generic": "Qualcosa è andato storto. Per favore riprova.",
+    "lowLikelihood": "Bassa probabilità di successo ({pct}%)",
+    "lowLikelihoodDetail": "L'IA ha determinato che è improbabile ottenere un progresso significativo con piccoli progetti pratici per questo obiettivo. Considera di affinare il tuo obiettivo di apprendimento, regolare la portata o scegliere un'abilità più orientata ai progetti.",
     "errorPrefix": "ERRORE:"
   },
   "loading": {

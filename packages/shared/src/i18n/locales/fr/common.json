@@ -32,6 +32,8 @@
     "requestTimeout": "La requête a pris trop de temps. Veuillez réessayer.",
     "forbidden": "Accès refusé. Veuillez vérifier votre clé API et réessayer.",
     "generic": "Une erreur est survenue. Veuillez réessayer.",
+    "lowLikelihood": "Faible probabilité de réussite ({pct}%)",
+    "lowLikelihoodDetail": "L'IA a déterminé qu'il est peu probable de progresser significativement avec de petits projets pratiques pour cet objectif. Envisagez d'affiner votre objectif d'apprentissage, d'ajuster la portée ou de choisir une compétence plus orientée projet.",
     "errorPrefix": "ERREUR :"
   },
   "loading": {
