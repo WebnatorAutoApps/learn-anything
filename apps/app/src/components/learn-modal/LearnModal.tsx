@@ -64,6 +64,9 @@ export default function LearnModal({ onClose, onSubmit, initialData }: LearnModa
     l.expertiseExpert || "Expert",
   ];
 
+  const translateExpertise = (english: string) =>
+    expertiseLevels[EXPERTISE_LEVELS.indexOf(english)] || english;
+
   const commitmentOptions = [
     { label: l.commitDaily || "Daily", days: 1 },
     { label: l.commitEvery3Days || "Every 3 days", days: 3 },
@@ -97,7 +100,7 @@ export default function LearnModal({ onClose, onSubmit, initialData }: LearnModa
         { role: "system", text: l.questionDetails || "Tell me more about your learning goals." },
         { role: "user", text: initialData.openDetail },
         { role: "system", text: l.questionExpertise || "What's your current expertise level?" },
-        { role: "user", text: initialData.currentExpertise },
+        { role: "user", text: translateExpertise(initialData.currentExpertise) },
         { role: "system", text: l.questionExpertiseDetails || "Tell me more about your current level (optional)." },
         { role: "user", text: initialData.expertiseDetail || (l.skipped || "(skipped)") },
         { role: "system", text: l.questionCommitment || "How often can you dedicate time?" },
@@ -192,7 +195,7 @@ export default function LearnModal({ onClose, onSubmit, initialData }: LearnModa
   function handleExpertiseSelect(level: string) {
     setExpertise(level);
     addMessages(
-      level,
+      translateExpertise(level),
       l.questionExpertiseDetails || "Tell me more about your current level (optional).",
       "expertiseDetails"
     );
@@ -363,7 +366,7 @@ export default function LearnModal({ onClose, onSubmit, initialData }: LearnModa
                 />
                 <SummaryRow
                   label={l.expertise || "LEVEL"}
-                  value={expertise}
+                  value={translateExpertise(expertise)}
                   onPress={() => handleEditStep("expertise")}
                 />
                 {expertiseDetails ? (
