@@ -11,12 +11,11 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useI18n } from "../../i18n/I18nProvider";
 import { Button, Input } from "../ui";
+import { MIN_MODULES } from "@learn-anything/shared";
 import type { LearningPlanData } from "../../hooks";
 
 type Step = "topic" | "details" | "expertise" | "expertiseDetails" | "commitment" | "duration" | "done";
 type StepKey = Exclude<Step, "done">;
-
-const STEP_ORDER: StepKey[] = ["topic", "details", "expertise", "expertiseDetails", "commitment", "duration"];
 
 interface Message {
   role: "system" | "user";
@@ -122,6 +121,8 @@ export default function LearnModal({ onClose, onSubmit, initialData }: LearnModa
   const [commitmentDays, setCommitmentDays] = useState(initialData?.commitmentDays || 0);
   const [durationMonths, setDurationMonths] = useState(initialData?.durationMonths || 0);
 
+  const pendingEdit = useRef<StepKey | null>(null);
+
   useEffect(() => {
     setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 100);
   }, [messages]);
@@ -142,27 +143,60 @@ export default function LearnModal({ onClose, onSubmit, initialData }: LearnModa
     setInputValue("");
   }
 
+  interface RebuildOverrides {
+    topic?: string;
+    details?: string;
+    expertise?: string;
+    expertiseDetails?: string;
+    commitmentDays?: number;
+    durationMonths?: number;
+  }
+
+  function rebuildMessagesAndFinish(overrides: RebuildOverrides = {}) {
+    const t_ = overrides.topic ?? topic;
+    const d_ = overrides.details ?? details;
+    const e_ = overrides.expertise ?? expertise;
+    const ed_ = overrides.expertiseDetails ?? expertiseDetails;
+    const cd_ = overrides.commitmentDays ?? commitmentDays;
+    const dm_ = overrides.durationMonths ?? durationMonths;
+
+    const rebuilt: Message[] = [
+      { role: "system", text: l.questionTopic || "What do you want to learn?" },
+      { role: "user", text: t_ },
+      { role: "system", text: l.questionDetails || "Tell me more about your learning goals." },
+      { role: "user", text: d_ },
+      { role: "system", text: l.questionExpertise || "What's your current expertise level?" },
+      { role: "user", text: translateExpertise(e_) },
+      { role: "system", text: l.questionExpertiseDetails || "Tell me more about your current level (optional)." },
+      { role: "user", text: ed_ || (l.skipped || "(skipped)") },
+      { role: "system", text: l.questionCommitment || "How often can you dedicate time?" },
+      { role: "user", text: commitmentOptions.find((o) => o.days === cd_)?.label || "" },
+      { role: "system", text: l.questionDuration || "How long do you want this to take?" },
+      { role: "user", text: durationOptions.find((o) => o.months === dm_)?.label || "" },
+      { role: "system", text: l.summaryInstruction || "Here's a summary. Click any to edit." },
+    ];
+
+    stepMessageIndex.current = {
+      topic: 0,
+      details: 2,
+      expertise: 4,
+      expertiseDetails: 6,
+      commitment: 8,
+      duration: 10,
+    };
+
+    setMessages(rebuilt);
+    setStep("done");
+    setInputValue("");
+    pendingEdit.current = null;
+  }
+
   function handleEditStep(targetStep: StepKey) {
     const msgIndex = stepMessageIndex.current[targetStep];
     if (msgIndex === undefined) return;
 
+    pendingEdit.current = targetStep;
     setMessages((prev) => prev.slice(0, msgIndex + 1));
-
-    const targetIndex = STEP_ORDER.indexOf(targetStep);
-    const stepsToReset = STEP_ORDER.slice(targetIndex);
-    for (const s of stepsToReset) {
-      switch (s) {
-        case "topic": setTopic(""); break;
-        case "details": setDetails(""); break;
-        case "expertise": setExpertise(""); break;
-        case "expertiseDetails": setExpertiseDetails(""); break;
-        case "commitment": setCommitmentDays(0); break;
-        case "duration": setDurationMonths(0); break;
-      }
-      if (s !== targetStep) {
-        delete stepMessageIndex.current[s];
-      }
-    }
 
     if (targetStep === "topic") setInputValue(topic);
     else if (targetStep === "details") setInputValue(details);
@@ -174,9 +208,14 @@ export default function LearnModal({ onClose, onSubmit, initialData }: LearnModa
 
   function handleTopicSubmit() {
     if (!inputValue.trim()) return;
-    setTopic(inputValue.trim());
+    const val = inputValue.trim();
+    setTopic(val);
+    if (pendingEdit.current === "topic") {
+      rebuildMessagesAndFinish({ topic: val });
+      return;
+    }
     addMessages(
-      inputValue.trim(),
+      val,
       l.questionDetails || "Tell me more about your learning goals for this topic.",
       "details"
     );
@@ -184,9 +223,14 @@ export default function LearnModal({ onClose, onSubmit, initialData }: LearnModa
 
   function handleDetailsSubmit() {
     if (!inputValue.trim()) return;
-    setDetails(inputValue.trim());
+    const val = inputValue.trim();
+    setDetails(val);
+    if (pendingEdit.current === "details") {
+      rebuildMessagesAndFinish({ details: val });
+      return;
+    }
     addMessages(
-      inputValue.trim(),
+      val,
       l.questionExpertise || "What's your current expertise level?",
       "expertise"
     );
@@ -194,6 +238,10 @@ export default function LearnModal({ onClose, onSubmit, initialData }: LearnModa
 
   function handleExpertiseSelect(level: string) {
     setExpertise(level);
+    if (pendingEdit.current === "expertise") {
+      rebuildMessagesAndFinish({ expertise: level });
+      return;
+    }
     addMessages(
       translateExpertise(level),
       l.questionExpertiseDetails || "Tell me more about your current level (optional).",
@@ -204,6 +252,10 @@ export default function LearnModal({ onClose, onSubmit, initialData }: LearnModa
   function handleExpertiseDetailsSubmit() {
     const val = inputValue.trim();
     setExpertiseDetails(val);
+    if (pendingEdit.current === "expertiseDetails") {
+      rebuildMessagesAndFinish({ expertiseDetails: val });
+      return;
+    }
     addMessages(
       val || (l.skipped || "(skipped)"),
       l.questionCommitment || "How often can you dedicate time?",
@@ -213,6 +265,24 @@ export default function LearnModal({ onClose, onSubmit, initialData }: LearnModa
 
   function handleCommitmentSelect(days: number, label: string) {
     setCommitmentDays(days);
+    if (pendingEdit.current === "commitment") {
+      const totalModules = Math.floor((durationMonths * 30) / days);
+      if (totalModules < MIN_MODULES) {
+        const errorMsg = (l.minModulesError || "That combination only gives {steps} step(s), but we need at least {min}.")
+          .replace("{steps}", String(totalModules))
+          .replace("{min}", String(MIN_MODULES));
+        setMessages((prev) => [...prev, { role: "user", text: label }, { role: "system", text: errorMsg }]);
+        setCommitmentDays(0);
+        setDurationMonths(0);
+        delete stepMessageIndex.current.commitment;
+        delete stepMessageIndex.current.duration;
+        pendingEdit.current = null;
+        setStep("commitment");
+        return;
+      }
+      rebuildMessagesAndFinish({ commitmentDays: days });
+      return;
+    }
     addMessages(
       label,
       l.questionDuration || "How long do you want this to take?",
@@ -221,7 +291,26 @@ export default function LearnModal({ onClose, onSubmit, initialData }: LearnModa
   }
 
   function handleDurationSelect(months: number, label: string) {
+    const currentCommitmentDays = commitmentDays;
+    const totalModules = Math.floor((months * 30) / currentCommitmentDays);
+    if (totalModules < MIN_MODULES) {
+      const errorMsg = (l.minModulesError || "That combination only gives {steps} step(s), but we need at least {min}.")
+        .replace("{steps}", String(totalModules))
+        .replace("{min}", String(MIN_MODULES));
+      setMessages((prev) => [...prev, { role: "user", text: label }, { role: "system", text: errorMsg }]);
+      setCommitmentDays(0);
+      setDurationMonths(0);
+      delete stepMessageIndex.current.commitment;
+      delete stepMessageIndex.current.duration;
+      pendingEdit.current = null;
+      setStep("commitment");
+      return;
+    }
     setDurationMonths(months);
+    if (pendingEdit.current === "duration") {
+      rebuildMessagesAndFinish({ durationMonths: months });
+      return;
+    }
     addMessages(
       label,
       l.summaryInstruction || "All set! Review your answers below — click any to edit.",
