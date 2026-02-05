@@ -1,0 +1,51 @@
+{
+  "dashboard": {
+    "heading": "Was möchtest du heute lernen?",
+    "subheading": "Deine aktiven Lernpfade. Mach dort weiter, wo du aufgehört hast.",
+    "browsePaths": "Lernpfade durchsuchen",
+    "errorBanner": "Wir haben gerade Probleme. Einige Funktionen funktionieren möglicherweise nicht richtig.",
+    "learnSomethingNew": "Etwas Neues lernen",
+    "addNewTopic": "Neues Thema hinzufügen",
+    "activeStep": "Aktiver Schritt",
+    "noActiveSteps": "Keine aktiven Schritte. Starte einen Lernpfad oder schreibe dich ein, um loszulegen.",
+    "previousProject": "Vorheriges Projekt",
+    "nextProject": "Nächstes Projekt",
+    "carouselLabel": "Karussell der aktiven Schritte",
+    "goToProject": "Zu {name} gehen",
+    "markComplete": "Schritt als abgeschlossen markieren",
+    "carouselIndicators": "Karussell-Indikatoren",
+    "loadingProcesses": "Prozesse werden geladen...",
+    "running": "LÄUFT",
+    "modulesLoaded": "Module geladen",
+    "loadingConfig": "Konfiguration wird geladen...",
+    "activeProcessCount": "{count} aktive(r) Prozess(e) gefunden",
+    "processIdPrefix": "PID:"
+  },
+  "header": {
+    "title": "Learn Anything",
+    "profile": "Profil",
+    "settings": "Einstellungen",
+    "logout": "Abmelden",
+    "menuLabel": "MENÜ"
+  },
+  "upcoming": {
+    "title": "Anstehende Projekte",
+    "overdue": "Überfällig —",
+    "due": "Fällig",
+    "noDueDate": "Kein Fälligkeitsdatum",
+    "showMore": "Mehr anzeigen"
+  },
+  "tips": {
+    "dismissTip": "Tipp ausblenden",
+    "themeMessage": "Wusstest du, dass du dein Design anpassen kannst? Probiere Weltraum, Schule, Fitnessstudio oder 90er Internet.",
+    "themeCta": "Design ändern",
+    "personalityMessage": "Möchtest du von einem Piraten unterrichtet werden? Passe den KI-Ton für ein einzigartiges Lernerlebnis an.",
+    "personalityCta": "Ton wählen",
+    "browseMessage": "Entdecke Lernpfade der Community und starte heute eine neue Lernreise.",
+    "browseCta": "Pfade durchsuchen",
+    "profileMessage": "Richte dein Profil mit Anzeigename, Benutzername und Avatar ein, um dein Erlebnis zu personalisieren.",
+    "profileCta": "Profil bearbeiten",
+    "apiKeyMessage": "Füge deinen eigenen Gemini API-Schlüssel hinzu, um die KI-gestützte Kurserstellung freizuschalten.",
+    "apiKeyCta": "API-Schlüssel hinzufügen"
+  }
+}

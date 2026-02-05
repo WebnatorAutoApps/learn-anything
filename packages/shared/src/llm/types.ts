@@ -4,6 +4,8 @@ export interface LearningRequest {
   expertise_level: string;
   expertise_details: string;
   number_of_modules: number;
+  commitment_interval_days: number;
+  duration_months: number;
   tone?: string | null;
   locale?: string | null;
 }

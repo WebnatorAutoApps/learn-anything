@@ -1,0 +1,70 @@
+{
+  "common": {
+    "save": "Salva",
+    "saving": "Salvataggio...",
+    "cancel": "Annulla",
+    "close": "Chiudi",
+    "loading": "Caricamento...",
+    "retry": "Riprova",
+    "retrying": "Nuovo tentativo...",
+    "back": "Indietro",
+    "steps": "passi",
+    "step": "Passo",
+    "projects": "progetti",
+    "project": "Progetto",
+    "or": "o",
+    "remaining": "rimanenti",
+    "goToDashboard": "Vai alla Dashboard",
+    "confirm": "Conferma",
+    "send": "Invia",
+    "active": "ATTIVO",
+    "escButton": "ESC"
+  },
+  "errors": {
+    "somethingWentWrong": "Qualcosa è andato storto",
+    "unexpectedError": "Si è verificato un errore imprevisto. Per favore riprova.",
+    "tryAgain": "Riprova",
+    "goBack": "Torna Indietro",
+    "retrySubmission": "Riprova",
+    "serviceOverloaded": "Il servizio IA è temporaneamente sovraccarico. Per favore riprova tra qualche istante.",
+    "rateLimited": "Troppe richieste. Per favore attendi un momento prima di riprovare.",
+    "serviceUnavailable": "Il servizio è temporaneamente non disponibile. Per favore riprova tra poco.",
+    "requestTimeout": "La richiesta ha impiegato troppo tempo. Per favore riprova.",
+    "forbidden": "Accesso negato. Per favore controlla la tua chiave API e riprova.",
+    "generic": "Qualcosa è andato storto. Per favore riprova.",
+    "errorPrefix": "ERRORE:"
+  },
+  "loading": {
+    "msg1": "Consultazione dei migliori esperti in materia…",
+    "msg2": "Costruzione del percorso che ti porterà alle stelle…",
+    "msg3": "Preparazione della ricetta di apprendimento perfetta…",
+    "msg4": "Creazione di progetti su misura solo per te…",
+    "msg5": "Mappatura del tuo viaggio di conoscenza…",
+    "msg6": "Raccolta delle migliori risorse dal web…",
+    "msg7": "Progettazione di sfide per affinare le tue competenze…",
+    "msg8": "Regolazione fine della curva di difficoltà…",
+    "msg9": "Collegamento dei punti tra teoria e pratica…",
+    "msg10": "Assemblaggio di una roadmap che apprezzerai davvero…",
+    "msg11": "Insegnamento all'IA per insegnarti meglio…",
+    "msg12": "Tracciamento del tuo percorso verso la padronanza…",
+    "msg13": "Calibrazione dei passi al tuo livello…",
+    "msg14": "Trasformazione di grandi idee in piccoli passi…",
+    "extendedWait": "Ci stiamo ancora lavorando, un attimo…"
+  },
+  "dialogs": {
+    "confirmLogout": "Conferma Uscita",
+    "logoutMessage": "Sei sicuro di voler uscire?",
+    "loggingOut": "Uscita in corso...",
+    "apiKeyRequired": "Chiave API Necessaria",
+    "apiKeyWarning": "Non hai una chiave API configurata. Non saremo in grado di creare un percorso di apprendimento per te. Vai nelle Impostazioni per aggiungerne una.",
+    "goToSettings": "Vai alle Impostazioni"
+  },
+  "progress": {
+    "journeyBegins": "Il tuo viaggio inizia ora. Fai il primo passo!",
+    "almostThere": "Ci sei quasi! Il traguardo è in vista.",
+    "halfway": "A metà strada! Mantieni il ritmo.",
+    "greatProgress": "Ottimi progressi! Stai costruendo competenze reali.",
+    "firstStep": "Primo passo completato! Sei sulla strada giusta.",
+    "keepGoing": "Continua così! Ogni passo conta."
+  }
+}

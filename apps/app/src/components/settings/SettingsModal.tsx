@@ -32,9 +32,9 @@ export default function SettingsModal({
   }, [visible, initialTab]);
 
   const tabs: { key: SettingsTab; label: string }[] = [
-    { key: "general", label: "GENERAL" },
-    { key: "api-keys", label: "API_KEYS" },
-    { key: "customization", label: "CUSTOM" },
+    { key: "general", label: s.tabGeneral || "GENERAL" },
+    { key: "api-keys", label: s.tabApiKeys || "API_KEYS" },
+    { key: "customization", label: s.tabCustomization || "CUSTOM" },
   ];
 
   return (
@@ -51,7 +51,7 @@ export default function SettingsModal({
             {">"} {s.title || "SETTINGS"}
           </Text>
           <Pressable onPress={onClose} className="py-1">
-            <Text className="font-mono text-base text-theme-muted">[ESC]</Text>
+            <Text className="font-mono text-base text-theme-muted">[{(t.common as Record<string, string>).escButton || "ESC"}]</Text>
           </Pressable>
         </View>
 
@@ -81,13 +81,13 @@ export default function SettingsModal({
           {isLoading ? (
             <View className="py-12 items-center">
               <Text className="font-mono text-base text-theme-muted animate-blink">
-                Loading configuration...
+                {s.loadingSettings || "Loading configuration..."}
               </Text>
             </View>
           ) : isError ? (
             <View className="py-12 items-center">
               <Text className="font-mono text-base text-theme-error">
-                ERROR: {s.loadError || "Failed to load settings."}
+                {(t.errors as Record<string, string>).errorPrefix || "ERROR:"} {s.loadError || "Failed to load settings."}
               </Text>
             </View>
           ) : (

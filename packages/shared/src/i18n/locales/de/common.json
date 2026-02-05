@@ -1,0 +1,70 @@
+{
+  "common": {
+    "save": "Speichern",
+    "saving": "Speichern...",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "loading": "Laden...",
+    "retry": "Erneut versuchen",
+    "retrying": "Erneuter Versuch...",
+    "back": "Zurück",
+    "steps": "Schritte",
+    "step": "Schritt",
+    "projects": "Projekte",
+    "project": "Projekt",
+    "or": "oder",
+    "remaining": "verbleibend",
+    "goToDashboard": "Zum Dashboard",
+    "confirm": "Bestätigen",
+    "send": "Senden",
+    "active": "AKTIV",
+    "escButton": "ESC"
+  },
+  "errors": {
+    "somethingWentWrong": "Etwas ist schiefgelaufen",
+    "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.",
+    "tryAgain": "Erneut versuchen",
+    "goBack": "Zurück",
+    "retrySubmission": "Erneut versuchen",
+    "serviceOverloaded": "Der KI-Dienst ist vorübergehend überlastet. Bitte versuche es in wenigen Augenblicken erneut.",
+    "rateLimited": "Zu viele Anfragen. Bitte warte einen Moment, bevor du es erneut versuchst.",
+    "serviceUnavailable": "Der Dienst ist vorübergehend nicht verfügbar. Bitte versuche es in Kürze erneut.",
+    "requestTimeout": "Die Anfrage hat zu lange gedauert. Bitte versuche es erneut.",
+    "forbidden": "Zugriff verweigert. Bitte überprüfe deinen API-Schlüssel und versuche es erneut.",
+    "generic": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
+    "errorPrefix": "FEHLER:"
+  },
+  "loading": {
+    "msg1": "Beratung mit den besten Experten zum Thema…",
+    "msg2": "Aufbau des Weges, der dich zu den Sternen führt…",
+    "msg3": "Mischung des perfekten Lernrezepts…",
+    "msg4": "Erstellung von Projekten in kleinen Häppchen nur für dich…",
+    "msg5": "Kartierung deiner Wissensreise…",
+    "msg6": "Sammlung der besten Ressourcen aus dem Web…",
+    "msg7": "Gestaltung von Herausforderungen, um deine Fähigkeiten zu schärfen…",
+    "msg8": "Feinabstimmung der Schwierigkeitskurve…",
+    "msg9": "Verbindung der Punkte zwischen Theorie und Praxis…",
+    "msg10": "Zusammenstellung einer Roadmap, die dir wirklich Spaß macht…",
+    "msg11": "Der KI beibringen, dich zu unterrichten…",
+    "msg12": "Planung deines Weges zur Meisterschaft…",
+    "msg13": "Kalibrierung der Schritte auf dein Niveau…",
+    "msg14": "Große Ideen in kleine Schritte verwandeln…",
+    "extendedWait": "Wir arbeiten noch daran, bitte warte…"
+  },
+  "dialogs": {
+    "confirmLogout": "Abmeldung bestätigen",
+    "logoutMessage": "Bist du sicher, dass du dich abmelden möchtest?",
+    "loggingOut": "Abmeldung läuft...",
+    "apiKeyRequired": "API-Schlüssel erforderlich",
+    "apiKeyWarning": "Du hast keinen API-Schlüssel konfiguriert. Wir können keinen Lernpfad für dich erstellen. Bitte gehe zu den Einstellungen, um einen hinzuzufügen.",
+    "goToSettings": "Zu den Einstellungen"
+  },
+  "progress": {
+    "journeyBegins": "Deine Reise beginnt jetzt. Mach den ersten Schritt!",
+    "almostThere": "Fast geschafft! Die Ziellinie ist in Sicht.",
+    "halfway": "Halbzeit! Bleib am Ball.",
+    "greatProgress": "Toller Fortschritt! Du baust echte Fähigkeiten auf.",
+    "firstStep": "Erster Schritt geschafft! Du bist auf dem Weg.",
+    "keepGoing": "Weiter so! Jeder Schritt zählt."
+  }
+}

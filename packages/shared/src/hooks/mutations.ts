@@ -28,6 +28,8 @@ export function useCreateCourse() {
         currentExpertise: string;
         expertiseDetail: string;
         totalModules: number;
+        commitmentDays: number;
+        durationMonths: number;
       };
       apiKey: string;
       tone?: string | null;
@@ -45,6 +47,8 @@ export function useCreateCourse() {
         expertise_level: planData.currentExpertise,
         expertise_details: planData.expertiseDetail || "",
         number_of_modules: planData.totalModules,
+        commitment_interval_days: planData.commitmentDays,
+        duration_months: planData.durationMonths,
         tone,
       };
 
@@ -161,6 +165,8 @@ export function useGenerateCourse() {
         currentExpertise: string;
         expertiseDetail: string;
         totalModules: number;
+        commitmentDays: number;
+        durationMonths: number;
       };
       apiKey: string;
       tone?: string | null;
@@ -172,6 +178,8 @@ export function useGenerateCourse() {
         expertise_level: planData.currentExpertise,
         expertise_details: planData.expertiseDetail || "",
         number_of_modules: planData.totalModules,
+        commitment_interval_days: planData.commitmentDays,
+        duration_months: planData.durationMonths,
         tone,
         locale,
       };

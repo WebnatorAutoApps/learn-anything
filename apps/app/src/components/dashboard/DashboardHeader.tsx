@@ -23,6 +23,7 @@ export default function DashboardHeader({
 }: DashboardHeaderProps) {
   const { t } = useI18n();
   const d = t.dashboard as Record<string, string>;
+  const h = t.header as Record<string, string>;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { width } = useWindowDimensions();
   const isLargeScreen = width >= 640;
@@ -67,7 +68,7 @@ export default function DashboardHeader({
             <View className="absolute right-0 top-10 w-52 bg-theme-bg border border-theme-primary/30 z-50">
               <View className="px-3 py-1 border-b border-theme-primary/20 bg-theme-surface">
                 <Text className="font-mono text-sm text-theme-muted">
-                  -- MENU --
+                  -- {h.menuLabel || "MENU"} --
                 </Text>
               </View>
               <Pressable
@@ -89,7 +90,7 @@ export default function DashboardHeader({
                 className="px-3 py-2 border-b border-theme-border"
               >
                 <Text className="font-mono text-base text-theme-secondary">
-                  {">"} Settings
+                  {">"} {h.settings || "Settings"}
                 </Text>
               </Pressable>
               <Pressable
@@ -100,7 +101,7 @@ export default function DashboardHeader({
                 className="px-3 py-2"
               >
                 <Text className="font-mono text-base text-theme-error">
-                  {">"} Logout
+                  {">"} {h.logout || "Logout"}
                 </Text>
               </Pressable>
             </View>

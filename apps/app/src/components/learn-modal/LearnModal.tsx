@@ -11,11 +11,12 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useI18n } from "../../i18n/I18nProvider";
 import { Button, Input } from "../ui";
-import { TextArea } from "../ui/Input";
 import type { LearningPlanData } from "../../hooks";
-import { MIN_MODULES } from "@learn-anything/shared";
 
 type Step = "topic" | "details" | "expertise" | "expertiseDetails" | "commitment" | "duration" | "done";
+type StepKey = Exclude<Step, "done">;
+
+const STEP_ORDER: StepKey[] = ["topic", "details", "expertise", "expertiseDetails", "commitment", "duration"];
 
 interface Message {
   role: "system" | "user";
@@ -42,87 +43,130 @@ const DURATION_OPTIONS = [
 ];
 
 interface LearnModalProps {
-  visible: boolean;
   onClose: () => void;
   onSubmit: (data: LearningPlanData) => void;
   initialData?: LearningPlanData | null;
 }
 
-export default function LearnModal({ visible, onClose, onSubmit, initialData }: LearnModalProps) {
+export default function LearnModal({ onClose, onSubmit, initialData }: LearnModalProps) {
   const { t } = useI18n();
   const l = t.learn as Record<string, string>;
+  const c = t.common as Record<string, string>;
   const insets = useSafeAreaInsets();
   const scrollRef = useRef<ScrollView>(null);
 
-  const [step, setStep] = useState<Step>("topic");
-  const [messages, setMessages] = useState<Message[]>([
-    { role: "system", text: l.whatToLearn || "What do you want to learn?" },
-  ]);
+  // Translated option labels
+  const expertiseLevels = [
+    l.expertiseNoClue || "No clue",
+    l.expertiseBeginner || "Beginner",
+    l.expertiseIntermediate || "Intermediate",
+    l.expertiseAdvanced || "Advanced",
+    l.expertiseExpert || "Expert",
+  ];
+
+  const commitmentOptions = [
+    { label: l.commitDaily || "Daily", days: 1 },
+    { label: l.commitEvery3Days || "Every 3 days", days: 3 },
+    { label: l.commitWeekly || "Weekly", days: 7 },
+    { label: l.commitBiWeekly || "Bi-weekly", days: 14 },
+    { label: l.commitMonthly || "Monthly", days: 30 },
+  ];
+
+  const durationOptions = [
+    { label: l.month || "1 month", months: 1 },
+    { label: `2 ${l.months || "months"}`, months: 2 },
+    { label: `3 ${l.months || "months"}`, months: 3 },
+    { label: `6 ${l.months || "months"}`, months: 6 },
+    { label: `9 ${l.months || "months"}`, months: 9 },
+    { label: `12 ${l.months || "months"}`, months: 12 },
+  ];
+
+  // Initialize state from initialData on mount (component is conditionally rendered)
+  const stepMessageIndex = useRef<Partial<Record<StepKey, number>>>(
+    initialData
+      ? { topic: 0, details: 2, expertise: 4, expertiseDetails: 6, commitment: 8, duration: 10 }
+      : { topic: 0 }
+  );
+
+  const [step, setStep] = useState<Step>(initialData ? "done" : "topic");
+  const [messages, setMessages] = useState<Message[]>(() => {
+    if (initialData) {
+      return [
+        { role: "system", text: l.questionTopic || "What do you want to learn?" },
+        { role: "user", text: initialData.whatToLearn },
+        { role: "system", text: l.questionDetails || "Tell me more about your learning goals." },
+        { role: "user", text: initialData.openDetail },
+        { role: "system", text: l.questionExpertise || "What's your current expertise level?" },
+        { role: "user", text: initialData.currentExpertise },
+        { role: "system", text: l.questionExpertiseDetails || "Tell me more about your current level (optional)." },
+        { role: "user", text: initialData.expertiseDetail || (l.skipped || "(skipped)") },
+        { role: "system", text: l.questionCommitment || "How often can you dedicate time?" },
+        { role: "user", text: commitmentOptions.find((o) => o.days === initialData.commitmentDays)?.label || "" },
+        { role: "system", text: l.questionDuration || "How long do you want this to take?" },
+        { role: "user", text: durationOptions.find((o) => o.months === initialData.durationMonths)?.label || "" },
+        { role: "system", text: l.summaryInstruction || "Here's a summary. Click any to edit." },
+      ];
+    }
+    return [{ role: "system", text: l.questionTopic || "What do you want to learn?" }];
+  });
   const [inputValue, setInputValue] = useState("");
 
   // Form values
-  const [topic, setTopic] = useState("");
-  const [details, setDetails] = useState("");
-  const [expertise, setExpertise] = useState("");
-  const [expertiseDetails, setExpertiseDetails] = useState("");
-  const [commitmentDays, setCommitmentDays] = useState(0);
-  const [durationMonths, setDurationMonths] = useState(0);
-
-  useEffect(() => {
-    if (visible) {
-      if (initialData) {
-        setTopic(initialData.whatToLearn);
-        setDetails(initialData.openDetail);
-        setExpertise(initialData.currentExpertise);
-        setExpertiseDetails(initialData.expertiseDetail);
-        setCommitmentDays(initialData.commitmentDays);
-        setDurationMonths(initialData.durationMonths);
-        setInputValue("");
-        const summaryMessages: Message[] = [
-          { role: "system", text: l.whatToLearn || "What do you want to learn?" },
-          { role: "user", text: initialData.whatToLearn },
-          { role: "system", text: l.tellMeMore || "Tell me more about your learning goals for this topic." },
-          { role: "user", text: initialData.openDetail },
-          { role: "system", text: l.expertiseLevel || "What's your current expertise level?" },
-          { role: "user", text: initialData.currentExpertise },
-          { role: "system", text: l.expertiseMoreDetail || "Tell me more about your current level (optional)." },
-          { role: "user", text: initialData.expertiseDetail || "(skipped)" },
-          { role: "system", text: l.commitmentFrequency || "How often can you dedicate time?" },
-          { role: "user", text: COMMITMENT_OPTIONS.find((o) => o.days === initialData.commitmentDays)?.label || "" },
-          { role: "system", text: l.howLong || "How long do you want this to take?" },
-          { role: "user", text: DURATION_OPTIONS.find((o) => o.months === initialData.durationMonths)?.label || "" },
-          { role: "system", text: l.reviewSummary || "Here's a summary of your learning plan. Ready to begin?" },
-        ];
-        setMessages(summaryMessages);
-        setStep("done");
-      } else {
-        setStep("topic");
-        setMessages([
-          { role: "system", text: l.whatToLearn || "What do you want to learn?" },
-        ]);
-        setInputValue("");
-        setTopic("");
-        setDetails("");
-        setExpertise("");
-        setExpertiseDetails("");
-        setCommitmentDays(0);
-        setDurationMonths(0);
-      }
-    }
-  }, [visible]);
+  const [topic, setTopic] = useState(initialData?.whatToLearn || "");
+  const [details, setDetails] = useState(initialData?.openDetail || "");
+  const [expertise, setExpertise] = useState(initialData?.currentExpertise || "");
+  const [expertiseDetails, setExpertiseDetails] = useState(initialData?.expertiseDetail || "");
+  const [commitmentDays, setCommitmentDays] = useState(initialData?.commitmentDays || 0);
+  const [durationMonths, setDurationMonths] = useState(initialData?.durationMonths || 0);
 
   useEffect(() => {
     setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 100);
   }, [messages]);
 
   function addMessages(userText: string, systemText: string, nextStep: Step) {
-    setMessages((prev) => [
-      ...prev,
-      { role: "user", text: userText },
-      { role: "system", text: systemText },
-    ]);
+    setMessages((prev) => {
+      const newMessages: Message[] = [
+        ...prev,
+        { role: "user", text: userText },
+        { role: "system", text: systemText },
+      ];
+      if (nextStep !== "done") {
+        stepMessageIndex.current[nextStep as StepKey] = newMessages.length - 1;
+      }
+      return newMessages;
+    });
     setStep(nextStep);
     setInputValue("");
+  }
+
+  function handleEditStep(targetStep: StepKey) {
+    const msgIndex = stepMessageIndex.current[targetStep];
+    if (msgIndex === undefined) return;
+
+    setMessages((prev) => prev.slice(0, msgIndex + 1));
+
+    const targetIndex = STEP_ORDER.indexOf(targetStep);
+    const stepsToReset = STEP_ORDER.slice(targetIndex);
+    for (const s of stepsToReset) {
+      switch (s) {
+        case "topic": setTopic(""); break;
+        case "details": setDetails(""); break;
+        case "expertise": setExpertise(""); break;
+        case "expertiseDetails": setExpertiseDetails(""); break;
+        case "commitment": setCommitmentDays(0); break;
+        case "duration": setDurationMonths(0); break;
+      }
+      if (s !== targetStep) {
+        delete stepMessageIndex.current[s];
+      }
+    }
+
+    if (targetStep === "topic") setInputValue(topic);
+    else if (targetStep === "details") setInputValue(details);
+    else if (targetStep === "expertiseDetails") setInputValue(expertiseDetails);
+    else setInputValue("");
+
+    setStep(targetStep);
   }
 
   function handleTopicSubmit() {
@@ -130,7 +174,7 @@ export default function LearnModal({ visible, onClose, onSubmit, initialData }: 
     setTopic(inputValue.trim());
     addMessages(
       inputValue.trim(),
-      l.tellMeMore || "Tell me more about your learning goals for this topic.",
+      l.questionDetails || "Tell me more about your learning goals for this topic.",
       "details"
     );
   }
@@ -140,7 +184,7 @@ export default function LearnModal({ visible, onClose, onSubmit, initialData }: 
     setDetails(inputValue.trim());
     addMessages(
       inputValue.trim(),
-      l.expertiseLevel || "What's your current expertise level?",
+      l.questionExpertise || "What's your current expertise level?",
       "expertise"
     );
   }
@@ -149,7 +193,7 @@ export default function LearnModal({ visible, onClose, onSubmit, initialData }: 
     setExpertise(level);
     addMessages(
       level,
-      l.expertiseMoreDetail || "Tell me more about your current level (optional).",
+      l.questionExpertiseDetails || "Tell me more about your current level (optional).",
       "expertiseDetails"
     );
   }
@@ -158,8 +202,8 @@ export default function LearnModal({ visible, onClose, onSubmit, initialData }: 
     const val = inputValue.trim();
     setExpertiseDetails(val);
     addMessages(
-      val || "(skipped)",
-      l.commitmentFrequency || "How often can you dedicate time?",
+      val || (l.skipped || "(skipped)"),
+      l.questionCommitment || "How often can you dedicate time?",
       "commitment"
     );
   }
@@ -168,18 +212,16 @@ export default function LearnModal({ visible, onClose, onSubmit, initialData }: 
     setCommitmentDays(days);
     addMessages(
       label,
-      l.howLong || "How long do you want this to take?",
+      l.questionDuration || "How long do you want this to take?",
       "duration"
     );
   }
 
   function handleDurationSelect(months: number, label: string) {
     setDurationMonths(months);
-    const totalDays = months * 30;
-    const totalModules = Math.max(1, Math.floor(totalDays / commitmentDays));
     addMessages(
       label,
-      l.reviewSummary || "Here's a summary of your learning plan. Ready to begin?",
+      l.summaryInstruction || "All set! Review your answers below — click any to edit.",
       "done"
     );
   }
@@ -200,7 +242,7 @@ export default function LearnModal({ visible, onClose, onSubmit, initialData }: 
 
   return (
     <RNModal
-      visible={visible}
+      visible
       transparent
       animationType="slide"
       onRequestClose={onClose}
@@ -213,7 +255,7 @@ export default function LearnModal({ visible, onClose, onSubmit, initialData }: 
           {/* Header */}
           <View className="flex-row items-center justify-between px-4 py-2 border-b border-theme-primary/30 bg-theme-surface">
           <Text className="font-mono text-base font-bold text-theme-primary tracking-wider">
-            {">"} {l.learnSomethingNew || "NEW_PROCESS"}
+            {">"} {l.title || "NEW_PROCESS"}
           </Text>
           <Pressable onPress={onClose} className="py-1">
             <Text className="font-mono text-base text-theme-muted">[ESC]</Text>
@@ -254,10 +296,10 @@ export default function LearnModal({ visible, onClose, onSubmit, initialData }: 
           {/* Expertise Level Buttons */}
           {step === "expertise" && (
             <View className="gap-2 mt-2 mb-4">
-              {EXPERTISE_LEVELS.map((level, index) => (
+              {expertiseLevels.map((level, index) => (
                 <Pressable
                   key={level}
-                  onPress={() => handleExpertiseSelect(level)}
+                  onPress={() => handleExpertiseSelect(EXPERTISE_LEVELS[index])}
                   className="border border-theme-primary/20 bg-theme-surface px-3 py-2"
                 >
                   <Text className="font-mono text-sm text-theme-secondary">
@@ -271,7 +313,7 @@ export default function LearnModal({ visible, onClose, onSubmit, initialData }: 
           {/* Commitment Buttons */}
           {step === "commitment" && (
             <View className="gap-2 mt-2 mb-4">
-              {COMMITMENT_OPTIONS.map((opt, index) => (
+              {commitmentOptions.map((opt, index) => (
                 <Pressable
                   key={opt.days}
                   onPress={() => handleCommitmentSelect(opt.days, opt.label)}
@@ -288,7 +330,7 @@ export default function LearnModal({ visible, onClose, onSubmit, initialData }: 
           {/* Duration Buttons */}
           {step === "duration" && (
             <View className="gap-2 mt-2 mb-4">
-              {DURATION_OPTIONS.map((opt, index) => (
+              {durationOptions.map((opt, index) => (
                 <Pressable
                   key={opt.months}
                   onPress={() => handleDurationSelect(opt.months, opt.label)}
@@ -306,27 +348,47 @@ export default function LearnModal({ visible, onClose, onSubmit, initialData }: 
           {step === "done" && (
             <View className="mt-4 border border-theme-primary/20 bg-theme-surface p-3 mb-4">
               <Text className="font-mono text-sm text-theme-muted uppercase tracking-wider mb-3">
-                {">"} SUMMARY
+                {">"} {l.summary || "SUMMARY"}
               </Text>
               <View className="gap-1">
-                <SummaryRow label="TOPIC" value={topic} />
-                <SummaryRow label="DETAILS" value={details} />
-                <SummaryRow label="LEVEL" value={expertise} />
-                {expertiseDetails && (
-                  <SummaryRow label="BACKGROUND" value={expertiseDetails} />
-                )}
                 <SummaryRow
-                  label="FREQUENCY"
-                  value={COMMITMENT_OPTIONS.find((o) => o.days === commitmentDays)?.label || ""}
+                  label={l.topic || "TOPIC"}
+                  value={topic}
+                  onPress={() => handleEditStep("topic")}
                 />
                 <SummaryRow
-                  label="DURATION"
-                  value={DURATION_OPTIONS.find((o) => o.months === durationMonths)?.label || ""}
+                  label={l.details || "DETAILS"}
+                  value={details}
+                  onPress={() => handleEditStep("details")}
                 />
                 <SummaryRow
-                  label="MODULES"
-                  value={String(Math.max(1, Math.floor((durationMonths * 30) / commitmentDays)))}
+                  label={l.expertise || "LEVEL"}
+                  value={expertise}
+                  onPress={() => handleEditStep("expertise")}
                 />
+                {expertiseDetails ? (
+                  <SummaryRow
+                    label={l.expertiseDetails || "BACKGROUND"}
+                    value={expertiseDetails}
+                    onPress={() => handleEditStep("expertiseDetails")}
+                  />
+                ) : null}
+                <SummaryRow
+                  label={l.commitment || "FREQUENCY"}
+                  value={commitmentOptions.find((o) => o.days === commitmentDays)?.label || ""}
+                  onPress={() => handleEditStep("commitment")}
+                />
+                <SummaryRow
+                  label={l.duration || "DURATION"}
+                  value={durationOptions.find((o) => o.months === durationMonths)?.label || ""}
+                  onPress={() => handleEditStep("duration")}
+                />
+                <View className="flex-row mt-1">
+                  <Text className="font-mono text-sm text-theme-muted w-28">MODULES:</Text>
+                  <Text className="font-mono text-sm text-theme-secondary flex-1">
+                    {String(Math.max(1, Math.floor((durationMonths * 30) / commitmentDays)))}
+                  </Text>
+                </View>
               </View>
               <View className="mt-4">
                 <Button onPress={handleSubmit}>
@@ -346,13 +408,13 @@ export default function LearnModal({ visible, onClose, onSubmit, initialData }: 
                   <Input
                     value={inputValue}
                     onChangeText={setInputValue}
-                    placeholder="Optional..."
+                    placeholder={l.expertiseDetailPlaceholder || "Optional..."}
                     returnKeyType="send"
                     onSubmitEditing={handleExpertiseDetailsSubmit}
                   />
                 </View>
                 <Button size="sm" onPress={handleExpertiseDetailsSubmit}>
-                  {inputValue.trim() ? "SEND" : "SKIP"}
+                  {inputValue.trim() ? (c.send || "SEND") : (l.skip || "SKIP")}
                 </Button>
               </>
             ) : (
@@ -363,8 +425,8 @@ export default function LearnModal({ visible, onClose, onSubmit, initialData }: 
                     onChangeText={setInputValue}
                     placeholder={
                       step === "topic"
-                        ? "e.g., Machine Learning, Piano, Spanish..."
-                        : "Tell me more..."
+                        ? (l.topicPlaceholder || "e.g., Machine Learning, Piano, Spanish...")
+                        : (l.detailsPlaceholder || "Tell me more...")
                     }
                     returnKeyType="send"
                     onSubmitEditing={
@@ -377,7 +439,7 @@ export default function LearnModal({ visible, onClose, onSubmit, initialData }: 
                   onPress={step === "topic" ? handleTopicSubmit : handleDetailsSubmit}
                   disabled={!inputValue.trim()}
                 >
-                  SEND
+                  {c.send || "SEND"}
                 </Button>
               </>
             )}
@@ -389,11 +451,14 @@ export default function LearnModal({ visible, onClose, onSubmit, initialData }: 
   );
 }
 
-function SummaryRow({ label, value }: { label: string; value: string }) {
+function SummaryRow({ label, value, onPress }: { label: string; value: string; onPress?: () => void }) {
   return (
-    <View className="flex-row">
+    <Pressable onPress={onPress} className="flex-row py-1">
       <Text className="font-mono text-sm text-theme-muted w-28">{label}:</Text>
       <Text className="font-mono text-sm text-theme-secondary flex-1">{value}</Text>
-    </View>
+      {onPress && (
+        <Text className="font-mono text-xs text-theme-primary ml-2">[edit]</Text>
+      )}
+    </Pressable>
   );
 }

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, Image, Pressable } from "react-native";
 import type { Project, SelectedProject } from "@learn-anything/shared";
 import { formatDate } from "@learn-anything/shared";
+import { useI18n } from "../../i18n/I18nProvider";
 import { Button } from "../ui";
 import ProjectCompletionForm from "./ProjectCompletionForm";
 
@@ -35,11 +36,15 @@ export default function ProjectSelectionArea({
   isSelectLoading,
   isCompleteLoading,
 }: ProjectSelectionAreaProps) {
+  const { t } = useI18n();
+  const cr = t.course as Record<string, string>;
+  const comp = t.completion as Record<string, string>;
+
   if (projects.length === 0) {
     return (
       <View className="mt-3 p-2 border border-theme-primary/10">
         <Text className="font-mono text-sm text-theme-muted">
-          {"// "}No projects available for this module.
+          {"// "}{cr.noProjects || "No projects available for this module."}
         </Text>
       </View>
     );
@@ -51,7 +56,7 @@ export default function ProjectSelectionArea({
     return (
       <View className="mt-3 border border-theme-success/40 bg-theme-success/5 p-3">
         <Text className="font-mono text-xs text-theme-success font-bold tracking-widest mb-2">
-          * ACHIEVEMENT UNLOCKED *
+          * {cr.achievementUnlocked || "ACHIEVEMENT UNLOCKED"} *
         </Text>
         {selected && (
           <Text className="font-mono text-sm text-theme-secondary mb-1">
@@ -60,7 +65,7 @@ export default function ProjectSelectionArea({
         )}
         {selectedProject.completedAt && (
           <Text className="font-mono text-xs text-theme-success/70 mb-2">
-            {"// "}Cleared {formatDate(selectedProject.completedAt.slice(0, 10))}
+            {"// "}{(cr.clearedDate || "Cleared {date}").replace("{date}", formatDate(selectedProject.completedAt.slice(0, 10)))}
           </Text>
         )}
         {selectedProject.imageUrl && (
@@ -99,7 +104,7 @@ export default function ProjectSelectionArea({
   return (
     <View className="mt-3 gap-1">
       <Text className="font-mono text-xs text-theme-muted uppercase tracking-wider mb-1">
-        {"// "}Choose a project to work on:
+        {"// "}{cr.chooseProject || "Choose a project to work on:"}
       </Text>
       {projects.map((project, i) => (
         <View
@@ -123,7 +128,7 @@ export default function ProjectSelectionArea({
             className="border border-theme-primary/30 px-2 py-1"
           >
             <Text className="font-mono text-xs text-theme-primary font-bold">
-              [SELECT]
+              [{cr.select || "SELECT"}]
             </Text>
           </Pressable>
         </View>
@@ -152,6 +157,8 @@ function SelectedProjectView({
   }) => void;
   isCompleteLoading: boolean;
 }) {
+  const { t } = useI18n();
+  const cr = t.course as Record<string, string>;
   const [showCompletionForm, setShowCompletionForm] = useState(false);
   const selected = projects.find((p) => p.id === selectedProject.projectId);
 
@@ -168,7 +175,7 @@ function SelectedProjectView({
           {selected.instructions && (
             <View className="border border-theme-primary/15 bg-theme-surface p-2 mb-2">
               <Text className="font-mono text-xs text-theme-muted uppercase tracking-wider mb-1">
-                {">"} INSTRUCTIONS
+                {">"} {cr.instructions || "INSTRUCTIONS"}
               </Text>
               <Text className="font-mono text-sm text-theme-secondary leading-relaxed">
                 {selected.instructions}
@@ -187,7 +194,7 @@ function SelectedProjectView({
         />
       ) : (
         <Button onPress={() => setShowCompletionForm(true)}>
-          DID YOU FINISH?
+          {cr.didYouFinish || "DID YOU FINISH?"}
         </Button>
       )}
     </View>

@@ -12,6 +12,7 @@ export default function CoursesScreen() {
   const { t } = useI18n();
   const c = t.common as Record<string, string>;
   const d = t.dashboard as Record<string, string>;
+  const cs = t.courses as Record<string, string>;
 
   const [filter, setFilter] = useState<StatusFilter>("all");
 
@@ -34,9 +35,9 @@ export default function CoursesScreen() {
       : loadingAll;
 
   const filters: { key: StatusFilter; label: string }[] = [
-    { key: "all", label: "ALL" },
-    { key: "started", label: "ENROLLED" },
-    { key: "not_started", label: "BROWSE" },
+    { key: "all", label: cs.all || "ALL" },
+    { key: "started", label: cs.enrolled || "ENROLLED" },
+    { key: "not_started", label: cs.browse || "BROWSE" },
   ];
 
   return (
@@ -77,19 +78,19 @@ export default function CoursesScreen() {
       {isLoading ? (
         <View className="flex-1 items-center justify-center">
           <Text className="font-mono text-base text-theme-muted animate-blink">
-            Querying database...
+            {cs.querying || "Querying database..."}
           </Text>
         </View>
       ) : courses.length === 0 ? (
         <View className="flex-1 items-center justify-center px-6">
           <Text className="font-mono text-base text-theme-muted text-center">
-            {">"} No records found.
+            {">"} {cs.noRecords || "No records found."}
           </Text>
         </View>
       ) : (
         <ScrollView className="flex-1 px-4 py-4">
           <Text className="font-mono text-sm text-theme-muted mb-3">
-            {">"} {courses.length} record{courses.length !== 1 ? "s" : ""} returned
+            {">"} {courses.length} {cs.recordsReturned || "record(s) returned"}
           </Text>
           <View className="gap-2">
             {courses.map((course, index) => (
@@ -116,6 +117,10 @@ function CourseListCard({
   index: number;
   onPress: () => void;
 }) {
+  const { t } = useI18n();
+  const c = t.common as Record<string, string>;
+  const cs = t.courses as Record<string, string>;
+
   return (
     <Pressable
       onPress={onPress}
@@ -131,14 +136,14 @@ function CourseListCard({
           </Text>
           <View className="flex-row gap-3">
             <Text className="font-mono text-theme-muted text-sm">
-              {course.total_modules} modules
+              {course.total_modules} {cs.modules || "modules"}
             </Text>
             <Text className="font-mono text-theme-muted text-sm">
-              lvl:{course.expected_skill_level}
+              {cs.levelPrefix || "lvl:"}{course.expected_skill_level}
             </Text>
             {course.isEnrolled && (
               <Text className="font-mono text-theme-primary text-sm font-bold">
-                ACTIVE
+                {c.active || "ACTIVE"}
               </Text>
             )}
           </View>

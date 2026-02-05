@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, Image, Pressable } from "react-native";
 import { useUploadCompletionImage } from "@learn-anything/shared";
+import { useI18n } from "../../i18n/I18nProvider";
 import { useImagePicker } from "../../hooks";
 import { Button, TextArea } from "../ui";
 
@@ -13,6 +14,8 @@ export default function ProjectCompletionForm({
   onComplete,
   isLoading,
 }: ProjectCompletionFormProps) {
+  const { t } = useI18n();
+  const comp = t.completion as Record<string, string>;
   const [comment, setComment] = useState("");
   const [imagePreviewUri, setImagePreviewUri] = useState<string | null>(null);
   const [imageBlob, setImageBlob] = useState<Blob | null>(null);
@@ -61,19 +64,19 @@ export default function ProjectCompletionForm({
   return (
     <View className="mt-3">
       <Text className="font-mono text-xs text-theme-muted uppercase tracking-wider mb-1">
-        {"// "}Add a note about what you learned (optional)
+        {"// "}{comp.addNote || "Add a note about what you learned (optional)"}
       </Text>
       <TextArea
         value={comment}
         onChangeText={setComment}
-        placeholder="What did you learn or build?"
+        placeholder={comp.whatDidYouLearn || "What did you learn or build?"}
         className="mb-3 min-h-[60px]"
       />
 
       {imagePreviewUri ? (
         <View className="mb-3">
           <Text className="font-mono text-xs text-theme-muted mb-1">
-            {"// "}Attached image:
+            {"// "}{comp.attachedImage || "Attached image:"}
           </Text>
           <Image
             source={{ uri: imagePreviewUri }}
@@ -81,13 +84,13 @@ export default function ProjectCompletionForm({
             resizeMode="cover"
           />
           <Pressable onPress={handleRemoveImage} className="mt-1">
-            <Text className="font-mono text-xs text-theme-error">[REMOVE]</Text>
+            <Text className="font-mono text-xs text-theme-error">[{comp.removeImage || "REMOVE"}]</Text>
           </Pressable>
         </View>
       ) : (
         <View className="mb-3">
           <Text className="font-mono text-xs text-theme-muted uppercase tracking-wider mb-1">
-            {"// "}Attach a screenshot of your work (optional)
+            {"// "}{comp.attachScreenshot || "Attach a screenshot of your work (optional)"}
           </Text>
           <View className="flex-row gap-2">
             <Pressable
@@ -96,7 +99,7 @@ export default function ProjectCompletionForm({
               className="border border-theme-primary/30 px-2 py-1.5"
             >
               <Text className="font-mono text-xs text-theme-primary">
-                [GALLERY]
+                [{comp.gallery || "GALLERY"}]
               </Text>
             </Pressable>
             <Pressable
@@ -105,7 +108,7 @@ export default function ProjectCompletionForm({
               className="border border-theme-primary/30 px-2 py-1.5"
             >
               <Text className="font-mono text-xs text-theme-primary">
-                [CAMERA]
+                [{comp.camera || "CAMERA"}]
               </Text>
             </Pressable>
           </View>
@@ -113,7 +116,7 @@ export default function ProjectCompletionForm({
       )}
 
       <Button onPress={handleSubmit} loading={isSubmitting}>
-        [MARK COMPLETE]
+        [{comp.markCompleted || "MARK COMPLETE"}]
       </Button>
     </View>
   );

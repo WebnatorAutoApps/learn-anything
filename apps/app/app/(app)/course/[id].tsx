@@ -24,7 +24,7 @@ export default function CourseDetailScreen() {
     return (
       <View className="flex-1 bg-theme-bg items-center justify-center">
         <Text className="font-mono text-base text-theme-muted animate-blink">
-          Loading course data...
+          {cr.loadingCourse || "Loading course data..."}
         </Text>
       </View>
     );
@@ -39,7 +39,7 @@ export default function CourseDetailScreen() {
     return (
       <View className="flex-1 bg-theme-bg items-center justify-center px-6">
         <Text className="font-mono text-theme-error text-base mb-4">
-          ERROR: {errorMessage}
+          {(t.errors as Record<string, string>).errorPrefix || "ERROR:"} {errorMessage}
         </Text>
         <Button onPress={() => router.back()}>
           {cr.backToDashboard || "Back to Dashboard"}

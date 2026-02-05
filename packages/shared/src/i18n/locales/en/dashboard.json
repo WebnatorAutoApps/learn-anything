@@ -1,0 +1,51 @@
+{
+  "dashboard": {
+    "heading": "What do you want to learn today?",
+    "subheading": "Your active learning paths. Continue where you left off.",
+    "browsePaths": "Browse Learning Paths",
+    "errorBanner": "We're having trouble right now. Some features may not work properly.",
+    "learnSomethingNew": "Learn Something New",
+    "addNewTopic": "Add a new topic",
+    "activeStep": "Active Step",
+    "noActiveSteps": "No active steps. Start a learning path or enroll in one to get started.",
+    "previousProject": "Previous project",
+    "nextProject": "Next project",
+    "carouselLabel": "Active steps carousel",
+    "goToProject": "Go to {name}",
+    "markComplete": "Mark step as complete",
+    "carouselIndicators": "Carousel indicators",
+    "loadingProcesses": "Loading processes...",
+    "running": "RUNNING",
+    "modulesLoaded": "modules loaded",
+    "loadingConfig": "Loading configuration...",
+    "activeProcessCount": "{count} active process(es) found",
+    "processIdPrefix": "PID:"
+  },
+  "header": {
+    "title": "Learn Anything",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "menuLabel": "MENU"
+  },
+  "upcoming": {
+    "title": "Upcoming Projects",
+    "overdue": "Overdue —",
+    "due": "Due",
+    "noDueDate": "No due date",
+    "showMore": "Show more"
+  },
+  "tips": {
+    "dismissTip": "Dismiss tip",
+    "themeMessage": "Did you know you can customize your theme? Try Space, School, Gym, or 90s Internet.",
+    "themeCta": "Change Theme",
+    "personalityMessage": "Want to be taught by a pirate? Customize your AI tone for a unique learning experience.",
+    "personalityCta": "Choose a Tone",
+    "browseMessage": "Explore learning paths created by the community and start a new journey today.",
+    "browseCta": "Browse Paths",
+    "profileMessage": "Set up your profile with a display name, username, and avatar to personalize your experience.",
+    "profileCta": "Edit Profile",
+    "apiKeyMessage": "Add your own Gemini API key to unlock AI-powered course generation.",
+    "apiKeyCta": "Add API Key"
+  }
+}

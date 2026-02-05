@@ -64,7 +64,7 @@ See [`docs/architecture.md`](docs/architecture.md) for the full reference.
 - **Direct Supabase calls** — Mutations and queries call Supabase directly from shared hooks (no API proxy layer)
 - **RLS on all tables** — defense in depth; never bypass from client code
 - **Theme system** via NativeWind `vars()` + CSS custom properties (`--t-*`) mapped to `theme-*` Tailwind classes
-- **i18n** — 7 locales (en, es, fr, de, it, zh, ja); translations in `packages/shared/src/i18n/locales/`, provider in each app
+- **i18n** — 7 locales (en, es, fr, de, it, zh, ja); translations split into domain files under `packages/shared/src/i18n/locales/{locale}/` (common, auth, dashboard, course, learn, settings, landing), merged at load time in `translations.ts`; provider in each app
 - **Barrel exports** — Every directory with 2+ sibling files has an `index.ts` barrel export
 - **Centralized error messages** — All user-facing error strings must be imported from `packages/shared/src/constants/errors.ts`; never hardcode error text in components
 - **Shared UI primitives** — Reusable components (`Spinner`, `Button`, `Input`, `Modal`) in `apps/app/src/components/ui/`
@@ -145,6 +145,7 @@ Users provide their own Gemini API key via the in-app Settings UI. Keys are stor
 | Test File | Coverage |
 |-----------|----------|
 | `schedule.test.ts` | Module schedule generation, status resolution, commitment validation |
+| `i18n/i18n.test.ts` | Translation key consistency across locales, no empty values |
 
 ```bash
 pnpm test              # Run all tests once (via Turbo)
@@ -174,6 +175,7 @@ pnpm --filter @learn-anything/shared test:watch  # Watch mode
 - **Query key discipline** — Always use `queryKeys.*` from `packages/shared/src/hooks/keys.ts` for query keys and cache invalidation. Never pass raw string arrays like `["courses"]`.
 - **Reusable UI in `ui/`** — Repeated UI patterns (spinners, badges, etc.) must be extracted to `apps/app/src/components/ui/`.
 - **Barrel exports** — Every directory with 2+ sibling files must have an `index.ts` barrel export.
+- **No hardcoded user-facing strings** — All user-visible text must use i18n keys from `packages/shared/src/i18n/locales/`. Never write string literals for labels, messages, or UI text in components. Add new keys to the appropriate domain file in `en/` (e.g., `en/common.json`, `en/course.json`) and all other locale directories when introducing new user-facing text.
 - **Theme-aware colors only** — Use `theme-*` Tailwind classes (e.g., `text-theme-error`, `bg-theme-surface`). Never use hardcoded color classes like `text-red-400` or `bg-red-900`.
 
 ## Key Files
@@ -208,7 +210,7 @@ pnpm --filter @learn-anything/shared test:watch  # Watch mode
 | `packages/shared/src/schedule.ts` | Module schedule generation and status resolution |
 | `packages/shared/src/supabase.ts` | `setSupabaseClient()` / `getSupabaseClient()` injection |
 | `packages/shared/src/storage.ts` | `setStorageAdapter()` / `getStorage()` platform abstraction |
-| `packages/shared/src/i18n/` | Translations (7 locales) and i18n types |
+| `packages/shared/src/i18n/` | Translations (7 locales x 7 domain files), i18n types, validation test |
 | `apps/landing/` | Landing page (Next.js 15) |
 
 ## CI/CD Pipeline

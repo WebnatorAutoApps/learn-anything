@@ -218,7 +218,6 @@ export default function HeroSection() {
   const skillWords = hero.skillWords as Record<string, string>;
   const anythingText = hero.anything as string;
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally run only once
   const videos = useMemo(() => shuffle(HERO_VIDEOS), []);
 
   const wordQueue = useMemo(

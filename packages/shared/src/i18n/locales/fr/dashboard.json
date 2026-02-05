@@ -1,0 +1,51 @@
+{
+  "dashboard": {
+    "heading": "Qu'est-ce que vous voulez apprendre aujourd'hui ?",
+    "subheading": "Vos parcours d'apprentissage actifs. Reprenez là où vous vous étiez arrêté.",
+    "browsePaths": "Parcourir les parcours",
+    "errorBanner": "Nous rencontrons des difficultés en ce moment. Certaines fonctionnalités peuvent ne pas fonctionner correctement.",
+    "learnSomethingNew": "Apprendre quelque chose de nouveau",
+    "addNewTopic": "Ajouter un nouveau sujet",
+    "activeStep": "Étape en cours",
+    "noActiveSteps": "Aucune étape active. Commencez un parcours d'apprentissage ou inscrivez-vous pour démarrer.",
+    "previousProject": "Projet précédent",
+    "nextProject": "Projet suivant",
+    "carouselLabel": "Carrousel des étapes actives",
+    "goToProject": "Aller à {name}",
+    "markComplete": "Marquer l'étape comme terminée",
+    "carouselIndicators": "Indicateurs du carrousel",
+    "loadingProcesses": "Chargement des processus...",
+    "running": "EN COURS",
+    "modulesLoaded": "modules chargés",
+    "loadingConfig": "Chargement de la configuration...",
+    "activeProcessCount": "{count} processus actif(s) trouvé(s)",
+    "processIdPrefix": "PID :"
+  },
+  "header": {
+    "title": "Learn Anything",
+    "profile": "Profil",
+    "settings": "Paramètres",
+    "logout": "Déconnexion",
+    "menuLabel": "MENU"
+  },
+  "upcoming": {
+    "title": "Projets à venir",
+    "overdue": "En retard —",
+    "due": "Échéance",
+    "noDueDate": "Pas de date limite",
+    "showMore": "Voir plus"
+  },
+  "tips": {
+    "dismissTip": "Ignorer le conseil",
+    "themeMessage": "Saviez-vous que vous pouvez personnaliser votre thème ? Essayez Espace, École, Salle de sport ou Internet des années 90.",
+    "themeCta": "Changer le thème",
+    "personalityMessage": "Envie d'être enseigné par un pirate ? Personnalisez le ton de votre IA pour une expérience d'apprentissage unique.",
+    "personalityCta": "Choisir un ton",
+    "browseMessage": "Explorez les parcours d'apprentissage créés par la communauté et commencez un nouveau voyage aujourd'hui.",
+    "browseCta": "Parcourir les parcours",
+    "profileMessage": "Configurez votre profil avec un nom d'affichage, un nom d'utilisateur et un avatar pour personnaliser votre expérience.",
+    "profileCta": "Modifier le profil",
+    "apiKeyMessage": "Ajoutez votre propre clé API Gemini pour débloquer la génération de cours par IA.",
+    "apiKeyCta": "Ajouter une clé API"
+  }
+}
