@@ -1,7 +1,6 @@
 // Platform abstractions
-export { setApiBaseUrl, getApiBaseUrl, apiUrl } from "./config";
+export { setSupabaseClient, getSupabaseClient } from "./supabase";
 export { type StorageAdapter, setStorageAdapter, getStorage } from "./storage";
-export { setAuthTokenProvider, getAuthToken } from "./auth";
 
 // Constants
 export * from "./constants";
@@ -11,6 +10,7 @@ export type { FeedbackMessage } from "./types";
 
 // Utils
 export { formatDate, getDueStatus } from "./utils";
+export { normalizeName, generateHexSuffix, generateUsername } from "./utils";
 
 // Schedule
 export {
@@ -34,9 +34,6 @@ export * from "./i18n";
 
 // LLM
 export * from "./llm";
-
-// API types
-export * from "./api";
 
 // Validation
 export * from "./validation";

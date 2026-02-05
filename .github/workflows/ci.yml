@@ -34,7 +34,6 @@ jobs:
         env:
           EXPO_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
           EXPO_PUBLIC_SUPABASE_ANON_KEY: placeholder
-          EXPO_PUBLIC_API_URL: https://placeholder.api.com
 
   migrate:
     runs-on: ubuntu-latest

@@ -1,11 +1,9 @@
 import type { ThemeKey } from "../constants/themes";
 
 export interface Profile {
-  full_name: string;
-  email: string;
+  full_name: string | null;
+  email: string | null;
   avatar_url: string | null;
-  has_gemini_api_key: boolean;
-  api_key_last4: string | null;
   username: string | null;
   auth_provider: string;
   tone: string | null;

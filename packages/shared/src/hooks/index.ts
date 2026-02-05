@@ -1,5 +1,4 @@
 export { queryKeys } from "./keys";
-export { fetchJSON, fetchFormData } from "./fetch";
 
 export type {
   Profile,
@@ -19,7 +18,6 @@ export {
   useCreateCourse,
   useEnrollCourse,
   useUnenrollCourse,
-  useSaveSettings,
   useSaveTone,
   useSaveTheme,
   useSelectProject,
@@ -34,3 +32,5 @@ export {
 
 export { useSettingsModal } from "./useSettingsModal";
 export type { SettingsTab } from "./useSettingsModal";
+
+export { useGeminiKey } from "./useGeminiKey";
