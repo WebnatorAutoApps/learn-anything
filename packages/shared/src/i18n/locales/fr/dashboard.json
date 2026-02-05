@@ -1,5 +1,6 @@
 {
   "dashboard": {
+    "systemReady": "système prêt. en attente de saisie...",
     "heading": "Qu'est-ce que vous voulez apprendre aujourd'hui ?",
     "subheading": "Vos parcours d'apprentissage actifs. Reprenez là où vous vous étiez arrêté.",
     "browsePaths": "Parcourir les parcours",

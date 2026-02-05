@@ -32,6 +32,8 @@
     "requestTimeout": "The request took too long. Please try again.",
     "forbidden": "Access denied. Please check your API key and try again.",
     "generic": "Something went wrong. Please try again.",
+    "lowLikelihood": "Low likelihood of success ({pct}%)",
+    "lowLikelihoodDetail": "The AI determined that meaningful progress through small practical projects is unlikely for this goal. Consider refining your learning goal, adjusting the scope, or choosing a more project-oriented skill.",
     "errorPrefix": "ERROR:"
   },
   "loading": {

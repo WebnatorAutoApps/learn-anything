@@ -70,10 +70,8 @@ export function useCourseCreation() {
         if (!mountedRef.current) return;
 
         if ("low_likelihood" in data && data.low_likelihood) {
-          setCreationError(
-            `Low likelihood of success (${data.likelihood_of_learning}%). ${data.error}`
-          );
-          setCreationErrorKey("generic");
+          setCreationErrorKey("lowLikelihood");
+          setCreationError(String(data.likelihood_of_learning));
           return;
         }
 

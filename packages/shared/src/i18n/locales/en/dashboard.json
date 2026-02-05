@@ -1,5 +1,6 @@
 {
   "dashboard": {
+    "systemReady": "system ready. awaiting input...",
     "heading": "What do you want to learn today?",
     "subheading": "Your active learning paths. Continue where you left off.",
     "browsePaths": "Browse Learning Paths",

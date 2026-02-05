@@ -32,6 +32,8 @@
     "requestTimeout": "请求超时。请重试。",
     "forbidden": "访问被拒绝。请检查你的API密钥后重试。",
     "generic": "出了点问题。请重试。",
+    "lowLikelihood": "成功可能性较低 ({pct}%)",
+    "lowLikelihoodDetail": "AI判断通过小型实践项目实现此目标的显著进步可能性不大。请考虑细化你的学习目标、调整范围或选择更适合项目化学习的技能。",
     "errorPrefix": "错误："
   },
   "loading": {
