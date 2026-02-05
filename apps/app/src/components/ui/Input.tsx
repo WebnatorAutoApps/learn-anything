@@ -11,7 +11,7 @@ const Input = forwardRef<TextInput, InputProps>(
       <TextInput
         ref={ref}
         className={`border border-theme-border bg-theme-surface text-theme-secondary rounded-lg px-3 py-2.5 text-sm ${className}`}
-        placeholderTextColor="#6b7280"
+        placeholderTextColor="var(--t-muted)"
         {...props}
       />
     );
@@ -33,7 +33,7 @@ export const TextArea = forwardRef<TextInput, TextAreaProps>(
         ref={ref}
         multiline
         className={`border border-theme-border bg-theme-surface text-theme-secondary rounded-lg px-3 py-2.5 text-sm ${className}`}
-        placeholderTextColor="#6b7280"
+        placeholderTextColor="var(--t-muted)"
         style={{ textAlignVertical: "top" }}
         {...props}
       />

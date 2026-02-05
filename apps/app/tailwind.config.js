@@ -7,6 +7,18 @@ module.exports = {
   presets: [require("nativewind/preset")],
   theme: {
     extend: {
+      fontFamily: {
+        mono: ["Courier New", "Courier", "monospace"],
+      },
+      keyframes: {
+        blink: {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0" },
+        },
+      },
+      animation: {
+        blink: "blink 1s step-end infinite",
+      },
       colors: {
         theme: {
           primary: "var(--t-primary)",
@@ -23,6 +35,9 @@ module.exports = {
           accent: "var(--t-accent)",
           glow: "var(--t-glow)",
           "text-on-accent": "var(--t-text-on-accent)",
+          success: "var(--t-success)",
+          error: "var(--t-error)",
+          warning: "var(--t-warning)",
         },
       },
     },

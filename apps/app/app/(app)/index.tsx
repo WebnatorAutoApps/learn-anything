@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { View, Text, ScrollView, Pressable } from "react-native";
 import { useRouter } from "expo-router";
-import { useProfile, useCourses, useSettingsModal } from "@learn-anything/shared";
+import { useProfile, useCourses, useSettingsModal, useGeminiKey } from "@learn-anything/shared";
 import { useI18n } from "../../src/i18n/I18nProvider";
 import { useCourseCreation, useLogoutFlow } from "../../src/hooks";
 import {
   DashboardHeader,
   CourseGrid,
+  TipBanner,
+  ApiKeyBanner,
+  ProgramCreationLoader,
   LogoutConfirmDialog,
   ApiKeyWarningDialog,
 } from "../../src/components/dashboard";
@@ -29,6 +32,7 @@ export default function DashboardScreen() {
   } = useProfile();
 
   const { data: courses = [], isLoading: coursesLoading } = useCourses("started");
+  const { hasKey: hasGeminiKey } = useGeminiKey();
 
   const {
     isCreating,
@@ -67,7 +71,7 @@ export default function DashboardScreen() {
   const avatarUrl = profile?.avatar_url || null;
 
   function handleLearnClick() {
-    if (!profile?.has_gemini_api_key) {
+    if (!hasGeminiKey) {
       openApiKeyWarning();
       return;
     }
@@ -113,22 +117,41 @@ export default function DashboardScreen() {
       )}
 
       <ScrollView className="flex-1 px-4 py-6">
-        <View className="mb-6">
-          <Text className="text-2xl font-semibold text-theme-primary mb-2">
-            <Text className="text-theme-secondary">{">"} </Text>
-            {d.heading || "What do you want to learn today?"}
+        <TipBanner
+          onOpenSettings={(tab) => openSettings(tab)}
+          onNavigate={(path) => router.push(path as any)}
+        />
+
+        <ApiKeyBanner onOpenSettings={(tab) => openSettings(tab)} />
+
+        <View className="mb-2">
+          <Text className="font-mono text-sm text-theme-muted mb-3">
+            {"> "}system ready. awaiting input...
           </Text>
-          <Text className="text-theme-muted text-sm">
-            {d.subheading || "Your active learning paths. Continue where you left off."}
+          <View className="flex-row items-center">
+            <Text className="font-mono text-xl text-theme-primary">
+              {"$ "}
+            </Text>
+            <Text className="font-mono text-xl font-bold text-theme-primary">
+              {d.heading || "What do you want to learn today?"}
+            </Text>
+            <Text className="font-mono text-xl text-theme-primary animate-blink">
+              _
+            </Text>
+          </View>
+          <Text className="font-mono text-sm text-theme-muted mt-2">
+            {"// "}{d.subheading || "Your active learning paths. Continue where you left off."}
           </Text>
         </View>
 
+        <View className="my-4 h-px bg-theme-primary/20" />
+
         <Pressable
           onPress={handleBrowseClick}
-          className="mb-6 px-4 py-3 rounded-lg border border-theme-border flex-row items-center justify-center"
+          className="mb-4 px-4 py-2 border border-theme-primary/30 bg-theme-surface flex-row items-center justify-center"
         >
-          <Text className="text-theme-primary text-sm">
-            {d.browsePaths || "Browse Learning Paths"}
+          <Text className="font-mono text-theme-primary text-base">
+            {"[ "}{d.browsePaths || "Browse Learning Paths"}{" ]"}
           </Text>
         </Pressable>
 
@@ -168,6 +191,19 @@ export default function DashboardScreen() {
           handleProgramSubmit(planData);
         }}
       />
+
+      {isCreating && (
+        <ProgramCreationLoader
+          error={creationError}
+          errorKey={creationErrorKey}
+          canRetry={!!lastPlanData}
+          onRetry={retryCreation}
+          onDismissError={() => {
+            dismissCreationError();
+            setShowLearnModal(true);
+          }}
+        />
+      )}
     </View>
   );
 }

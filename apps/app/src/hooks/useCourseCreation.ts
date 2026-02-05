@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "expo-router";
-import { fetchJSON, getErrorKeyForStatus } from "@learn-anything/shared";
+import { useCreateCourse, useGeminiKey, useProfile } from "@learn-anything/shared";
 
 export interface LearningPlanData {
   whatToLearn: string;
@@ -10,87 +10,68 @@ export interface LearningPlanData {
   totalModules: number;
 }
 
-interface CreateCourseResult {
-  success: boolean;
-  low_likelihood?: boolean;
-  likelihood_of_learning?: number;
-  error?: string;
-  course?: { id: string };
-}
-
 export function useCourseCreation() {
   const router = useRouter();
+  const createCourse = useCreateCourse();
+  const { apiKey } = useGeminiKey();
+  const { data: profile } = useProfile();
   const [isCreating, setIsCreating] = useState(false);
   const [creationError, setCreationError] = useState<string | null>(null);
   const [creationErrorKey, setCreationErrorKey] = useState<string | null>(null);
   const [lastPlanData, setLastPlanData] = useState<LearningPlanData | null>(null);
-  const abortControllerRef = useRef<AbortController | null>(null);
+  const mountedRef = useRef(true);
 
   useEffect(() => {
     return () => {
-      abortControllerRef.current?.abort();
+      mountedRef.current = false;
     };
   }, []);
 
   const submitPlan = useCallback(
     async (planData: LearningPlanData) => {
-      if (isCreating) return;
+      if (!apiKey) {
+        setCreationError("No API key configured.");
+        setCreationErrorKey("generic");
+        return;
+      }
 
       setLastPlanData(planData);
       setIsCreating(true);
       setCreationError(null);
       setCreationErrorKey(null);
 
-      const controller = new AbortController();
-      abortControllerRef.current = controller;
-
       try {
-        const data = await fetchJSON<CreateCourseResult>("/api/courses", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(planData),
-          signal: controller.signal,
+        const data = await createCourse.mutateAsync({
+          planData,
+          apiKey,
+          tone: profile?.tone,
         });
 
-        if (data.low_likelihood) {
+        if (!mountedRef.current) return;
+
+        if ("low_likelihood" in data && data.low_likelihood) {
           setCreationError(
             `Low likelihood of success (${data.likelihood_of_learning}%). ${data.error}`
           );
-          return;
-        }
-
-        if (!data.success) {
-          setCreationError(data.error || null);
           setCreationErrorKey("generic");
           return;
         }
 
-        setLastPlanData(null);
-
-        const courseId = data.course?.id;
-        if (courseId) {
-          router.push(`/(app)/course/${courseId}`);
-        } else {
+        if ("course" in data && data.course) {
+          setLastPlanData(null);
           setIsCreating(false);
+          router.push(`/(app)/course/${data.course.id}`);
         }
       } catch (err: unknown) {
-        if (err instanceof DOMException && err.name === "AbortError") {
-          return;
-        }
+        if (!mountedRef.current) return;
 
-        const status = (err as Error & { status?: number }).status;
-        const errorKey = getErrorKeyForStatus(status);
-
-        if (errorKey) {
-          setCreationErrorKey(errorKey);
-          setCreationError(null);
-        } else {
-          setCreationErrorKey("generic");
-          setCreationError(null);
-        }
+        setCreationErrorKey("generic");
+        setCreationError(
+          err instanceof Error ? err.message : "Failed to create course."
+        );
       }
     },
-    [isCreating, router]
+    [apiKey, profile?.tone, createCourse, router]
   );
 
   const handleProgramSubmit = useCallback(

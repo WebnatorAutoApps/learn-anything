@@ -18,46 +18,56 @@ export default function CourseGrid({ courses, isLoading, onLearnClick }: CourseG
   if (isLoading) {
     return (
       <View className="py-12 items-center">
-        <ActivityIndicator size="large" />
+        <Text className="font-mono text-base text-theme-muted animate-blink">
+          Loading processes...
+        </Text>
       </View>
     );
   }
 
   return (
-    <View className="mt-6">
-      <View className="flex-row flex-wrap gap-4">
-        {courses.map((course) => (
+    <View>
+      <Text className="font-mono text-sm text-theme-muted mb-3">
+        {">"} {courses.length} active process{courses.length !== 1 ? "es" : ""} found
+      </Text>
+
+      <View className="flex-row flex-wrap gap-3">
+        {courses.map((course, index) => (
           <Pressable
             key={course.id}
             onPress={() => router.push(`/(app)/course/${course.id}`)}
-            className="bg-theme-surface border border-theme-border rounded-lg p-4 flex-1 min-w-[160px] max-w-[300px]"
+            className="bg-theme-bg border border-theme-primary/20 p-3 flex-1 min-w-[180px] max-w-[300px]"
           >
-            <View className="h-10 w-10 rounded-lg bg-theme-primary-dim items-center justify-center mb-3">
-              <Text className="text-theme-primary font-bold text-lg">
-                {course.normalized_title.charAt(0).toUpperCase()}
+            <View className="flex-row items-center mb-2">
+              <Text className="font-mono text-sm text-theme-primary">
+                PID:{String(index + 1).padStart(3, "0")}
+              </Text>
+              <View className="ml-2 h-2 w-2 rounded-full bg-theme-primary" />
+              <Text className="font-mono text-sm text-theme-muted ml-1">
+                RUNNING
               </Text>
             </View>
             <Text
-              className="text-theme-secondary font-medium text-sm mb-1"
+              className="font-mono text-theme-secondary text-base mb-1"
               numberOfLines={2}
             >
               {course.normalized_title}
             </Text>
-            <Text className="text-theme-muted text-xs">
-              {course.total_modules} modules
+            <Text className="font-mono text-theme-muted text-sm">
+              {course.total_modules} modules loaded
             </Text>
           </Pressable>
         ))}
 
         <Pressable
           onPress={onLearnClick}
-          className="bg-theme-surface border border-dashed border-theme-border rounded-lg p-4 flex-1 min-w-[160px] max-w-[300px] items-center justify-center"
+          className="bg-theme-bg border border-dashed border-theme-primary/30 p-3 flex-1 min-w-[180px] max-w-[300px] items-center justify-center"
         >
-          <View className="h-10 w-10 rounded-full border border-theme-border items-center justify-center mb-3">
-            <Text className="text-theme-primary text-xl">+</Text>
-          </View>
-          <Text className="text-theme-muted text-sm text-center">
-            {d.learnSomethingNew || "Learn Something New"}
+          <Text className="font-mono text-theme-primary text-lg mb-1">
+            +
+          </Text>
+          <Text className="font-mono text-theme-muted text-sm text-center">
+            {d.learnSomethingNew || "new process"}
           </Text>
         </Pressable>
       </View>

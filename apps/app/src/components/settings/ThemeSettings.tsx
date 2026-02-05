@@ -34,15 +34,15 @@ export default function ThemeSettings() {
 
   return (
     <View>
-      <Text className="text-sm font-medium text-theme-secondary mb-1">
-        {s.themes || "Themes"}
+      <Text className="font-mono text-sm text-theme-muted uppercase tracking-wider mb-1">
+        {">"} {s.themes || "THEMES"}
       </Text>
-      <Text className="text-xs text-theme-muted mb-4">
-        {s.themesHelp || "Choose a visual theme for the app."}
+      <Text className="font-mono text-sm text-theme-muted mb-4">
+        {"// "}{s.themesHelp || "Select visual theme."}
       </Text>
 
-      <View className="gap-3">
-        {VALID_THEMES.map((key) => {
+      <View className="gap-2">
+        {VALID_THEMES.map((key, index) => {
           const isSelected = key === currentTheme;
           const themeColors = themes[key];
           const label = themeLabels[key];
@@ -51,28 +51,31 @@ export default function ThemeSettings() {
             <Pressable
               key={key}
               onPress={() => handleThemeSelect(key)}
-              className={`rounded-lg border p-3 ${
-                isSelected ? "border-theme-primary" : "border-theme-border"
+              className={`border p-3 ${
+                isSelected ? "border-theme-primary" : "border-theme-primary/15"
               }`}
             >
               <View className="flex-row items-center gap-2 mb-2">
+                <Text className="font-mono text-sm text-theme-primary">
+                  [{String(index + 1).padStart(2, "0")}]
+                </Text>
                 {swatchKeys.map((swatchKey) => (
                   <View
                     key={swatchKey}
                     style={{ backgroundColor: themeColors[swatchKey] }}
-                    className="h-5 w-5 rounded-full"
+                    className="h-4 w-4"
                   />
                 ))}
               </View>
-              <Text className="text-theme-secondary text-sm font-medium">
+              <Text className="font-mono text-base text-theme-secondary">
                 {label?.name || key}
               </Text>
-              <Text className="text-theme-muted text-xs">
+              <Text className="font-mono text-sm text-theme-muted">
                 {label?.desc || ""}
               </Text>
               {isSelected && (
-                <Text className="text-theme-primary text-xs mt-1">
-                  ✓ {s.selected || "selected"}
+                <Text className="font-mono text-sm text-theme-primary mt-1 font-bold">
+                  * ACTIVE
                 </Text>
               )}
             </Pressable>

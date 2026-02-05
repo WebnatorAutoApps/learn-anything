@@ -14,13 +14,13 @@ interface ButtonProps {
 const variantClasses = {
   primary: "bg-theme-accent",
   secondary: "border border-theme-border bg-transparent",
-  danger: "border border-red-500 bg-transparent",
+  danger: "border border-theme-error bg-transparent",
 } as const;
 
 const textVariantClasses = {
   primary: "text-theme-text-on-accent font-semibold",
   secondary: "text-theme-secondary",
-  danger: "text-red-400",
+  danger: "text-theme-error",
 } as const;
 
 const sizeClasses = {
@@ -53,7 +53,7 @@ export default function Button({
       {loading ? (
         <ActivityIndicator
           size="small"
-          color={variant === "primary" ? "#000" : "#d1d5db"}
+          color={variant === "primary" ? "var(--t-text-on-accent)" : "var(--t-secondary)"}
         />
       ) : typeof children === "string" ? (
         <Text className={`${textVariantClasses[variant]} ${textSizeClasses[size]}`}>

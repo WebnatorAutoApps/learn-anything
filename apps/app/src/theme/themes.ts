@@ -20,6 +20,9 @@ export const themes: Record<ThemeKey, Record<string, string>> = {
     "--t-accent": "#4ade80",
     "--t-glow": "rgba(74, 222, 128, 0.15)",
     "--t-text-on-accent": "#000000",
+    "--t-success": "#4ade80",
+    "--t-error": "#f87171",
+    "--t-warning": "#fbbf24",
   },
   space: {
     "--t-primary": "#a78bfa",
@@ -36,6 +39,9 @@ export const themes: Record<ThemeKey, Record<string, string>> = {
     "--t-accent": "#a78bfa",
     "--t-glow": "rgba(167, 139, 250, 0.15)",
     "--t-text-on-accent": "#000000",
+    "--t-success": "#34d399",
+    "--t-error": "#f87171",
+    "--t-warning": "#fbbf24",
   },
   school: {
     "--t-primary": "#f59e0b",
@@ -52,6 +58,9 @@ export const themes: Record<ThemeKey, Record<string, string>> = {
     "--t-accent": "#f59e0b",
     "--t-glow": "rgba(245, 158, 11, 0.1)",
     "--t-text-on-accent": "#000000",
+    "--t-success": "#22c55e",
+    "--t-error": "#ef4444",
+    "--t-warning": "#d97706",
   },
   gym: {
     "--t-primary": "#f43f5e",
@@ -68,6 +77,9 @@ export const themes: Record<ThemeKey, Record<string, string>> = {
     "--t-accent": "#f43f5e",
     "--t-glow": "rgba(244, 63, 94, 0.15)",
     "--t-text-on-accent": "#ffffff",
+    "--t-success": "#4ade80",
+    "--t-error": "#f87171",
+    "--t-warning": "#fbbf24",
   },
   "90s-internet": {
     "--t-primary": "#06b6d4",
@@ -84,5 +96,8 @@ export const themes: Record<ThemeKey, Record<string, string>> = {
     "--t-accent": "#06b6d4",
     "--t-glow": "rgba(6, 182, 212, 0.15)",
     "--t-text-on-accent": "#000000",
+    "--t-success": "#34d399",
+    "--t-error": "#f87171",
+    "--t-warning": "#fbbf24",
   },
 };

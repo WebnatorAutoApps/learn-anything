@@ -1,22 +1,21 @@
 import "../global.css";
-import React, { useEffect } from "react";
+import React from "react";
 import { Slot } from "expo-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { View } from "react-native";
-import { setApiBaseUrl, setAuthTokenProvider, setStorageAdapter } from "@learn-anything/shared";
+import { View, Platform, LogBox } from "react-native";
+import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
+import { setSupabaseClient, setStorageAdapter } from "@learn-anything/shared";
 import { AuthProvider } from "../src/auth/AuthProvider";
 import { ThemeProvider, useTheme } from "../src/theme/ThemeProvider";
 import { I18nProvider } from "../src/i18n/I18nProvider";
 import { supabase } from "../src/lib/supabase";
-import { Platform } from "react-native";
 
-// Initialize shared package
-setApiBaseUrl(process.env.EXPO_PUBLIC_API_URL ?? "");
+// Suppress deprecated SafeAreaView warning from react-native-screens
+LogBox.ignoreLogs(["SafeAreaView has been deprecated"]);
 
-setAuthTokenProvider(async () => {
-  const { data: { session } } = await supabase.auth.getSession();
-  return session?.access_token ?? null;
-});
+// Initialize shared package with Supabase client
+setSupabaseClient(supabase);
 
 const webStorage = {
   getItem: async (key: string) => {
@@ -57,8 +56,9 @@ const queryClient = new QueryClient({
 
 function ThemedContainer({ children }: { children: React.ReactNode }) {
   const { themeVars } = useTheme();
+  const insets = useSafeAreaInsets();
   return (
-    <View style={[{ flex: 1 }, themeVars]}>
+    <View style={[{ flex: 1, paddingTop: insets.top }, themeVars]} className="bg-theme-bg">
       {children}
     </View>
   );
@@ -66,16 +66,19 @@ function ThemedContainer({ children }: { children: React.ReactNode }) {
 
 export default function RootLayout() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <ThemeProvider>
-          <I18nProvider>
-            <ThemedContainer>
-              <Slot />
-            </ThemedContainer>
-          </I18nProvider>
-        </ThemeProvider>
-      </AuthProvider>
-    </QueryClientProvider>
+    <SafeAreaProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <ThemeProvider>
+            <I18nProvider>
+              <ThemedContainer>
+                <StatusBar style="light" />
+                <Slot />
+              </ThemedContainer>
+            </I18nProvider>
+          </ThemeProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </SafeAreaProvider>
   );
 }

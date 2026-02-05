@@ -3,7 +3,7 @@ import { View, Text, Pressable, KeyboardAvoidingView, Platform, ScrollView } fro
 import { Link } from "expo-router";
 import { useAuth } from "../../src/auth/AuthProvider";
 import { useI18n } from "../../src/i18n/I18nProvider";
-import { Button, Input } from "../../src/components/ui";
+import { Button, Input, GoogleIcon } from "../../src/components/ui";
 
 export default function SignupScreen() {
   const { signUp, signInWithGoogle } = useAuth();
@@ -60,8 +60,9 @@ export default function SignupScreen() {
 
           <Pressable
             onPress={handleGoogleSignup}
-            className="w-full rounded-lg border border-theme-border bg-theme-surface px-4 py-3 flex-row items-center justify-center"
+            className="w-full rounded-lg border border-theme-border bg-theme-surface px-4 py-3 flex-row items-center justify-center gap-2"
           >
+            <GoogleIcon size={20} />
             <Text className="text-theme-secondary text-sm font-medium">
               {a.signUpGoogle || "Sign up with Google"}
             </Text>

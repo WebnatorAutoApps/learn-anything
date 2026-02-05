@@ -7,5 +7,5 @@ interface SpinnerProps {
 }
 
 export default function Spinner({ size = "small", color }: SpinnerProps) {
-  return <ActivityIndicator size={size} color={color ?? "#4ade80"} />;
+  return <ActivityIndicator size={size} color={color ?? "var(--t-primary)"} />;
 }

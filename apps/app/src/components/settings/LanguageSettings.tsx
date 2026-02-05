@@ -10,31 +10,34 @@ export default function LanguageSettings() {
 
   return (
     <View>
-      <Text className="text-sm font-medium text-theme-secondary mb-1">
-        {s.language || "Language"}
+      <Text className="font-mono text-sm text-theme-muted uppercase tracking-wider mb-1">
+        {">"} {s.language || "LOCALE"}
       </Text>
-      <Text className="text-xs text-theme-muted mb-4">
-        {s.languageHelp || "Choose the display language for the app."}
+      <Text className="font-mono text-sm text-theme-muted mb-4">
+        {"// "}{s.languageHelp || "Select display language."}
       </Text>
 
       <View className="gap-2">
-        {SUPPORTED_LOCALES.map((loc) => (
+        {SUPPORTED_LOCALES.map((loc, index) => (
           <Pressable
             key={loc.code}
             onPress={() => setLocale(loc.code as Locale)}
-            className={`rounded-lg border p-3 flex-row items-center gap-3 ${
-              locale === loc.code ? "border-theme-primary" : "border-theme-border"
+            className={`border p-3 flex-row items-center gap-3 ${
+              locale === loc.code ? "border-theme-primary" : "border-theme-primary/15"
             }`}
           >
+            <Text className="font-mono text-sm text-theme-primary">
+              [{String(index + 1).padStart(2, "0")}]
+            </Text>
             <Text className="text-xl">{loc.flag}</Text>
-            <View>
-              <Text className="text-theme-secondary text-sm font-medium">
+            <View className="flex-1">
+              <Text className="font-mono text-base text-theme-secondary">
                 {loc.nativeName}
               </Text>
-              <Text className="text-theme-muted text-xs">{loc.name}</Text>
+              <Text className="font-mono text-sm text-theme-muted">{loc.name}</Text>
             </View>
             {locale === loc.code && (
-              <Text className="text-theme-primary text-xs ml-auto">✓</Text>
+              <Text className="font-mono text-sm text-theme-primary font-bold">* ACTIVE</Text>
             )}
           </Pressable>
         ))}

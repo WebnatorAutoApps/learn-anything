@@ -52,39 +52,49 @@ export default function ToneSettings() {
 
   return (
     <View>
-      <Text className="text-sm font-medium text-theme-secondary mb-1">
-        {s.aiTone || "AI Tone"}
+      <Text className="font-mono text-sm text-theme-muted uppercase tracking-wider mb-1">
+        {">"} {s.aiTone || "AI_TONE"}
       </Text>
-      <Text className="text-xs text-theme-muted mb-4">
-        {s.toneHelp || "Choose how the AI communicates with you."}
+      <Text className="font-mono text-sm text-theme-muted mb-4">
+        {"// "}{s.toneHelp || "Select AI communication style."}
       </Text>
 
       <View className="gap-2 mb-4">
-        {Object.entries(toneLabels).map(([key, label]) => (
+        {Object.entries(toneLabels).map(([key, label], index) => (
           <Pressable
             key={key}
             onPress={() => {
               setSelectedTone(key);
               setIsCustom(false);
             }}
-            className={`rounded-lg border p-3 ${
-              !isCustom && selectedTone === key ? "border-theme-primary" : "border-theme-border"
+            className={`border p-3 ${
+              !isCustom && selectedTone === key ? "border-theme-primary" : "border-theme-primary/15"
             }`}
           >
-            <Text className="text-theme-secondary text-sm font-medium">{label.name}</Text>
-            <Text className="text-theme-muted text-xs">{label.desc}</Text>
+            <View className="flex-row items-center gap-2">
+              <Text className="font-mono text-sm text-theme-primary">
+                [{String(index + 1).padStart(2, "0")}]
+              </Text>
+              <Text className="font-mono text-base text-theme-secondary">{label.name}</Text>
+            </View>
+            <Text className="font-mono text-sm text-theme-muted ml-8">
+              {"// "}{label.desc}
+            </Text>
           </Pressable>
         ))}
 
         <Pressable
           onPress={() => setIsCustom(true)}
-          className={`rounded-lg border p-3 ${isCustom ? "border-theme-primary" : "border-theme-border"}`}
+          className={`border p-3 ${isCustom ? "border-theme-primary" : "border-theme-primary/15"}`}
         >
-          <Text className="text-theme-secondary text-sm font-medium">
-            {s.toneCustom || "Custom"}
-          </Text>
-          <Text className="text-theme-muted text-xs">
-            {s.toneCustomDesc || "Write your own tone instructions."}
+          <View className="flex-row items-center gap-2">
+            <Text className="font-mono text-sm text-theme-primary">[**]</Text>
+            <Text className="font-mono text-base text-theme-secondary">
+              {s.toneCustom || "CUSTOM"}
+            </Text>
+          </View>
+          <Text className="font-mono text-sm text-theme-muted ml-8">
+            {"// "}{s.toneCustomDesc || "Write your own tone instructions."}
           </Text>
         </Pressable>
       </View>
@@ -102,15 +112,15 @@ export default function ToneSettings() {
 
       <View className="flex-row gap-2">
         <Button onPress={handleSave} loading={saveTone.isPending}>
-          {(t.common as Record<string, string>)?.save || "Save"}
+          {(t.common as Record<string, string>)?.save || "SAVE"}
         </Button>
         <Button variant="secondary" onPress={handleReset}>
-          {s.resetToDefault || "Reset to Default"}
+          {s.resetToDefault || "RESET"}
         </Button>
       </View>
 
       {message && (
-        <Text className={`text-xs mt-2 ${message.type === "success" ? "text-green-400" : "text-red-400"}`}>
+        <Text className={`font-mono text-sm mt-2 ${message.type === "success" ? "text-theme-success" : "text-theme-error"}`}>
           {message.text}
         </Text>
       )}

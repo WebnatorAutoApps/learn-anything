@@ -21,9 +21,16 @@ export default function GeneralSettings() {
   return (
     <View className="gap-6">
       <AvatarSection />
+      <View className="h-px bg-theme-primary/20" />
       <UsernameSection />
+      <View className="h-px bg-theme-primary/20" />
       <DisplayNameSection />
-      {profile?.auth_provider === "email" && <PasswordSection />}
+      {profile?.auth_provider === "email" && (
+        <>
+          <View className="h-px bg-theme-primary/20" />
+          <PasswordSection />
+        </>
+      )}
     </View>
   );
 }
@@ -60,29 +67,29 @@ function AvatarSection() {
 
   return (
     <View>
-      <Text className="text-sm font-medium text-theme-secondary mb-2">
-        {s.profilePicture || "Profile Picture"}
+      <Text className="font-mono text-sm text-theme-muted uppercase tracking-wider mb-2">
+        {">"} {s.profilePicture || "AVATAR"}
       </Text>
       <Pressable
         onPress={handlePickImage}
-        className="h-20 w-20 rounded-full bg-theme-primary-dim items-center justify-center overflow-hidden border-2 border-theme-border"
+        className="h-20 w-20 bg-theme-primary-dim items-center justify-center overflow-hidden border border-theme-primary/30"
       >
         {profile?.avatar_url ? (
           <Image
             source={{ uri: profile.avatar_url }}
-            className="h-20 w-20 rounded-full"
+            className="h-20 w-20"
           />
         ) : (
-          <Text className="text-theme-primary text-2xl font-bold">
+          <Text className="font-mono text-theme-primary text-2xl font-bold">
             {(profile?.full_name || "").charAt(0).toUpperCase()}
           </Text>
         )}
       </Pressable>
-      <Text className="text-xs text-theme-muted mt-1">
-        {s.avatarHelp || "JPEG, PNG, or WebP. Max 5 MB."}
+      <Text className="font-mono text-sm text-theme-muted mt-1">
+        {"// "}{s.avatarHelp || "JPEG, PNG, or WebP. Max 5 MB."}
       </Text>
       {message && (
-        <Text className={`text-xs mt-1 ${message.type === "success" ? "text-green-400" : "text-red-400"}`}>
+        <Text className={`font-mono text-sm mt-1 ${message.type === "success" ? "text-theme-success" : "text-theme-error"}`}>
           {message.text}
         </Text>
       )}
@@ -110,11 +117,11 @@ function UsernameSection() {
 
   return (
     <View>
-      <Text className="text-sm font-medium text-theme-secondary mb-1">
-        {s.changeUsername || "Change Username"}
+      <Text className="font-mono text-sm text-theme-muted uppercase tracking-wider mb-1">
+        {">"} {s.changeUsername || "USERNAME"}
       </Text>
-      <Text className="text-xs text-theme-muted mb-2">
-        {s.usernameHelp || "3-39 characters. Lowercase letters, numbers, and hyphens only."}
+      <Text className="font-mono text-sm text-theme-muted mb-2">
+        {"// "}{s.usernameHelp || "3-39 chars. Lowercase, numbers, hyphens."}
       </Text>
       <View className="flex-row gap-2">
         <View className="flex-1">
@@ -125,11 +132,11 @@ function UsernameSection() {
           />
         </View>
         <Button size="sm" onPress={handleSave} loading={updateUsername.isPending}>
-          {(t.common as Record<string, string>)?.save || "Save"}
+          {(t.common as Record<string, string>)?.save || "SAVE"}
         </Button>
       </View>
       {message && (
-        <Text className={`text-xs mt-1 ${message.type === "success" ? "text-green-400" : "text-red-400"}`}>
+        <Text className={`font-mono text-sm mt-1 ${message.type === "success" ? "text-theme-success" : "text-theme-error"}`}>
           {message.text}
         </Text>
       )}
@@ -157,8 +164,8 @@ function DisplayNameSection() {
 
   return (
     <View>
-      <Text className="text-sm font-medium text-theme-secondary mb-1">
-        {s.displayName || "Display Name"}
+      <Text className="font-mono text-sm text-theme-muted uppercase tracking-wider mb-1">
+        {">"} {s.displayName || "DISPLAY_NAME"}
       </Text>
       <View className="flex-row gap-2">
         <View className="flex-1">
@@ -169,11 +176,11 @@ function DisplayNameSection() {
           />
         </View>
         <Button size="sm" onPress={handleSave} loading={updateProfile.isPending}>
-          {(t.common as Record<string, string>)?.save || "Save"}
+          {(t.common as Record<string, string>)?.save || "SAVE"}
         </Button>
       </View>
       {message && (
-        <Text className={`text-xs mt-1 ${message.type === "success" ? "text-green-400" : "text-red-400"}`}>
+        <Text className={`font-mono text-sm mt-1 ${message.type === "success" ? "text-theme-success" : "text-theme-error"}`}>
           {message.text}
         </Text>
       )}
@@ -216,8 +223,8 @@ function PasswordSection() {
 
   return (
     <View>
-      <Text className="text-sm font-medium text-theme-secondary mb-2">
-        {s.changePassword || "Change Password"}
+      <Text className="font-mono text-sm text-theme-muted uppercase tracking-wider mb-2">
+        {">"} {s.changePassword || "PASSWORD"}
       </Text>
       <View className="gap-2">
         <Input
@@ -229,7 +236,7 @@ function PasswordSection() {
         <Input
           value={newPassword}
           onChangeText={setNewPassword}
-          placeholder={s.newPasswordPlaceholder || "New password (min. 6 characters)"}
+          placeholder={s.newPasswordPlaceholder || "New password (min. 6 chars)"}
           secureTextEntry
         />
         <Input
@@ -244,11 +251,11 @@ function PasswordSection() {
           loading={updatePassword.isPending}
           disabled={!currentPassword || !newPassword || !confirmPassword}
         >
-          {s.updatePassword || "Update Password"}
+          {s.updatePassword || "UPDATE_PASSWORD"}
         </Button>
       </View>
       {message && (
-        <Text className={`text-xs mt-1 ${message.type === "success" ? "text-green-400" : "text-red-400"}`}>
+        <Text className={`font-mono text-sm mt-1 ${message.type === "success" ? "text-theme-success" : "text-theme-error"}`}>
           {message.text}
         </Text>
       )}

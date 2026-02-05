@@ -1,5 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { Platform } from "react-native";
 import type { Session, User } from "@supabase/supabase-js";
+import * as WebBrowser from "expo-web-browser";
+import { makeRedirectUri } from "expo-auth-session";
 import { supabase } from "../lib/supabase";
 
 interface AuthContextValue {
@@ -53,11 +56,66 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signInWithGoogle = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-    });
-    if (error) return { error: error.message };
-    return {};
+    if (Platform.OS === "web") {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+      });
+      if (error) return { error: error.message };
+      return {};
+    }
+
+    try {
+      const redirectTo = "learn-anything://";
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo,
+          skipBrowserRedirect: true,
+        },
+      });
+      if (error) return { error: error.message };
+      if (!data.url) return { error: "No OAuth URL returned" };
+
+      const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
+      if (result.type !== "success") {
+        return {};
+      }
+
+      const resultUrl = result.url;
+
+      // Try fragment params first (implicit flow)
+      const hashParams = new URLSearchParams(
+        resultUrl.includes("#") ? resultUrl.split("#")[1] : ""
+      );
+      const accessToken = hashParams.get("access_token");
+      const refreshToken = hashParams.get("refresh_token");
+
+      if (accessToken && refreshToken) {
+        const { error: sessionError } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
+        if (sessionError) return { error: sessionError.message };
+        return {};
+      }
+
+      // Try query params (PKCE code exchange)
+      const queryParams = new URLSearchParams(
+        resultUrl.includes("?") ? resultUrl.split("?")[1].split("#")[0] : ""
+      );
+      const code = queryParams.get("code");
+
+      if (code) {
+        const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+        if (exchangeError) return { error: exchangeError.message };
+        return {};
+      }
+
+      return { error: "No authentication tokens received" };
+    } catch (e) {
+      console.error("Google OAuth error:", e);
+      return { error: "Authentication failed. Please try again." };
+    }
   };
 
   const signOut = async () => {

@@ -14,19 +14,19 @@ export default function LogoutConfirmDialog({
   onCancel,
 }: LogoutConfirmDialogProps) {
   return (
-    <Modal visible onClose={onCancel} title="Log Out">
-      <Text className="text-theme-secondary text-sm mb-4">
-        Are you sure you want to log out?
+    <Modal visible onClose={onCancel} title="LOGOUT">
+      <Text className="font-mono text-base text-theme-secondary mb-4">
+        {"// "}Are you sure you want to terminate this session?
       </Text>
       <View className="flex-row gap-3">
         <View className="flex-1">
           <Button variant="secondary" onPress={onCancel}>
-            Cancel
+            CANCEL
           </Button>
         </View>
         <View className="flex-1">
           <Button variant="danger" onPress={onConfirm} loading={isLoggingOut}>
-            Log Out
+            CONFIRM
           </Button>
         </View>
       </View>

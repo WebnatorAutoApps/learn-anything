@@ -16,20 +16,20 @@ export default function Modal({ visible, onClose, title, children }: ModalProps)
       animationType="fade"
       onRequestClose={onClose}
     >
-      <View className="flex-1 bg-black/70 items-center justify-center px-4">
-        <View className="w-full max-w-lg bg-theme-surface border border-theme-border rounded-xl overflow-hidden">
+      <View className="flex-1 bg-theme-bg/90 items-center justify-center px-4">
+        <View className="w-full max-w-lg bg-theme-bg border border-theme-primary/30 overflow-hidden">
           {title && (
-            <View className="flex-row items-center justify-between px-5 py-4 border-b border-theme-border">
-              <Text className="text-theme-secondary text-lg font-semibold">
-                {title}
+            <View className="flex-row items-center justify-between px-4 py-2 border-b border-theme-primary/30 bg-theme-surface">
+              <Text className="font-mono text-base font-bold text-theme-primary tracking-wider">
+                {">"} {title}
               </Text>
-              <Pressable onPress={onClose} className="p-1">
-                <Text className="text-theme-muted text-xl">✕</Text>
+              <Pressable onPress={onClose} className="py-1">
+                <Text className="font-mono text-base text-theme-muted">[ESC]</Text>
               </Pressable>
             </View>
           )}
           <ScrollView className="max-h-96">
-            <View className="p-5">{children}</View>
+            <View className="p-4">{children}</View>
           </ScrollView>
         </View>
       </View>

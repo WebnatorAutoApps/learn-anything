@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useI18n } from "../../i18n/I18nProvider";
 import { Button, Input } from "../ui";
 import { TextArea } from "../ui/Input";
@@ -49,6 +50,7 @@ interface LearnModalProps {
 export default function LearnModal({ visible, onClose, onSubmit }: LearnModalProps) {
   const { t } = useI18n();
   const l = t.learn as Record<string, string>;
+  const insets = useSafeAreaInsets();
   const scrollRef = useRef<ScrollView>(null);
 
   const [step, setStep] = useState<Step>("topic");
@@ -64,6 +66,22 @@ export default function LearnModal({ visible, onClose, onSubmit }: LearnModalPro
   const [expertiseDetails, setExpertiseDetails] = useState("");
   const [commitmentDays, setCommitmentDays] = useState(0);
   const [durationMonths, setDurationMonths] = useState(0);
+
+  useEffect(() => {
+    if (visible) {
+      setStep("topic");
+      setMessages([
+        { role: "system", text: l.whatToLearn || "What do you want to learn?" },
+      ]);
+      setInputValue("");
+      setTopic("");
+      setDetails("");
+      setExpertise("");
+      setExpertiseDetails("");
+      setCommitmentDays(0);
+      setDurationMonths(0);
+    }
+  }, [visible]);
 
   useEffect(() => {
     setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 100);
@@ -157,17 +175,18 @@ export default function LearnModal({ visible, onClose, onSubmit }: LearnModalPro
       animationType="slide"
       onRequestClose={onClose}
     >
-      <KeyboardAvoidingView
-        className="flex-1 bg-theme-bg"
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
-        {/* Header */}
-        <View className="flex-row items-center justify-between px-4 py-3 border-b border-theme-border bg-theme-surface">
-          <Text className="text-lg font-semibold text-theme-secondary">
-            {l.learnSomethingNew || "Learn Something New"}
+      <View className="flex-1 bg-theme-bg" style={{ paddingTop: insets.top }}>
+        <KeyboardAvoidingView
+          className="flex-1"
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+          {/* Header */}
+          <View className="flex-row items-center justify-between px-4 py-2 border-b border-theme-primary/30 bg-theme-surface">
+          <Text className="font-mono text-base font-bold text-theme-primary tracking-wider">
+            {">"} {l.learnSomethingNew || "NEW_PROCESS"}
           </Text>
-          <Pressable onPress={onClose} className="p-2">
-            <Text className="text-theme-muted text-xl">✕</Text>
+          <Pressable onPress={onClose} className="py-1">
+            <Text className="font-mono text-base text-theme-muted">[ESC]</Text>
           </Pressable>
         </View>
 
@@ -185,18 +204,18 @@ export default function LearnModal({ visible, onClose, onSubmit }: LearnModalPro
               }`}
             >
               <View
-                className={`rounded-lg px-4 py-3 ${
+                className={`px-3 py-2 ${
                   msg.role === "user"
-                    ? "bg-theme-primary-dim"
-                    : "bg-theme-surface border border-theme-border"
+                    ? "border border-theme-primary/30 bg-theme-primary-dim"
+                    : "border border-theme-primary/15 bg-theme-surface"
                 }`}
               >
                 <Text
-                  className={`text-sm ${
+                  className={`font-mono text-sm ${
                     msg.role === "user" ? "text-theme-primary" : "text-theme-secondary"
                   }`}
                 >
-                  {msg.text}
+                  {msg.role === "system" ? "> " : "$ "}{msg.text}
                 </Text>
               </View>
             </View>
@@ -205,13 +224,15 @@ export default function LearnModal({ visible, onClose, onSubmit }: LearnModalPro
           {/* Expertise Level Buttons */}
           {step === "expertise" && (
             <View className="gap-2 mt-2 mb-4">
-              {EXPERTISE_LEVELS.map((level) => (
+              {EXPERTISE_LEVELS.map((level, index) => (
                 <Pressable
                   key={level}
                   onPress={() => handleExpertiseSelect(level)}
-                  className="rounded-lg border border-theme-border bg-theme-surface px-4 py-3"
+                  className="border border-theme-primary/20 bg-theme-surface px-3 py-2"
                 >
-                  <Text className="text-theme-secondary text-sm">{level}</Text>
+                  <Text className="font-mono text-sm text-theme-secondary">
+                    <Text className="text-theme-primary">[{String(index + 1).padStart(2, "0")}]</Text> {level}
+                  </Text>
                 </Pressable>
               ))}
             </View>
@@ -220,13 +241,15 @@ export default function LearnModal({ visible, onClose, onSubmit }: LearnModalPro
           {/* Commitment Buttons */}
           {step === "commitment" && (
             <View className="gap-2 mt-2 mb-4">
-              {COMMITMENT_OPTIONS.map((opt) => (
+              {COMMITMENT_OPTIONS.map((opt, index) => (
                 <Pressable
                   key={opt.days}
                   onPress={() => handleCommitmentSelect(opt.days, opt.label)}
-                  className="rounded-lg border border-theme-border bg-theme-surface px-4 py-3"
+                  className="border border-theme-primary/20 bg-theme-surface px-3 py-2"
                 >
-                  <Text className="text-theme-secondary text-sm">{opt.label}</Text>
+                  <Text className="font-mono text-sm text-theme-secondary">
+                    <Text className="text-theme-primary">[{String(index + 1).padStart(2, "0")}]</Text> {opt.label}
+                  </Text>
                 </Pressable>
               ))}
             </View>
@@ -235,13 +258,15 @@ export default function LearnModal({ visible, onClose, onSubmit }: LearnModalPro
           {/* Duration Buttons */}
           {step === "duration" && (
             <View className="gap-2 mt-2 mb-4">
-              {DURATION_OPTIONS.map((opt) => (
+              {DURATION_OPTIONS.map((opt, index) => (
                 <Pressable
                   key={opt.months}
                   onPress={() => handleDurationSelect(opt.months, opt.label)}
-                  className="rounded-lg border border-theme-border bg-theme-surface px-4 py-3"
+                  className="border border-theme-primary/20 bg-theme-surface px-3 py-2"
                 >
-                  <Text className="text-theme-secondary text-sm">{opt.label}</Text>
+                  <Text className="font-mono text-sm text-theme-secondary">
+                    <Text className="text-theme-primary">[{String(index + 1).padStart(2, "0")}]</Text> {opt.label}
+                  </Text>
                 </Pressable>
               ))}
             </View>
@@ -249,31 +274,33 @@ export default function LearnModal({ visible, onClose, onSubmit }: LearnModalPro
 
           {/* Summary / Done */}
           {step === "done" && (
-            <View className="mt-4 rounded-lg border border-theme-border bg-theme-surface p-4 mb-4">
-              <Text className="text-theme-secondary text-sm font-medium mb-3">Summary</Text>
-              <View className="gap-2">
-                <SummaryRow label="Topic" value={topic} />
-                <SummaryRow label="Details" value={details} />
-                <SummaryRow label="Expertise" value={expertise} />
+            <View className="mt-4 border border-theme-primary/20 bg-theme-surface p-3 mb-4">
+              <Text className="font-mono text-sm text-theme-muted uppercase tracking-wider mb-3">
+                {">"} SUMMARY
+              </Text>
+              <View className="gap-1">
+                <SummaryRow label="TOPIC" value={topic} />
+                <SummaryRow label="DETAILS" value={details} />
+                <SummaryRow label="LEVEL" value={expertise} />
                 {expertiseDetails && (
-                  <SummaryRow label="Background" value={expertiseDetails} />
+                  <SummaryRow label="BACKGROUND" value={expertiseDetails} />
                 )}
                 <SummaryRow
-                  label="Commitment"
+                  label="FREQUENCY"
                   value={COMMITMENT_OPTIONS.find((o) => o.days === commitmentDays)?.label || ""}
                 />
                 <SummaryRow
-                  label="Duration"
+                  label="DURATION"
                   value={DURATION_OPTIONS.find((o) => o.months === durationMonths)?.label || ""}
                 />
                 <SummaryRow
-                  label="Total Modules"
+                  label="MODULES"
                   value={String(Math.max(1, Math.floor((durationMonths * 30) / commitmentDays)))}
                 />
               </View>
               <View className="mt-4">
                 <Button onPress={handleSubmit}>
-                  {l.begin || "Begin"}
+                  {l.begin || "INITIALIZE"}
                 </Button>
               </View>
             </View>
@@ -282,7 +309,7 @@ export default function LearnModal({ visible, onClose, onSubmit }: LearnModalPro
 
         {/* Input Area */}
         {(step === "topic" || step === "details" || step === "expertiseDetails") && (
-          <View className="px-4 py-3 border-t border-theme-border bg-theme-surface flex-row gap-2">
+          <View className="px-4 py-3 border-t border-theme-primary/30 bg-theme-surface flex-row gap-2">
             {step === "expertiseDetails" ? (
               <>
                 <View className="flex-1">
@@ -295,7 +322,7 @@ export default function LearnModal({ visible, onClose, onSubmit }: LearnModalPro
                   />
                 </View>
                 <Button size="sm" onPress={handleExpertiseDetailsSubmit}>
-                  {inputValue.trim() ? "Send" : "Skip"}
+                  {inputValue.trim() ? "SEND" : "SKIP"}
                 </Button>
               </>
             ) : (
@@ -320,13 +347,14 @@ export default function LearnModal({ visible, onClose, onSubmit }: LearnModalPro
                   onPress={step === "topic" ? handleTopicSubmit : handleDetailsSubmit}
                   disabled={!inputValue.trim()}
                 >
-                  Send
+                  SEND
                 </Button>
               </>
             )}
           </View>
         )}
-      </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
+      </View>
     </RNModal>
   );
 }
@@ -334,8 +362,8 @@ export default function LearnModal({ visible, onClose, onSubmit }: LearnModalPro
 function SummaryRow({ label, value }: { label: string; value: string }) {
   return (
     <View className="flex-row">
-      <Text className="text-theme-muted text-xs w-24">{label}:</Text>
-      <Text className="text-theme-secondary text-xs flex-1">{value}</Text>
+      <Text className="font-mono text-sm text-theme-muted w-28">{label}:</Text>
+      <Text className="font-mono text-sm text-theme-secondary flex-1">{value}</Text>
     </View>
   );
 }

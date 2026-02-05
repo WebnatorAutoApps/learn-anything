@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Pressable, ScrollView, Modal as RNModal } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { SettingsTab } from "@learn-anything/shared";
 import { useProfile } from "@learn-anything/shared";
 import { useI18n } from "../../i18n/I18nProvider";
-import { Spinner } from "../ui";
 import GeneralSettings from "./GeneralSettings";
 import ApiKeysSettings from "./ApiKeysSettings";
 import ThemeSettings from "./ThemeSettings";
@@ -24,12 +24,17 @@ export default function SettingsModal({
   const { t } = useI18n();
   const s = t.settings as Record<string, string>;
   const [activeTab, setActiveTab] = useState<SettingsTab>(initialTab);
+  const insets = useSafeAreaInsets();
   const { isLoading, isError } = useProfile();
 
+  useEffect(() => {
+    if (visible) setActiveTab(initialTab);
+  }, [visible, initialTab]);
+
   const tabs: { key: SettingsTab; label: string }[] = [
-    { key: "general", label: s.tabGeneral || "General" },
-    { key: "api-keys", label: s.tabApiKeys || "API Keys" },
-    { key: "customization", label: s.tabCustomization || "Customization" },
+    { key: "general", label: "GENERAL" },
+    { key: "api-keys", label: "API_KEYS" },
+    { key: "customization", label: "CUSTOM" },
   ];
 
   return (
@@ -39,33 +44,33 @@ export default function SettingsModal({
       animationType="slide"
       onRequestClose={onClose}
     >
-      <View className="flex-1 bg-theme-bg">
+      <View className="flex-1 bg-theme-bg" style={{ paddingTop: insets.top }}>
         {/* Header */}
-        <View className="flex-row items-center justify-between px-4 py-3 border-b border-theme-border bg-theme-surface">
-          <Text className="text-lg font-semibold text-theme-secondary">
-            {s.title || "Settings"}
+        <View className="flex-row items-center justify-between px-4 py-2 border-b border-theme-primary/30 bg-theme-surface">
+          <Text className="font-mono text-base font-bold text-theme-primary tracking-wider">
+            {">"} {s.title || "SETTINGS"}
           </Text>
-          <Pressable onPress={onClose} className="p-2">
-            <Text className="text-theme-muted text-xl">✕</Text>
+          <Pressable onPress={onClose} className="py-1">
+            <Text className="font-mono text-base text-theme-muted">[ESC]</Text>
           </Pressable>
         </View>
 
         {/* Tab Bar */}
-        <View className="flex-row border-b border-theme-border bg-theme-surface">
+        <View className="flex-row border-b border-theme-primary/20 bg-theme-surface">
           {tabs.map((tab) => (
             <Pressable
               key={tab.key}
               onPress={() => setActiveTab(tab.key)}
-              className={`flex-1 py-3 items-center border-b-2 ${
+              className={`flex-1 py-2 items-center border-b-2 ${
                 activeTab === tab.key ? "border-theme-primary" : "border-transparent"
               }`}
             >
               <Text
-                className={`text-sm ${
-                  activeTab === tab.key ? "text-theme-primary font-medium" : "text-theme-muted"
+                className={`font-mono text-sm ${
+                  activeTab === tab.key ? "text-theme-primary font-bold" : "text-theme-muted"
                 }`}
               >
-                {tab.label}
+                [{tab.label}]
               </Text>
             </Pressable>
           ))}
@@ -75,15 +80,14 @@ export default function SettingsModal({
         <ScrollView className="flex-1 px-4 py-4">
           {isLoading ? (
             <View className="py-12 items-center">
-              <Spinner size="large" />
-              <Text className="text-theme-muted text-sm mt-2">
-                {s.loadingSettings || "Loading settings..."}
+              <Text className="font-mono text-base text-theme-muted animate-blink">
+                Loading configuration...
               </Text>
             </View>
           ) : isError ? (
             <View className="py-12 items-center">
-              <Text className="text-red-400 text-sm">
-                {s.loadError || "Failed to load settings."}
+              <Text className="font-mono text-base text-theme-error">
+                ERROR: {s.loadError || "Failed to load settings."}
               </Text>
             </View>
           ) : (
