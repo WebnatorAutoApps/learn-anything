@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { View, Platform, LogBox } from "react-native";
 import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
-import { setSupabaseClient, setStorageAdapter } from "@learn-anything/shared";
+import { setSupabaseClient, setStorageAdapter, GeminiKeyProvider } from "@learn-anything/shared";
 import { AuthProvider } from "../src/auth/AuthProvider";
 import { ThemeProvider, useTheme } from "../src/theme/ThemeProvider";
 import { I18nProvider } from "../src/i18n/I18nProvider";
@@ -69,14 +69,16 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <ThemeProvider>
-            <I18nProvider>
-              <ThemedContainer>
-                <StatusBar style="light" />
-                <Slot />
-              </ThemedContainer>
-            </I18nProvider>
-          </ThemeProvider>
+          <GeminiKeyProvider>
+            <ThemeProvider>
+              <I18nProvider>
+                <ThemedContainer>
+                  <StatusBar style="light" />
+                  <Slot />
+                </ThemedContainer>
+              </I18nProvider>
+            </ThemeProvider>
+          </GeminiKeyProvider>
         </AuthProvider>
       </QueryClientProvider>
     </SafeAreaProvider>

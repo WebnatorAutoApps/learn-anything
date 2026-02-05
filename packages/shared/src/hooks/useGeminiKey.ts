@@ -1,16 +1,29 @@
 /**
- * Hook for managing the Gemini API key stored locally on the device.
+ * Context + hook for managing the Gemini API key stored locally on the device.
  *
  * On web: localStorage
  * On native: expo-secure-store (via StorageAdapter)
+ *
+ * All consumers share the same state through GeminiKeyProvider.
  */
 
-import { useState, useEffect, useCallback } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { getStorage } from "../storage";
 
 const STORAGE_KEY = "gemini-api-key";
 
-export function useGeminiKey() {
+interface GeminiKeyContextValue {
+  apiKey: string | null;
+  hasKey: boolean;
+  last4: string | null;
+  isLoading: boolean;
+  saveKey: (key: string) => Promise<void>;
+  clearKey: () => Promise<void>;
+}
+
+const GeminiKeyContext = createContext<GeminiKeyContextValue | null>(null);
+
+export function GeminiKeyProvider({ children }: { children: React.ReactNode }) {
   const [apiKey, setApiKey] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -54,5 +67,17 @@ export function useGeminiKey() {
     setApiKey(null);
   }, []);
 
-  return { apiKey, hasKey, last4, isLoading, saveKey, clearKey };
+  return React.createElement(
+    GeminiKeyContext.Provider,
+    { value: { apiKey, hasKey, last4, isLoading, saveKey, clearKey } },
+    children
+  );
+}
+
+export function useGeminiKey() {
+  const context = useContext(GeminiKeyContext);
+  if (!context) {
+    throw new Error("useGeminiKey must be used within a GeminiKeyProvider");
+  }
+  return context;
 }

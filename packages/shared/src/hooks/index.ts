@@ -33,4 +33,4 @@ export {
 export { useSettingsModal } from "./useSettingsModal";
 export type { SettingsTab } from "./useSettingsModal";
 
-export { useGeminiKey } from "./useGeminiKey";
+export { GeminiKeyProvider, useGeminiKey } from "./useGeminiKey";
