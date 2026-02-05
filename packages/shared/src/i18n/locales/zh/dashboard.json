@@ -1,5 +1,6 @@
 {
   "dashboard": {
+    "systemReady": "系统就绪，等待输入...",
     "heading": "你今天想学什么？",
     "subheading": "你正在进行的学习路径。从上次中断的地方继续。",
     "browsePaths": "浏览学习路径",

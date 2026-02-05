@@ -1,5 +1,6 @@
 {
   "dashboard": {
+    "systemReady": "システム準備完了。入力待ち...",
     "heading": "今日は何を学びたいですか？",
     "subheading": "アクティブな学習パス。前回の続きから始めましょう。",
     "browsePaths": "学習パスを閲覧",
