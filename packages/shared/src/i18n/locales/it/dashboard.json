@@ -1,5 +1,6 @@
 {
   "dashboard": {
+    "systemReady": "sistema pronto. in attesa di input...",
     "heading": "Cosa vuoi imparare oggi?",
     "subheading": "I tuoi percorsi di apprendimento attivi. Riprendi da dove avevi lasciato.",
     "browsePaths": "Esplora i Percorsi",

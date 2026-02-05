@@ -49,6 +49,7 @@
     "msg12": "Plotting your path to mastery…",
     "msg13": "Calibrating steps to your level…",
     "msg14": "Turning big ideas into small steps…",
+    "generating": "GENERATING",
     "extendedWait": "Still working on it, hang tight…"
   },
   "dialogs": {

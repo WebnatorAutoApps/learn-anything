@@ -131,7 +131,7 @@ export default function DashboardScreen() {
 
         <View className="mb-2">
           <Text className="font-mono text-sm text-theme-muted mb-3">
-            {"> "}system ready. awaiting input...
+            {"> "}{d.systemReady || "system ready. awaiting input..."}
           </Text>
           <View className="flex-row items-center">
             <Text className="font-mono text-xl text-theme-primary">
