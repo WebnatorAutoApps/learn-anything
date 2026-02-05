@@ -491,5 +491,19 @@
     "tipLabel": "Suggerimento:",
     "tipBody": "Crea una chiave API dedicata solo per questa app. Usa il piano gratuito di Google per avere costo zero. Puoi revocare la chiave in qualsiasi momento da Google AI Studio.",
     "goToSettings": "Vai alle Impostazioni"
+  },
+  "preview": {
+    "title": "ANTEPRIMA",
+    "subtitle": "Rivedi il percorso di apprendimento generato prima di salvarlo.",
+    "expectedLevel": "Livello atteso",
+    "likelihood": "Probabilit\u00e0",
+    "modules": "Passaggi",
+    "projects": "Progetti",
+    "projectOption": "Opzione",
+    "objective": "Obiettivo",
+    "confirm": "Conferma e salva",
+    "goBack": "Indietro",
+    "saving": "Salvataggio...",
+    "moduleLabel": "PASSAGGIO"
   }
 }

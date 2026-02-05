@@ -16,7 +16,7 @@ export async function callGemini(
   signal?: AbortSignal
 ): Promise<LLMResponse> {
   const userPrompt = buildUserPrompt(request);
-  const systemPrompt = buildSystemPrompt(request.tone);
+  const systemPrompt = buildSystemPrompt(request.tone, request.locale);
 
   const response = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
     method: "POST",

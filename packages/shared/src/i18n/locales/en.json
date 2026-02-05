@@ -491,5 +491,19 @@
     "tipLabel": "Tip:",
     "tipBody": "Create a dedicated API key just for this app. Use Google's free-tier plan so there's zero cost. You can revoke the key anytime from Google AI Studio.",
     "goToSettings": "Go to Settings"
+  },
+  "preview": {
+    "title": "PREVIEW",
+    "subtitle": "Review your generated learning path before saving.",
+    "expectedLevel": "Expected Level",
+    "likelihood": "Likelihood",
+    "modules": "Modules",
+    "projects": "Projects",
+    "projectOption": "Option",
+    "objective": "Objective",
+    "confirm": "Confirm & Save",
+    "goBack": "Go Back",
+    "saving": "Saving...",
+    "moduleLabel": "MODULE"
   }
 }

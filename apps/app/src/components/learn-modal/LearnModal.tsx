@@ -45,9 +45,10 @@ interface LearnModalProps {
   visible: boolean;
   onClose: () => void;
   onSubmit: (data: LearningPlanData) => void;
+  initialData?: LearningPlanData | null;
 }
 
-export default function LearnModal({ visible, onClose, onSubmit }: LearnModalProps) {
+export default function LearnModal({ visible, onClose, onSubmit, initialData }: LearnModalProps) {
   const { t } = useI18n();
   const l = t.learn as Record<string, string>;
   const insets = useSafeAreaInsets();
@@ -69,17 +70,44 @@ export default function LearnModal({ visible, onClose, onSubmit }: LearnModalPro
 
   useEffect(() => {
     if (visible) {
-      setStep("topic");
-      setMessages([
-        { role: "system", text: l.whatToLearn || "What do you want to learn?" },
-      ]);
-      setInputValue("");
-      setTopic("");
-      setDetails("");
-      setExpertise("");
-      setExpertiseDetails("");
-      setCommitmentDays(0);
-      setDurationMonths(0);
+      if (initialData) {
+        setTopic(initialData.whatToLearn);
+        setDetails(initialData.openDetail);
+        setExpertise(initialData.currentExpertise);
+        setExpertiseDetails(initialData.expertiseDetail);
+        setCommitmentDays(initialData.commitmentDays);
+        setDurationMonths(initialData.durationMonths);
+        setInputValue("");
+        const summaryMessages: Message[] = [
+          { role: "system", text: l.whatToLearn || "What do you want to learn?" },
+          { role: "user", text: initialData.whatToLearn },
+          { role: "system", text: l.tellMeMore || "Tell me more about your learning goals for this topic." },
+          { role: "user", text: initialData.openDetail },
+          { role: "system", text: l.expertiseLevel || "What's your current expertise level?" },
+          { role: "user", text: initialData.currentExpertise },
+          { role: "system", text: l.expertiseMoreDetail || "Tell me more about your current level (optional)." },
+          { role: "user", text: initialData.expertiseDetail || "(skipped)" },
+          { role: "system", text: l.commitmentFrequency || "How often can you dedicate time?" },
+          { role: "user", text: COMMITMENT_OPTIONS.find((o) => o.days === initialData.commitmentDays)?.label || "" },
+          { role: "system", text: l.howLong || "How long do you want this to take?" },
+          { role: "user", text: DURATION_OPTIONS.find((o) => o.months === initialData.durationMonths)?.label || "" },
+          { role: "system", text: l.reviewSummary || "Here's a summary of your learning plan. Ready to begin?" },
+        ];
+        setMessages(summaryMessages);
+        setStep("done");
+      } else {
+        setStep("topic");
+        setMessages([
+          { role: "system", text: l.whatToLearn || "What do you want to learn?" },
+        ]);
+        setInputValue("");
+        setTopic("");
+        setDetails("");
+        setExpertise("");
+        setExpertiseDetails("");
+        setCommitmentDays(0);
+        setDurationMonths(0);
+      }
     }
   }, [visible]);
 
@@ -165,6 +193,8 @@ export default function LearnModal({ visible, onClose, onSubmit }: LearnModalPro
       currentExpertise: expertise,
       expertiseDetail: expertiseDetails,
       totalModules,
+      commitmentDays,
+      durationMonths,
     });
   }
 

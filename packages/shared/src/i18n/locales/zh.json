@@ -491,5 +491,19 @@
     "tipLabel": "提示：",
     "tipBody": "专门为此应用创建一个API密钥。使用Google的免费计划，这样完全免费。你可以随时从Google AI Studio撤销密钥。",
     "goToSettings": "前往设置"
+  },
+  "preview": {
+    "title": "预览",
+    "subtitle": "在保存之前查看生成的学习路径。",
+    "expectedLevel": "预期水平",
+    "likelihood": "可能性",
+    "modules": "步骤",
+    "projects": "项目",
+    "projectOption": "选项",
+    "objective": "目标",
+    "confirm": "确认并保存",
+    "goBack": "返回",
+    "saving": "保存中...",
+    "moduleLabel": "步骤"
   }
 }

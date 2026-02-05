@@ -16,6 +16,8 @@ export { useProfile, useCourses, useCourseDetail, useUpcomingProjects } from "./
 
 export {
   useCreateCourse,
+  useGenerateCourse,
+  useSaveCourse,
   useEnrollCourse,
   useUnenrollCourse,
   useSaveTone,

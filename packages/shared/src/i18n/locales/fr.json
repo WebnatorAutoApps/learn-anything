@@ -490,6 +490,20 @@
     "step4Body": "Allez dans Paramètres > Clés API dans cette application, collez votre clé dans le champ de saisie et cliquez sur Enregistrer la clé. Vous êtes prêt !",
     "tipLabel": "Conseil :",
     "tipBody": "Créez une clé API dédiée uniquement à cette application. Utilisez le plan gratuit de Google pour un coût nul. Vous pouvez révoquer la clé à tout moment depuis Google AI Studio.",
-    "goToSettings": "Aller aux Paramètres"
+    "goToSettings": "Aller aux Param\u00e8tres"
+  },
+  "preview": {
+    "title": "APERÇU",
+    "subtitle": "V\u00e9rifiez votre parcours d'apprentissage g\u00e9n\u00e9r\u00e9 avant de l'enregistrer.",
+    "expectedLevel": "Niveau attendu",
+    "likelihood": "Probabilit\u00e9",
+    "modules": "\u00c9tapes",
+    "projects": "Projets",
+    "projectOption": "Option",
+    "objective": "Objectif",
+    "confirm": "Confirmer et enregistrer",
+    "goBack": "Retour",
+    "saving": "Enregistrement...",
+    "moduleLabel": "\u00c9TAPE"
   }
 }
