@@ -1,4 +1,4 @@
-export type Locale = "en" | "es" | "fr" | "de" | "it" | "zh";
+export type Locale = "en" | "es" | "fr" | "de" | "it" | "zh" | "ja";
 
 export interface LocaleConfig {
   code: Locale;
@@ -14,6 +14,7 @@ export const SUPPORTED_LOCALES: LocaleConfig[] = [
   { code: "de", name: "German", nativeName: "Deutsch", flag: "🇩🇪" },
   { code: "it", name: "Italian", nativeName: "Italiano", flag: "🇮🇹" },
   { code: "zh", name: "Chinese", nativeName: "中文", flag: "🇨🇳" },
+  { code: "ja", name: "Japanese", nativeName: "日本語", flag: "🇯🇵" },
 ];
 
 export const DEFAULT_LOCALE: Locale = "en";
