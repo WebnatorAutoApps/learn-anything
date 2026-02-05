@@ -77,7 +77,7 @@ export default function ProgramCreationLoader({
 
     return (
       <RNModal visible transparent animationType="fade">
-        <View className="flex-1 items-center justify-center px-6 bg-theme-bg">
+        <View className="flex-1 items-center justify-center px-6 bg-theme-bg/80">
           <View className={`w-full max-w-md border ${borderColor} bg-theme-bg p-6`}>
             <Text className={`font-mono text-base ${headerColor} font-bold mb-2`}>
               {">"} {isLowLikelihood ? (cr.warningLabel || "WARNING") : (errors.errorPrefix || "ERROR:")}
@@ -89,7 +89,7 @@ export default function ProgramCreationLoader({
               {"// "}{detailMessage}
             </Text>
             <View className="flex-row gap-3">
-              {canRetry && onRetry && (
+              {!isLowLikelihood && canRetry && onRetry && (
                 <View className="flex-1">
                   <Button onPress={onRetry}>
                     {errors.retrySubmission || "RETRY"}
@@ -97,7 +97,7 @@ export default function ProgramCreationLoader({
                 </View>
               )}
               <View className="flex-1">
-                <Button variant={canRetry ? "secondary" : "danger"} onPress={onDismissError}>
+                <Button variant={!isLowLikelihood && canRetry ? "secondary" : "danger"} onPress={onDismissError}>
                   {errors.goBack || "GO_BACK"}
                 </Button>
               </View>
@@ -110,7 +110,7 @@ export default function ProgramCreationLoader({
 
   return (
     <RNModal visible transparent animationType="fade">
-      <View className="flex-1 items-center justify-center px-6 bg-theme-bg">
+      <View className="flex-1 items-center justify-center px-6 bg-theme-bg/80">
         <View className="items-center max-w-lg">
           <Text className="font-mono text-xl text-theme-primary animate-blink mb-6">
             [{loading.generating || "GENERATING"}]
