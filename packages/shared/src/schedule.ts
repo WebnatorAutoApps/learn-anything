@@ -5,6 +5,8 @@
  * timezone discrepancies between server and client.
  */
 
+import { ERROR_MESSAGES } from "./constants/errors";
+
 export const MAX_ENROLLMENT_DAYS = 365;
 
 export type ModuleStatus = "CURRENT" | "NEXT_PREVIEW" | "LOCKED";
@@ -58,7 +60,7 @@ export function generateModuleSchedule(
 ): ModuleScheduleEntry[] {
   if (modules.length === 0) return [];
   if (intervalDays < 1) {
-    throw new Error("intervalDays must be at least 1");
+    throw new Error(ERROR_MESSAGES.INTERVAL_DAYS_MIN);
   }
 
   return modules.map((mod, idx) => {

@@ -8,6 +8,8 @@ import {
   useUpdateEmail,
   useUpdatePassword,
   useUploadAvatar,
+  ERROR_MESSAGES,
+  PASSWORD_MIN_LENGTH,
 } from "@learn-anything/shared";
 import type { FeedbackMessage } from "@learn-anything/shared";
 import { useI18n } from "../../i18n/I18nProvider";
@@ -61,7 +63,7 @@ function AvatarSection() {
       await uploadAvatar.mutateAsync(blob);
       setMessage({ type: "success", text: s.profilePictureUpdated || "Profile picture updated." });
     } catch {
-      setMessage({ type: "error", text: "Failed to upload image." });
+      setMessage({ type: "error", text: ERROR_MESSAGES.UPLOAD_FAILED });
     }
   }
 
@@ -199,11 +201,11 @@ function PasswordSection() {
 
   async function handleSave() {
     if (newPassword !== confirmPassword) {
-      setMessage({ type: "error", text: "Passwords do not match." });
+      setMessage({ type: "error", text: ERROR_MESSAGES.PASSWORD_MISMATCH });
       return;
     }
-    if (newPassword.length < 6) {
-      setMessage({ type: "error", text: "Password must be at least 6 characters." });
+    if (newPassword.length < PASSWORD_MIN_LENGTH) {
+      setMessage({ type: "error", text: ERROR_MESSAGES.PASSWORD_TOO_SHORT });
       return;
     }
     setMessage(null);

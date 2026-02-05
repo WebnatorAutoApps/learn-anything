@@ -37,7 +37,7 @@ export function useCreateCourse() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) throw new Error(ERROR_MESSAGES.NOT_AUTHENTICATED);
 
       const request: LearningRequest = {
         learning_goal_short: planData.whatToLearn,
@@ -57,7 +57,7 @@ export function useCreateCourse() {
           low_likelihood: true,
           likelihood_of_learning: llmResponse.likelihood_of_learning,
           normalized_title: llmResponse.normalized_title,
-          error: `This learning goal has a low likelihood of success (${llmResponse.likelihood_of_learning}%). The AI determined that meaningful progress through small practical projects is unlikely for this goal. Consider refining your learning goal, adjusting the scope, or choosing a more project-oriented skill.`,
+          error: `${ERROR_MESSAGES.LOW_LIKELIHOOD_WARNING} (${llmResponse.likelihood_of_learning}%). The AI determined that meaningful progress through small practical projects is unlikely for this goal. Consider refining your learning goal, adjusting the scope, or choosing a more project-oriented skill.`,
         };
       }
 
@@ -165,7 +165,7 @@ export function useEnrollCourse() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) throw new Error(ERROR_MESSAGES.NOT_AUTHENTICATED);
 
       const intervalDays =
         typeof commitmentIntervalDays === "number" && commitmentIntervalDays >= 1
@@ -334,7 +334,7 @@ export function useUnenrollCourse() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) throw new Error(ERROR_MESSAGES.NOT_AUTHENTICATED);
 
       const { data: course } = await supabase
         .from("courses")
@@ -419,14 +419,14 @@ export function useSaveTone() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) throw new Error(ERROR_MESSAGES.NOT_AUTHENTICATED);
 
       const { error } = await supabase
         .from("profiles")
         .update({ tone: tone || null })
         .eq("id", user.id);
 
-      if (error) throw new Error("Failed to update tone");
+      if (error) throw new Error(ERROR_MESSAGES.TONE_UPDATE_FAILED);
       return { success: true };
     },
     onSuccess: () => {
@@ -445,14 +445,14 @@ export function useSaveTheme() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) throw new Error(ERROR_MESSAGES.NOT_AUTHENTICATED);
 
       const { error } = await supabase
         .from("profiles")
         .update({ theme })
         .eq("id", user.id);
 
-      if (error) throw new Error("Failed to update theme");
+      if (error) throw new Error(ERROR_MESSAGES.THEME_UPDATE_FAILED);
       return { success: true };
     },
     onSuccess: () => {
@@ -479,7 +479,7 @@ export function useSelectProject() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) throw new Error(ERROR_MESSAGES.NOT_AUTHENTICATED);
 
       // Verify module belongs to course
       const { data: mod, error: modError } = await supabase
@@ -554,7 +554,7 @@ export function useCompleteProject() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) throw new Error(ERROR_MESSAGES.NOT_AUTHENTICATED);
 
       // Find user's selected project for this module
       const { data: selection, error: selError } = await supabase
@@ -617,7 +617,7 @@ export function useUploadCompletionImage() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) throw new Error(ERROR_MESSAGES.NOT_AUTHENTICATED);
 
       const ext = file.type.split("/")[1] || "jpg";
       const timestamp = Date.now();
@@ -630,7 +630,7 @@ export function useUploadCompletionImage() {
 
       if (uploadError) {
         console.error("Upload error:", uploadError);
-        throw new Error("Failed to upload image");
+        throw new Error(ERROR_MESSAGES.UPLOAD_FAILED);
       }
 
       const { data: urlData } = supabase.storage
@@ -652,14 +652,14 @@ export function useUpdateProfile() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) throw new Error(ERROR_MESSAGES.NOT_AUTHENTICATED);
 
       const { error } = await supabase
         .from("profiles")
         .update({ full_name: data.full_name })
         .eq("id", user.id);
 
-      if (error) throw new Error("Failed to update profile");
+      if (error) throw new Error(ERROR_MESSAGES.PROFILE_UPDATE_FAILED);
       return { success: true };
     },
     onSuccess: () => {
@@ -678,7 +678,7 @@ export function useUploadAvatar() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) throw new Error(ERROR_MESSAGES.NOT_AUTHENTICATED);
 
       const ext = file.type.split("/")[1] || "jpg";
       const filePath = `${user.id}/avatar.${ext}`;
@@ -692,7 +692,7 @@ export function useUploadAvatar() {
 
       if (uploadError) {
         console.error("Avatar upload error:", uploadError);
-        throw new Error("Failed to upload avatar");
+        throw new Error(ERROR_MESSAGES.AVATAR_UPLOAD_FAILED);
       }
 
       const { data: urlData } = supabase.storage
@@ -708,7 +708,7 @@ export function useUploadAvatar() {
 
       if (updateError) {
         console.error("Profile avatar update error:", updateError);
-        throw new Error("Failed to update profile avatar");
+        throw new Error(ERROR_MESSAGES.AVATAR_PROFILE_UPDATE_FAILED);
       }
 
       return avatarUrl;
@@ -752,7 +752,7 @@ export function useUpdatePassword() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      if (!user?.email) throw new Error("Not authenticated");
+      if (!user?.email) throw new Error(ERROR_MESSAGES.NOT_AUTHENTICATED);
 
       const { error: verifyError } = await supabase.auth.signInWithPassword({
         email: user.email,
@@ -786,7 +786,7 @@ export function useUpdateUsername() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) throw new Error(ERROR_MESSAGES.NOT_AUTHENTICATED);
 
       const username = data.username.trim().toLowerCase();
 
@@ -822,7 +822,7 @@ export function useUpdateUsername() {
         if (updateError.code === "23505") {
           throw new Error(ERROR_MESSAGES.USERNAME_TAKEN);
         }
-        throw new Error("Failed to update username");
+        throw new Error(ERROR_MESSAGES.USERNAME_UPDATE_FAILED);
       }
 
       return { success: true, username };

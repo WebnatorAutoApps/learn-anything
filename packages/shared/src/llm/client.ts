@@ -6,6 +6,7 @@
  */
 
 import { GEMINI_API_URL, GEMINI_TEMPERATURE } from "../constants/llm";
+import { ERROR_MESSAGES } from "../constants/errors";
 import { buildSystemPrompt, buildUserPrompt } from "./prompt";
 import type { LearningRequest, LLMResponse } from "./types";
 
@@ -40,10 +41,10 @@ export async function callGemini(
 
   if (!response.ok) {
     if (response.status === 400 || response.status === 403) {
-      throw new Error("Invalid Gemini API key. Please check your key in Settings.");
+      throw new Error(ERROR_MESSAGES.GEMINI_INVALID_KEY);
     }
     if (response.status === 429) {
-      throw new Error("Gemini API rate limit exceeded. Please try again later.");
+      throw new Error(ERROR_MESSAGES.GEMINI_RATE_LIMITED);
     }
     const errorBody = await response.text();
     throw new Error(`Gemini API error (${response.status}): ${errorBody}`);
@@ -53,17 +54,17 @@ export async function callGemini(
 
   const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
   if (!text) {
-    throw new Error("Gemini returned an empty response. Please try again.");
+    throw new Error(ERROR_MESSAGES.GEMINI_EMPTY_RESPONSE);
   }
 
   const parsed = JSON.parse(text) as LLMResponse;
 
   if (!parsed.normalized_title || !parsed.program || !Array.isArray(parsed.program)) {
-    throw new Error("Gemini returned an invalid response structure.");
+    throw new Error(ERROR_MESSAGES.GEMINI_INVALID_RESPONSE);
   }
 
   if (typeof parsed.likelihood_of_learning !== "number") {
-    throw new Error("Gemini returned an invalid likelihood value.");
+    throw new Error(ERROR_MESSAGES.GEMINI_INVALID_LIKELIHOOD);
   }
 
   return parsed;

@@ -8,6 +8,7 @@
  */
 
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { ERROR_MESSAGES } from "./constants/errors";
 
 let _supabase: SupabaseClient | null = null;
 
@@ -17,9 +18,7 @@ export function setSupabaseClient(client: SupabaseClient) {
 
 export function getSupabaseClient(): SupabaseClient {
   if (!_supabase) {
-    throw new Error(
-      "SupabaseClient not initialized. Call setSupabaseClient() at app startup."
-    );
+    throw new Error(ERROR_MESSAGES.SUPABASE_NOT_INITIALIZED);
   }
   return _supabase;
 }

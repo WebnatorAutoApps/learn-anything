@@ -6,6 +6,8 @@
  * - Native: wraps expo-secure-store or AsyncStorage
  */
 
+import { ERROR_MESSAGES } from "./constants/errors";
+
 export interface StorageAdapter {
   getItem(key: string): Promise<string | null>;
   setItem(key: string, value: string): Promise<void>;
@@ -20,9 +22,7 @@ export function setStorageAdapter(adapter: StorageAdapter) {
 
 export function getStorage(): StorageAdapter {
   if (!_storage) {
-    throw new Error(
-      "StorageAdapter not initialized. Call setStorageAdapter() at app startup."
-    );
+    throw new Error(ERROR_MESSAGES.STORAGE_NOT_INITIALIZED);
   }
   return _storage;
 }

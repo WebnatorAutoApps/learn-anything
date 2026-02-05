@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "expo-router";
-import { useCreateCourse, useGeminiKey, useProfile } from "@learn-anything/shared";
+import { useCreateCourse, useGeminiKey, useProfile, ERROR_MESSAGES } from "@learn-anything/shared";
 
 export interface LearningPlanData {
   whatToLearn: string;
@@ -30,7 +30,7 @@ export function useCourseCreation() {
   const submitPlan = useCallback(
     async (planData: LearningPlanData) => {
       if (!apiKey) {
-        setCreationError("No API key configured.");
+        setCreationError(ERROR_MESSAGES.NO_API_KEY);
         setCreationErrorKey("generic");
         return;
       }
@@ -67,7 +67,7 @@ export function useCourseCreation() {
 
         setCreationErrorKey("generic");
         setCreationError(
-          err instanceof Error ? err.message : "Failed to create course."
+          err instanceof Error ? err.message : ERROR_MESSAGES.COURSE_CREATION_FAILED
         );
       }
     },

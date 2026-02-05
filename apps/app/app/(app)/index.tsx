@@ -99,9 +99,9 @@ export default function DashboardScreen() {
       />
 
       {profileError && (
-        <View className="border-b border-red-900/50 bg-red-950/30 px-4 py-3">
+        <View className="border-b border-theme-error/50 bg-theme-error/30 px-4 py-3">
           <View className="flex-row items-center justify-between">
-            <Text className="text-sm text-red-400 flex-1">
+            <Text className="text-sm text-theme-error flex-1">
               {d.errorBanner || "We're having trouble right now."}
             </Text>
             <Button

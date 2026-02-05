@@ -38,7 +38,7 @@ export default function CourseDetailScreen() {
 
     return (
       <View className="flex-1 bg-theme-bg items-center justify-center px-6">
-        <Text className="font-mono text-red-400 text-base mb-4">
+        <Text className="font-mono text-theme-error text-base mb-4">
           ERROR: {errorMessage}
         </Text>
         <Button onPress={() => router.back()}>

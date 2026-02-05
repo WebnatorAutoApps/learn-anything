@@ -108,6 +108,35 @@ export const ERROR_MESSAGES = {
   // Settings loading
   SETTINGS_LOAD_FAILED: "Failed to load settings. Please try again later.",
 
+  // Gemini LLM
+  GEMINI_INVALID_KEY: "Invalid Gemini API key. Please check your key in Settings.",
+  GEMINI_RATE_LIMITED: "Gemini API rate limit exceeded. Please try again later.",
+  GEMINI_EMPTY_RESPONSE: "Gemini returned an empty response. Please try again.",
+  GEMINI_INVALID_RESPONSE: "Gemini returned an invalid response structure.",
+  GEMINI_INVALID_LIKELIHOOD: "Gemini returned an invalid likelihood value.",
+
+  // Tone & Theme (mutation-level)
+  TONE_UPDATE_FAILED: "Failed to update tone",
+  THEME_UPDATE_FAILED: "Failed to update theme",
+
+  // Avatar (mutation-level)
+  AVATAR_PROFILE_UPDATE_FAILED: "Failed to update profile avatar",
+
+  // Auth (app-level)
+  NO_OAUTH_URL: "No OAuth URL returned",
+  NO_AUTH_TOKENS: "No authentication tokens received",
+  AUTH_FAILED: "Authentication failed. Please try again.",
+
+  // Low likelihood warning
+  LOW_LIKELIHOOD_WARNING: "This learning goal has a low likelihood of success",
+
+  // Platform initialization
+  SUPABASE_NOT_INITIALIZED: "SupabaseClient not initialized. Call setSupabaseClient() at app startup.",
+  STORAGE_NOT_INITIALIZED: "StorageAdapter not initialized. Call setStorageAdapter() at app startup.",
+
+  // Schedule
+  INTERVAL_DAYS_MIN: "intervalDays must be at least 1",
+
   // HTTP status-specific (course creation / LLM)
   SERVICE_OVERLOADED: "The AI service is temporarily overloaded. Please try again in a few moments.",
   RATE_LIMITED: "Too many requests. Please wait a moment before trying again.",

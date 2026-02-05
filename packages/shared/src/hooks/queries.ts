@@ -3,6 +3,7 @@ import { queryKeys } from "./keys";
 import { getSupabaseClient } from "../supabase";
 import { generateUsername } from "../utils/username";
 import { resolveModuleStatuses } from "../schedule";
+import { ERROR_MESSAGES } from "../constants/errors";
 import type { ModuleScheduleEntry } from "../schedule";
 import type {
   Profile,
@@ -20,7 +21,7 @@ export function useProfile() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) throw new Error(ERROR_MESSAGES.NOT_AUTHENTICATED);
 
       const profileSelect =
         "id, full_name, email, avatar_url, username, tone, theme, created_at, updated_at";
@@ -126,7 +127,7 @@ export function useCourses(status: string) {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) throw new Error(ERROR_MESSAGES.NOT_AUTHENTICATED);
 
       let query = supabase
         .from("courses")
@@ -145,7 +146,7 @@ export function useCourses(status: string) {
 
       if (error) {
         console.error("Courses fetch error:", error);
-        throw new Error("Failed to fetch courses");
+        throw new Error(ERROR_MESSAGES.COURSES_FETCH_FAILED);
       }
 
       return (courses || []).map((course) => ({
@@ -177,7 +178,7 @@ export function useCourseDetail(id: string) {
         .single();
 
       if (courseError || !courseRow) {
-        const err = new Error("Course not found");
+        const err = new Error(ERROR_MESSAGES.COURSE_NOT_FOUND);
         (err as Error & { status: number }).status = 404;
         throw err;
       }
@@ -227,7 +228,7 @@ export function useCourseDetail(id: string) {
         .order("module_index", { ascending: true });
 
       if (modulesError) {
-        throw new Error("Failed to fetch modules");
+        throw new Error(ERROR_MESSAGES.MODULES_FETCH_FAILED);
       }
 
       // Fetch schedule data if enrolled
@@ -329,7 +330,7 @@ export function useCourseDetail(id: string) {
             .order("project_index", { ascending: true });
 
           if (projectsError) {
-            throw new Error("Failed to fetch projects");
+            throw new Error(ERROR_MESSAGES.PROJECTS_FETCH_FAILED);
           }
 
           projects = projectsData || [];
@@ -404,7 +405,7 @@ export function useUpcomingProjects() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) throw new Error(ERROR_MESSAGES.NOT_AUTHENTICATED);
 
       // Find all enrolled courses
       const { data: ownedCourses } = await supabase

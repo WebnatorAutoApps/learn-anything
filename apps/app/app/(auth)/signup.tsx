@@ -77,8 +77,8 @@ export default function SignupScreen() {
           </View>
 
           {error ? (
-            <View className="rounded-lg bg-red-900/20 border border-red-800 p-3 mb-4">
-              <Text className="text-sm text-red-400">{error}</Text>
+            <View className="rounded-lg bg-theme-error/20 border border-theme-error p-3 mb-4">
+              <Text className="text-sm text-theme-error">{error}</Text>
             </View>
           ) : null}
 

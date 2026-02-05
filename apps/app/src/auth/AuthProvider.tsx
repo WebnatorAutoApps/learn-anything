@@ -3,6 +3,7 @@ import { Platform } from "react-native";
 import type { Session, User } from "@supabase/supabase-js";
 import * as WebBrowser from "expo-web-browser";
 import { makeRedirectUri } from "expo-auth-session";
+import { ERROR_MESSAGES } from "@learn-anything/shared";
 import { supabase } from "../lib/supabase";
 
 interface AuthContextValue {
@@ -77,7 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         },
       });
       if (error) return { error: error.message };
-      if (!data.url) return { error: "No OAuth URL returned" };
+      if (!data.url) return { error: ERROR_MESSAGES.NO_OAUTH_URL };
 
       const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
       if (result.type !== "success") {
@@ -114,10 +115,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return {};
       }
 
-      return { error: "No authentication tokens received" };
+      return { error: ERROR_MESSAGES.NO_AUTH_TOKENS };
     } catch (e) {
       console.error("Google OAuth error:", e);
-      return { error: "Authentication failed. Please try again." };
+      return { error: ERROR_MESSAGES.AUTH_FAILED };
     }
   };
 

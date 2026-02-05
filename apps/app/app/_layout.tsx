@@ -7,7 +7,7 @@ import { SafeAreaProvider, useSafeAreaInsets } from "react-native-safe-area-cont
 import { StatusBar } from "expo-status-bar";
 import { setSupabaseClient, setStorageAdapter, GeminiKeyProvider } from "@learn-anything/shared";
 import { AuthProvider } from "../src/auth/AuthProvider";
-import { ThemeProvider, useTheme } from "../src/theme/ThemeProvider";
+import { ThemeProvider, useTheme } from "../src/theme";
 import { I18nProvider } from "../src/i18n/I18nProvider";
 import { supabase } from "../src/lib/supabase";
 
