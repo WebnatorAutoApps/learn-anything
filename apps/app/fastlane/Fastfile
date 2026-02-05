@@ -1,0 +1,20 @@
+default_platform(:android)
+
+platform :android do
+  desc "Build APK and upload to Firebase App Distribution"
+  lane :distribute do
+    gradle(
+      project_dir: "./android",
+      task: "assemble",
+      build_type: "Release"
+    )
+
+    firebase_app_distribution(
+      app: ENV["FIREBASE_ANDROID_APP_ID"],
+      service_credentials_file: ENV["GOOGLE_APPLICATION_CREDENTIALS"],
+      android_artifact_path: "./android/app/build/outputs/apk/release/app-release.apk",
+      groups: "testers",
+      release_notes: ENV["FIREBASE_APP_DISTRIBUTION_RELEASE_NOTES"] || "Development build"
+    )
+  end
+end
