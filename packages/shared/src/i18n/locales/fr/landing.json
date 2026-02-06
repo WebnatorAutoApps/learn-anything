@@ -82,7 +82,10 @@
     "t4Quote": "J'ai construit ma première étagère en suivant un projet LearnAnything. Elle tient toujours ! L'approche pratique m'a donné la confiance pour m'attaquer à des projets plus grands.",
     "t5Name": "Sara L.",
     "t5Skill": "Création d'Apps IA",
-    "t5Quote": "Je n'avais aucune expérience en apprentissage automatique, mais LearnAnything m'a guidée étape par étape pour créer mes propres applications d'IA. En quelques semaines, j'ai déployé un chatbot et un classificateur d'images — des compétences que j'utilise maintenant au travail tous les jours."
+    "t5Quote": "Je n'avais aucune expérience en apprentissage automatique, mais LearnAnything m'a guidée étape par étape pour créer mes propres applications d'IA. En quelques semaines, j'ai déployé un chatbot et un classificateur d'images — des compétences que j'utilise maintenant au travail tous les jours.",
+    "t6Name": "Gonzalo S.",
+    "t6Skill": "Préparation du Café",
+    "t6Quote": "Je pensais qu'un bon café nécessitait un équipement coûteux, mais LearnAnything m'a appris la science derrière l'extraction, la taille de la mouture et la température de l'eau. Maintenant je prépare des pour-overs et des espressos qui rivalisent avec mon café préféré — mes matins ne seront plus jamais les mêmes."
   },
   "pricing": {
     "title": "Tarification Simple",
