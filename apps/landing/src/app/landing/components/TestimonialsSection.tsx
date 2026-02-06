@@ -9,6 +9,7 @@ const testimonialsMeta = [
   { nameKey: "t3Name", skillKey: "t3Skill", quoteKey: "t3Quote", avatar: "JK" },
   { nameKey: "t4Name", skillKey: "t4Skill", quoteKey: "t4Quote", avatar: "ST" },
   { nameKey: "t5Name", skillKey: "t5Skill", quoteKey: "t5Quote", avatar: "SL" },
+  { nameKey: "t6Name", skillKey: "t6Skill", quoteKey: "t6Quote", avatar: "GS" },
 ];
 
 export default function TestimonialsSection() {
