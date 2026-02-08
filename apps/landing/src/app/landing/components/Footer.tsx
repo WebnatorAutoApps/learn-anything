@@ -7,7 +7,7 @@ import {
   BUSINESS_EMAIL,
   BUSINESS_ADDRESS,
   BUSINESS_HOURS,
-} from "@/seo";
+} from "@/config/constants";
 
 export default function Footer() {
   const { t } = useI18n();

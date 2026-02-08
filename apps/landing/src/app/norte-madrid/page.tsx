@@ -1,102 +1,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import JsonLd from "@/components/JsonLd";
 import {
-  SITE_URL,
   BUSINESS_NAME,
   BUSINESS_PHONE,
   BUSINESS_ADDRESS,
-  BUSINESS_GEO,
   BUSINESS_HOURS,
-} from "@/seo";
+} from "@/config/constants";
 
 export const metadata: Metadata = {
   title: "Mochi y Bubble Tea en Norte Madrid — Zona Norte",
   description:
     "Visita nuestra tienda de mochi artesanal, bubble tea y cafe de especialidad en la zona norte de Madrid. Calle de Orense 32, cerca de AZCA y Cuatro Torres. Abiertos de lunes a domingo.",
-  keywords: [
-    "norte madrid",
-    "zona norte madrid",
-    "mochi norte madrid",
-    "bubble tea norte madrid",
-    "cafe norte madrid",
-    "tienda japonesa norte madrid",
-    "AZCA madrid",
-    "Cuatro Torres madrid",
-  ],
   alternates: {
     canonical: "/norte-madrid",
   },
-  openGraph: {
-    title: "Mochi y Bubble Tea en Norte Madrid — Zona Norte",
-    description:
-      "Mochi artesanal, bubble tea y cafe de especialidad en zona norte de Madrid. Calle de Orense 32.",
-    url: `${SITE_URL}/norte-madrid`,
-  },
-};
-
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    {
-      "@type": "ListItem",
-      position: 1,
-      name: "Inicio",
-      item: SITE_URL,
-    },
-    {
-      "@type": "ListItem",
-      position: 2,
-      name: "Norte Madrid",
-      item: `${SITE_URL}/norte-madrid`,
-    },
-  ],
-};
-
-const placeSchema = {
-  "@context": "https://schema.org",
-  "@type": "Place",
-  name: `${BUSINESS_NAME} — Norte Madrid`,
-  description:
-    "Tienda de mochi, bubble tea, cafe de especialidad y anko en la zona norte de Madrid, cerca de AZCA y Cuatro Torres.",
-  address: {
-    "@type": "PostalAddress",
-    ...BUSINESS_ADDRESS,
-  },
-  geo: {
-    "@type": "GeoCoordinates",
-    ...BUSINESS_GEO,
-  },
-  telephone: BUSINESS_PHONE,
-  openingHoursSpecification: [
-    {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-      opens: "08:00",
-      closes: "21:00",
-    },
-    {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: "Saturday",
-      opens: "09:00",
-      closes: "22:00",
-    },
-    {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: "Sunday",
-      opens: "10:00",
-      closes: "20:00",
-    },
-  ],
 };
 
 export default function NorteMadridPage() {
   return (
     <div className="min-h-screen bg-white">
-      <JsonLd data={breadcrumbSchema} />
-      <JsonLd data={placeSchema} />
-
       {/* Top bar */}
       <nav className="border-b border-gray-100 bg-white">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 py-4 flex items-center justify-between">
@@ -247,7 +169,6 @@ export default function NorteMadridPage() {
           </div>
         </section>
 
-        {/* Neighborhood info for local SEO */}
         <section className="mb-12">
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">
             Norte de Madrid: Nuestro Barrio

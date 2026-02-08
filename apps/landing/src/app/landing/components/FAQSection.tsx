@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import ScrollReveal from "@/components/ScrollReveal";
-import JsonLd from "@/components/JsonLd";
 import { useI18n } from "@/i18n/I18nProvider";
 
 const faqKeys = [
@@ -71,22 +70,8 @@ export default function FAQSection() {
     answer: faq[item.answerKey],
   }));
 
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqs.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.answer,
-      },
-    })),
-  };
-
   return (
     <section id="faq" className="bg-gray-50 py-20 sm:py-28">
-      <JsonLd data={faqSchema} />
       <div className="mx-auto max-w-3xl px-4 sm:px-6">
         <ScrollReveal>
           <div className="text-center">

@@ -3,7 +3,7 @@
 import { SUPPORTED_LOCALES } from "@/lib/i18n";
 
 /**
- * Renders <link rel="alternate" hreflang="xx" /> tags for SEO.
+ * Renders <link rel="alternate" hreflang="xx" /> tags for multi-language support.
  * Injected into <head> via React portal / Next.js <head> support.
  */
 export default function HreflangTags() {
