@@ -1,89 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import JsonLd from "@/components/JsonLd";
-import { SITE_URL, BUSINESS_NAME, BUSINESS_ADDRESS } from "@/seo";
+import { BUSINESS_ADDRESS } from "@/config/constants";
 
 export const metadata: Metadata = {
   title: "Bubble Tea en Madrid — Te de Burbujas y Boba Tea",
   description:
     "Bubble tea fresco en Madrid con perlas de tapioca hechas al momento. Te con leche, te de frutas, boba tea y creaciones exclusivas. Zona norte de Madrid, Calle de Orense 32.",
-  keywords: [
-    "bubble tea madrid",
-    "boba tea madrid",
-    "te de burbujas madrid",
-    "bubble tea norte madrid",
-    "perlas de tapioca madrid",
-    "te con leche taiwan madrid",
-    "bubble tea cerca de mi",
-    "boba madrid",
-  ],
   alternates: {
     canonical: "/productos/bubble-tea",
   },
-  openGraph: {
-    title: "Bubble Tea en Madrid — Te de Burbujas y Boba Tea",
-    description:
-      "Bubble tea fresco con perlas de tapioca hechas al momento. Te con leche, frutas y creaciones exclusivas. Norte de Madrid.",
-    url: `${SITE_URL}/productos/bubble-tea`,
-  },
-};
-
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    {
-      "@type": "ListItem",
-      position: 1,
-      name: "Inicio",
-      item: SITE_URL,
-    },
-    {
-      "@type": "ListItem",
-      position: 2,
-      name: "Productos",
-      item: `${SITE_URL}/productos`,
-    },
-    {
-      "@type": "ListItem",
-      position: 3,
-      name: "Bubble Tea",
-      item: `${SITE_URL}/productos/bubble-tea`,
-    },
-  ],
-};
-
-const productSchema = {
-  "@context": "https://schema.org",
-  "@type": "Product",
-  name: "Bubble Tea",
-  description:
-    "Bubble tea fresco preparado al momento con perlas de tapioca caseras. Amplia variedad de sabores: te con leche clasico, taro, matcha, frutas tropicales y creaciones exclusivas de temporada.",
-  brand: {
-    "@type": "Brand",
-    name: BUSINESS_NAME,
-  },
-  offers: {
-    "@type": "AggregateOffer",
-    priceCurrency: "EUR",
-    lowPrice: "4.00",
-    highPrice: "7.50",
-    offerCount: "15",
-    availability: "https://schema.org/InStock",
-    seller: {
-      "@type": "Organization",
-      name: BUSINESS_NAME,
-    },
-  },
-  category: "Bebidas",
 };
 
 export default function BubbleTeaPage() {
   return (
     <div className="min-h-screen bg-white">
-      <JsonLd data={breadcrumbSchema} />
-      <JsonLd data={productSchema} />
-
       <nav className="border-b border-gray-100 bg-white">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link

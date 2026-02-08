@@ -1,90 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import JsonLd from "@/components/JsonLd";
-import { SITE_URL, BUSINESS_NAME, BUSINESS_ADDRESS } from "@/seo";
+import { BUSINESS_ADDRESS } from "@/config/constants";
 
 export const metadata: Metadata = {
   title: "Mochi Artesanal en Madrid — Mochis Frescos Cada Dia",
   description:
     "Mochi artesanal hecho a mano cada dia en Madrid. Mochis de helado, daifuku, matcha, fresa, mango y sabores de temporada. Visita nuestra tienda en zona norte de Madrid.",
-  keywords: [
-    "mochi madrid",
-    "mochis madrid",
-    "mochi artesanal",
-    "mochi helado madrid",
-    "daifuku madrid",
-    "mochi matcha",
-    "mochi fresa",
-    "dulces japoneses madrid",
-    "comprar mochi madrid",
-  ],
   alternates: {
     canonical: "/productos/mochi",
   },
-  openGraph: {
-    title: "Mochi Artesanal en Madrid — Mochis Frescos Cada Dia",
-    description:
-      "Mochi artesanal hecho a mano en Madrid. Sabores clasicos y de temporada. Zona norte de Madrid.",
-    url: `${SITE_URL}/productos/mochi`,
-  },
-};
-
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    {
-      "@type": "ListItem",
-      position: 1,
-      name: "Inicio",
-      item: SITE_URL,
-    },
-    {
-      "@type": "ListItem",
-      position: 2,
-      name: "Productos",
-      item: `${SITE_URL}/productos`,
-    },
-    {
-      "@type": "ListItem",
-      position: 3,
-      name: "Mochi",
-      item: `${SITE_URL}/productos/mochi`,
-    },
-  ],
-};
-
-const productSchema = {
-  "@context": "https://schema.org",
-  "@type": "Product",
-  name: "Mochi Artesanal",
-  description:
-    "Mochi artesanal hecho a mano cada dia con harina de arroz glutinoso de primera calidad. Disponible en multiples sabores: matcha, fresa, mango, chocolate, sesamo negro y sabores de temporada.",
-  brand: {
-    "@type": "Brand",
-    name: BUSINESS_NAME,
-  },
-  offers: {
-    "@type": "AggregateOffer",
-    priceCurrency: "EUR",
-    lowPrice: "2.50",
-    highPrice: "15.00",
-    offerCount: "12",
-    availability: "https://schema.org/InStock",
-    seller: {
-      "@type": "Organization",
-      name: BUSINESS_NAME,
-    },
-  },
-  category: "Dulces Japoneses",
 };
 
 export default function MochiPage() {
   return (
     <div className="min-h-screen bg-white">
-      <JsonLd data={breadcrumbSchema} />
-      <JsonLd data={productSchema} />
-
       <nav className="border-b border-gray-100 bg-white">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link
@@ -241,7 +170,6 @@ export default function MochiPage() {
           </Link>
         </section>
 
-        {/* Internal links */}
         <section>
           <h2 className="text-xl font-semibold text-gray-900 mb-4">
             Tambien te puede interesar

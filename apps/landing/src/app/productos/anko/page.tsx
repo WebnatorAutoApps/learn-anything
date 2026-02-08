@@ -1,89 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import JsonLd from "@/components/JsonLd";
-import { SITE_URL, BUSINESS_NAME, BUSINESS_ADDRESS } from "@/seo";
+import { BUSINESS_ADDRESS } from "@/config/constants";
 
 export const metadata: Metadata = {
   title: "Anko y Dulces Japoneses en Madrid — Pasta de Judias Rojas",
   description:
     "Anko artesanal (pasta de judias rojas) y dulces japoneses tradicionales en Madrid. Dorayaki, taiyaki, yokan y mas. Zona norte de Madrid, Calle de Orense 32.",
-  keywords: [
-    "anko madrid",
-    "pasta de judias rojas madrid",
-    "dulces japoneses madrid",
-    "dorayaki madrid",
-    "taiyaki madrid",
-    "wagashi madrid",
-    "red bean paste madrid",
-    "anko artesanal",
-  ],
   alternates: {
     canonical: "/productos/anko",
   },
-  openGraph: {
-    title: "Anko y Dulces Japoneses en Madrid",
-    description:
-      "Anko artesanal y dulces japoneses tradicionales en zona norte de Madrid. Dorayaki, taiyaki, yokan y mas.",
-    url: `${SITE_URL}/productos/anko`,
-  },
-};
-
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    {
-      "@type": "ListItem",
-      position: 1,
-      name: "Inicio",
-      item: SITE_URL,
-    },
-    {
-      "@type": "ListItem",
-      position: 2,
-      name: "Productos",
-      item: `${SITE_URL}/productos`,
-    },
-    {
-      "@type": "ListItem",
-      position: 3,
-      name: "Anko",
-      item: `${SITE_URL}/productos/anko`,
-    },
-  ],
-};
-
-const productSchema = {
-  "@context": "https://schema.org",
-  "@type": "Product",
-  name: "Anko y Dulces Japoneses",
-  description:
-    "Anko artesanal (pasta de judias rojas azuki) elaborado de forma tradicional. Tambien ofrecemos dorayaki, taiyaki, yokan, daifuku y otros dulces japoneses clasicos (wagashi).",
-  brand: {
-    "@type": "Brand",
-    name: BUSINESS_NAME,
-  },
-  offers: {
-    "@type": "AggregateOffer",
-    priceCurrency: "EUR",
-    lowPrice: "2.00",
-    highPrice: "12.00",
-    offerCount: "8",
-    availability: "https://schema.org/InStock",
-    seller: {
-      "@type": "Organization",
-      name: BUSINESS_NAME,
-    },
-  },
-  category: "Dulces Japoneses",
 };
 
 export default function AnkoPage() {
   return (
     <div className="min-h-screen bg-white">
-      <JsonLd data={breadcrumbSchema} />
-      <JsonLd data={productSchema} />
-
       <nav className="border-b border-gray-100 bg-white">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link

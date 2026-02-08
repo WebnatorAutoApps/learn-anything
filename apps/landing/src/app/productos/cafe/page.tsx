@@ -1,90 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import JsonLd from "@/components/JsonLd";
-import { SITE_URL, BUSINESS_NAME, BUSINESS_ADDRESS } from "@/seo";
+import { BUSINESS_ADDRESS } from "@/config/constants";
 
 export const metadata: Metadata = {
   title: "Cafe de Especialidad en Norte Madrid — Specialty Coffee",
   description:
     "Cafe de especialidad en la zona norte de Madrid. Granos de origen unico, tostado artesanal, espresso, pour-over y cold brew. Calle de Orense 32, cerca de AZCA.",
-  keywords: [
-    "cafe madrid norte",
-    "cafe especialidad madrid",
-    "specialty coffee madrid",
-    "cafe artesanal madrid",
-    "cafeteria norte madrid",
-    "espresso madrid",
-    "pour over madrid",
-    "cold brew madrid",
-    "cafe de origen madrid",
-  ],
   alternates: {
     canonical: "/productos/cafe",
   },
-  openGraph: {
-    title: "Cafe de Especialidad en Norte Madrid — Specialty Coffee",
-    description:
-      "Cafe de especialidad en zona norte de Madrid. Granos de origen unico, tostado artesanal. Calle de Orense 32.",
-    url: `${SITE_URL}/productos/cafe`,
-  },
-};
-
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    {
-      "@type": "ListItem",
-      position: 1,
-      name: "Inicio",
-      item: SITE_URL,
-    },
-    {
-      "@type": "ListItem",
-      position: 2,
-      name: "Productos",
-      item: `${SITE_URL}/productos`,
-    },
-    {
-      "@type": "ListItem",
-      position: 3,
-      name: "Cafe",
-      item: `${SITE_URL}/productos/cafe`,
-    },
-  ],
-};
-
-const productSchema = {
-  "@context": "https://schema.org",
-  "@type": "Product",
-  name: "Cafe de Especialidad",
-  description:
-    "Cafe de especialidad con granos de origen unico seleccionados y tostados artesanalmente. Metodos disponibles: espresso, pour-over, cold brew, AeroPress y french press.",
-  brand: {
-    "@type": "Brand",
-    name: BUSINESS_NAME,
-  },
-  offers: {
-    "@type": "AggregateOffer",
-    priceCurrency: "EUR",
-    lowPrice: "2.00",
-    highPrice: "5.50",
-    offerCount: "10",
-    availability: "https://schema.org/InStock",
-    seller: {
-      "@type": "Organization",
-      name: BUSINESS_NAME,
-    },
-  },
-  category: "Cafe",
 };
 
 export default function CafePage() {
   return (
     <div className="min-h-screen bg-white">
-      <JsonLd data={breadcrumbSchema} />
-      <JsonLd data={productSchema} />
-
       <nav className="border-b border-gray-100 bg-white">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 py-4 flex items-center justify-between">
           <Link
