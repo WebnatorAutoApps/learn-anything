@@ -6,7 +6,10 @@
     "pricing": "Tarifs",
     "logIn": "Se connecter",
     "signUpFree": "Inscription Gratuite",
-    "toggleMenu": "Basculer le menu"
+    "toggleMenu": "Basculer le menu",
+    "products": "Produits",
+    "faq": "FAQ",
+    "norteMadrid": "Nord de Madrid"
   },
   "hero": {
     "learn": "Apprenez",
@@ -100,13 +103,42 @@
     "feature5": "Accès à la communauté",
     "signUp": "Inscrivez-vous Gratuitement"
   },
+  "faq": {
+    "title": "Questions Fréquemment Posées",
+    "description": "Tout ce que vous devez savoir sur nos mochis, bubble tea et café de spécialité dans le Nord de Madrid.",
+    "faq1Q": "Quels types de mochi proposez-vous ?",
+    "faq1A": "Nous proposons des mochis artisanaux faits main en plusieurs saveurs : matcha, fraise, mangue, chocolat, daifuku classique à la pâte de haricots rouges (anko), sésame noir et spécialités de saison. Nous avons également de la glace mochi. Tous les mochis sont préparés frais chaque jour.",
+    "faq2Q": "Qu'est-ce que le bubble tea et quels parfums proposez-vous ?",
+    "faq2A": "Le bubble tea (également connu sous le nom de boba tea) est une boisson à base de thé taïwanaise avec des perles de tapioca moelleuses. Nous proposons du thé au lait classique, du thé au lait de taro, du bubble tea au matcha, du boba au sucre brun, des thés aux fruits (mangue, fruit de la passion, litchi, pêche) et des spécialités de saison. Vous pouvez personnaliser le niveau de sucre, de glace et les garnitures.",
+    "faq3Q": "Où êtes-vous situés dans le Nord de Madrid ?",
+    "faq3A": "Nous sommes situés Calle de Orense 32, 28020 Madrid, dans la zone nord de la ville. Nous sommes proches du quartier d'affaires AZCA et de la zone Cuatro Torres Business Area. Les stations de métro les plus proches sont Santiago Bernabéu (L10) et Nuevos Ministerios (L6, L8, L10).",
+    "faq4Q": "Quels sont vos horaires d'ouverture ?",
+    "faq4A": "Nous sommes ouverts du lundi au vendredi de 8h00 à 21h00, le samedi de 9h00 à 22h00 et le dimanche de 10h00 à 20h00.",
+    "faq5Q": "Quel type de café servez-vous ?",
+    "faq5A": "Nous servons du café de spécialité avec des grains d'origine unique de Colombie, d'Éthiopie, du Guatemala, du Kenya et du Brésil. Les méthodes de préparation comprennent l'espresso, le pour-over (V60), le cold brew, l'AeroPress et la cafetière à piston. Nous proposons également du matcha latte et d'autres boissons de spécialité.",
+    "faq6Q": "Qu'est-ce que l'anko ?",
+    "faq6A": "L'anko est une pâte sucrée faite à partir de haricots rouges azuki, un incontournable de la confiserie japonaise. Nous proposons à la fois le tsubuan (texture avec morceaux) et le koshian (texture lisse). Il est utilisé comme garniture dans de nombreuses pâtisseries traditionnelles comme le mochi, le dorayaki, le taiyaki et le yokan.",
+    "faq7Q": "Avez-vous des options pour les allergies ou les restrictions alimentaires ?",
+    "faq7A": "Beaucoup de nos produits sont naturellement sans gluten (mochi, bubble tea). Nous utilisons des ingrédients naturels sans conservateurs ni colorants artificiels. Veuillez informer notre personnel de toute allergie et nous serons heureux de vous aider à trouver des options adaptées.",
+    "faq8Q": "Puis-je commander à emporter ou en livraison ?",
+    "faq8A": "Oui, tous nos produits sont disponibles à emporter. Nous proposons également la livraison via les principales plateformes de livraison dans la zone Nord de Madrid. Visitez notre magasin ou consultez les applications de livraison pour le menu complet."
+  },
   "footer": {
-    "tagline": "Parcours d'apprentissage personnalisés par IA pour tout ce que vous pouvez imaginer. Entièrement gratuit, pour toujours.",
+    "tagline": "Mochi artisanal, bubble tea frais, café de spécialité et pâtisseries japonaises traditionnelles dans le Nord de Madrid.",
     "privacyPolicy": "Politique de Confidentialité",
     "termsConditions": "Conditions Générales",
     "copyright": "LearnAnything. Tous droits réservés.",
     "twitter": "Twitter",
-    "github": "GitHub"
+    "github": "GitHub",
+    "products": "Produits",
+    "mochi": "Mochi Artisanal",
+    "bubbleTea": "Bubble Tea",
+    "cafe": "Café de Spécialité",
+    "anko": "Anko & Pâtisseries Japonaises",
+    "quickLinks": "Liens Rapides",
+    "norteMadrid": "Nord de Madrid",
+    "faqLink": "FAQ",
+    "schedule": "Horaires d'Ouverture"
   },
   "cta": {
     "headline1": "La Première Plateforme d'Apprentissage Véritablement Personnalisée au Monde",

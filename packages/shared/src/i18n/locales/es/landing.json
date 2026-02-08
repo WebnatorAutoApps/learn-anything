@@ -6,7 +6,10 @@
     "pricing": "Precios",
     "logIn": "Iniciar sesión",
     "signUpFree": "Regístrate Gratis",
-    "toggleMenu": "Alternar menú"
+    "toggleMenu": "Alternar menú",
+    "products": "Productos",
+    "faq": "FAQ",
+    "norteMadrid": "Norte Madrid"
   },
   "hero": {
     "learn": "Aprende",
@@ -87,6 +90,26 @@
     "t6Skill": "Preparación de Café",
     "t6Quote": "Pensaba que un buen café requería equipos caros, pero LearnAnything me enseñó la ciencia detrás de la extracción, el tamaño de molienda y la temperatura del agua. Ahora preparo pour-overs y espressos que rivalizan con mi cafetería favorita — mis mañanas ya no son las mismas."
   },
+  "faq": {
+    "title": "Preguntas Frecuentes",
+    "description": "Todo lo que necesitas saber sobre nuestro mochi, bubble tea y cafe de especialidad en el norte de Madrid.",
+    "faq1Q": "¿Que tipos de mochi ofreceis?",
+    "faq1A": "Ofrecemos mochi artesanal hecho a mano en multiples sabores: matcha, fresa, mango, chocolate, daifuku clasico con anko (pasta de judias rojas), sesamo negro y especiales de temporada. Tambien tenemos mochi de helado. Todos los mochis se preparan frescos cada dia.",
+    "faq2Q": "¿Que es el bubble tea y que sabores teneis?",
+    "faq2A": "El bubble tea (tambien conocido como boba tea o te de burbujas) es una bebida taiwanesa a base de te con perlas de tapioca masticables. Ofrecemos te con leche clasico, taro milk tea, matcha bubble tea, brown sugar boba, tes de frutas (mango, maracuya, lichi, melocoton) y especiales de temporada. Puedes personalizar el dulzor, nivel de hielo y toppings.",
+    "faq3Q": "¿Donde estais en el norte de Madrid?",
+    "faq3A": "Estamos en Calle de Orense 32, 28020 Madrid, en la zona norte de la ciudad. Estamos cerca del distrito financiero de AZCA y la Cuatro Torres Business Area. Las estaciones de metro mas cercanas son Santiago Bernabeu (L10) y Nuevos Ministerios (L6, L8, L10).",
+    "faq4Q": "¿Cual es vuestro horario de apertura?",
+    "faq4A": "Estamos abiertos de lunes a viernes de 8:00 a 21:00, sabados de 9:00 a 22:00 y domingos de 10:00 a 20:00.",
+    "faq5Q": "¿Que tipo de cafe servís?",
+    "faq5A": "Servimos cafe de especialidad con granos de origen unico de Colombia, Etiopia, Guatemala, Kenya y Brasil. Los metodos de preparacion incluyen espresso, pour-over (V60), cold brew, AeroPress y french press. Tambien ofrecemos matcha latte y otras bebidas de especialidad.",
+    "faq6Q": "¿Que es el anko?",
+    "faq6A": "El anko es una pasta dulce hecha de judias rojas azuki, un ingrediente fundamental de la reposteria japonesa. Ofrecemos tanto tsubuan (textura granulada) como koshian (textura suave). Se usa como relleno en muchos dulces tradicionales como mochi, dorayaki, taiyaki y yokan.",
+    "faq7Q": "¿Teneis opciones para alergias o restricciones alimentarias?",
+    "faq7A": "Muchos de nuestros productos son naturalmente sin gluten (mochi, bubble tea). Usamos ingredientes naturales sin conservantes ni colorantes artificiales. Informa a nuestro personal sobre cualquier alergia y estaremos encantados de ayudarte a encontrar opciones adecuadas.",
+    "faq8Q": "¿Puedo pedir para llevar o a domicilio?",
+    "faq8A": "Si, todos nuestros productos estan disponibles para llevar. Tambien ofrecemos entrega a domicilio a traves de las principales plataformas de delivery en la zona norte de Madrid. Visita nuestra tienda o consulta las apps de delivery para ver el menu completo."
+  },
   "pricing": {
     "title": "Precios Simples",
     "description": "Sin tarifas ocultas. Sin pruebas. Sin tarjeta de crédito.",
@@ -101,12 +124,21 @@
     "signUp": "Regístrate Gratis"
   },
   "footer": {
-    "tagline": "Caminos de aprendizaje personalizados con IA para cualquier cosa que puedas imaginar. Completamente gratis, para siempre.",
+    "tagline": "Mochi artesanal, bubble tea fresco, cafe de especialidad y dulces japoneses tradicionales en el norte de Madrid.",
     "privacyPolicy": "Política de Privacidad",
     "termsConditions": "Términos y Condiciones",
     "copyright": "LearnAnything. Todos los derechos reservados.",
     "twitter": "Twitter",
-    "github": "GitHub"
+    "github": "GitHub",
+    "products": "Productos",
+    "mochi": "Mochi Artesanal",
+    "bubbleTea": "Bubble Tea",
+    "cafe": "Cafe de Especialidad",
+    "anko": "Anko y Dulces Japoneses",
+    "quickLinks": "Enlaces Rapidos",
+    "norteMadrid": "Norte Madrid",
+    "faqLink": "Preguntas Frecuentes",
+    "schedule": "Horario"
   },
   "cta": {
     "headline1": "La Primera Plataforma de Aprendizaje Verdaderamente Personalizada del Mundo",

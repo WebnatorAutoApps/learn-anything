@@ -10,6 +10,7 @@ import {
   CTABanner,
   ExamplesSection,
   TestimonialsSection,
+  FAQSection,
   PricingSection,
   Footer,
 } from "./components";
@@ -36,6 +37,7 @@ export default function LandingContent() {
         headline={cta.headline2}
         subtext={cta.subtext2}
       />
+      <FAQSection />
       <PricingSection />
       <Footer />
     </div>

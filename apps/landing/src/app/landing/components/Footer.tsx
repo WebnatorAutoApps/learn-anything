@@ -2,6 +2,12 @@
 
 import Link from "next/link";
 import { useI18n } from "@/i18n/I18nProvider";
+import {
+  BUSINESS_PHONE,
+  BUSINESS_EMAIL,
+  BUSINESS_ADDRESS,
+  BUSINESS_HOURS,
+} from "@/seo";
 
 export default function Footer() {
   const { t } = useI18n();
@@ -11,9 +17,9 @@ export default function Footer() {
   return (
     <footer className="bg-gray-900 py-12 sm:py-16">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
-          {/* Logo & tagline */}
-          <div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* Logo & tagline + contact */}
+          <div className="md:col-span-1">
             <div className="flex items-center gap-2 text-lg font-bold text-white">
               <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-green-600 text-white text-xs font-bold">
                 LA
@@ -23,40 +29,140 @@ export default function Footer() {
             <p className="mt-2 text-sm text-gray-400 max-w-xs">
               {ft.tagline}
             </p>
+            <div className="mt-4 space-y-2 text-sm text-gray-400">
+              <p>{BUSINESS_ADDRESS.streetAddress}</p>
+              <p>
+                {BUSINESS_ADDRESS.postalCode} {BUSINESS_ADDRESS.addressLocality}
+              </p>
+              <p>
+                <a
+                  href={`tel:${BUSINESS_PHONE}`}
+                  className="hover:text-white transition-colors"
+                >
+                  {BUSINESS_PHONE}
+                </a>
+              </p>
+              <p>
+                <a
+                  href={`mailto:${BUSINESS_EMAIL}`}
+                  className="hover:text-white transition-colors"
+                >
+                  {BUSINESS_EMAIL}
+                </a>
+              </p>
+            </div>
           </div>
 
-          {/* Links */}
-          <div className="flex flex-wrap gap-x-8 gap-y-3 text-sm">
-            <a
-              href="#how-it-works"
-              className="text-gray-400 hover:text-white transition-colors"
-            >
-              {nav.howItWorks}
-            </a>
-            <a
-              href="#examples"
-              className="text-gray-400 hover:text-white transition-colors"
-            >
-              {nav.examples}
-            </a>
-            <a
-              href="#pricing"
-              className="text-gray-400 hover:text-white transition-colors"
-            >
-              {nav.pricing}
-            </a>
-            <Link
-              href="/privacy-policy"
-              className="text-gray-400 hover:text-white transition-colors"
-            >
-              {ft.privacyPolicy}
-            </Link>
-            <Link
-              href="/terms-and-conditions"
-              className="text-gray-400 hover:text-white transition-colors"
-            >
-              {ft.termsConditions}
-            </Link>
+          {/* Products */}
+          <div>
+            <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">
+              {ft.products}
+            </h3>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link
+                  href="/productos/mochi"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  {ft.mochi}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/productos/bubble-tea"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  {ft.bubbleTea}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/productos/cafe"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  {ft.cafe}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/productos/anko"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  {ft.anko}
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Quick links */}
+          <div>
+            <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">
+              {ft.quickLinks}
+            </h3>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link
+                  href="/norte-madrid"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  {ft.norteMadrid}
+                </Link>
+              </li>
+              <li>
+                <a
+                  href="#how-it-works"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  {nav.howItWorks}
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#faq"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  {ft.faqLink}
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#testimonials"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  {nav.testimonials}
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Legal + hours */}
+          <div>
+            <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">
+              {ft.schedule}
+            </h3>
+            <ul className="space-y-1 text-sm text-gray-400 mb-4">
+              {BUSINESS_HOURS.map((hours) => (
+                <li key={hours}>{hours}</li>
+              ))}
+            </ul>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link
+                  href="/privacy-policy"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  {ft.privacyPolicy}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/terms-and-conditions"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  {ft.termsConditions}
+                </Link>
+              </li>
+            </ul>
           </div>
         </div>
 
