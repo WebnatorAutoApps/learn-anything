@@ -7,9 +7,7 @@
     "logIn": "Anmelden",
     "signUpFree": "Kostenlos Registrieren",
     "toggleMenu": "Menü umschalten",
-    "products": "Produkte",
-    "faq": "FAQ",
-    "norteMadrid": "Nord-Madrid"
+    "products": "Produkte"
   },
   "hero": {
     "learn": "Lerne",
@@ -102,43 +100,6 @@
     "feature4": "Fortschrittsverfolgung und Meilensteine",
     "feature5": "Zugang zur Community",
     "signUp": "Kostenlos Registrieren"
-  },
-  "faq": {
-    "title": "Häufig Gestellte Fragen",
-    "description": "Alles, was Sie über unsere Mochi, Bubble Tea und Spezialitätenkaffee in Nord-Madrid wissen müssen.",
-    "faq1Q": "Welche Arten von Mochi bieten Sie an?",
-    "faq1A": "Wir bieten handgefertigte Mochi in verschiedenen Geschmacksrichtungen an: Matcha, Erdbeere, Mango, Schokolade, klassisches Daifuku mit roter Bohnenpaste (Anko), schwarzer Sesam und saisonale Spezialitäten. Wir haben auch Mochi-Eis. Alle Mochis werden täglich frisch hergestellt.",
-    "faq2Q": "Was ist Bubble Tea und welche Geschmacksrichtungen haben Sie?",
-    "faq2A": "Bubble Tea (auch als Boba Tea bekannt) ist ein taiwanesisches Teegetränk mit kaubaren Tapioka-Perlen. Wir bieten klassischen Milchtee, Taro-Milchtee, Matcha Bubble Tea, Brown Sugar Boba, Früchtetees (Mango, Passionsfrucht, Litschi, Pfirsich) und saisonale Spezialitäten an. Sie können Süßegrad, Eisgehalt und Toppings individuell anpassen.",
-    "faq3Q": "Wo befinden Sie sich in Nord-Madrid?",
-    "faq3A": "Wir befinden uns in der Calle de Orense 32, 28020 Madrid, in der Nordzone der Stadt. Wir sind in der Nähe des AZCA-Geschäftsviertels und der Cuatro Torres Business Area. Die nächsten Metrostationen sind Santiago Bernabéu (L10) und Nuevos Ministerios (L6, L8, L10).",
-    "faq4Q": "Was sind Ihre Öffnungszeiten?",
-    "faq4A": "Wir sind montags bis freitags von 8:00 bis 21:00 Uhr, samstags von 9:00 bis 22:00 Uhr und sonntags von 10:00 bis 20:00 Uhr geöffnet.",
-    "faq5Q": "Welche Art von Kaffee servieren Sie?",
-    "faq5A": "Wir servieren Spezialitätenkaffee mit Single-Origin-Bohnen aus Kolumbien, Äthiopien, Guatemala, Kenia und Brasilien. Zu den Zubereitungsmethoden gehören Espresso, Pour-Over (V60), Cold Brew, AeroPress und French Press. Wir bieten auch Matcha Latte und andere Spezialitätengetränke an.",
-    "faq6Q": "Was ist Anko?",
-    "faq6A": "Anko ist eine süße Paste aus roten Azuki-Bohnen, ein Grundbestandteil der japanischen Konditorei. Wir bieten sowohl Tsubuan (grobe Textur) als auch Koshian (glatte Textur) an. Es wird als Füllung in vielen traditionellen Süßigkeiten wie Mochi, Dorayaki, Taiyaki und Yokan verwendet.",
-    "faq7Q": "Haben Sie Optionen für Allergien oder Ernährungseinschränkungen?",
-    "faq7A": "Viele unserer Produkte sind von Natur aus glutenfrei (Mochi, Bubble Tea). Wir verwenden natürliche Zutaten ohne künstliche Konservierungsstoffe oder Farbstoffe. Bitte informieren Sie unser Personal über etwaige Allergien und wir helfen Ihnen gerne, geeignete Optionen zu finden.",
-    "faq8Q": "Kann ich zum Mitnehmen oder zur Lieferung bestellen?",
-    "faq8A": "Ja, alle unsere Produkte sind zum Mitnehmen erhältlich. Wir bieten auch Lieferung über die großen Lieferplattformen im Gebiet Nord-Madrid an. Besuchen Sie unser Geschäft oder schauen Sie in den Liefer-Apps nach dem vollständigen Menü."
-  },
-  "footer": {
-    "tagline": "Handgemachte Mochi, frischer Bubble Tea, Spezialitätenkaffee und traditionelle japanische Süßigkeiten in Nord-Madrid.",
-    "privacyPolicy": "Datenschutzrichtlinie",
-    "termsConditions": "Allgemeine Geschäftsbedingungen",
-    "copyright": "LearnAnything. Alle Rechte vorbehalten.",
-    "twitter": "Twitter",
-    "github": "GitHub",
-    "products": "Produkte",
-    "mochi": "Handgemachte Mochi",
-    "bubbleTea": "Bubble Tea",
-    "cafe": "Spezialitätenkaffee",
-    "anko": "Anko & Japanische Süßigkeiten",
-    "quickLinks": "Schnelllinks",
-    "norteMadrid": "Nord-Madrid",
-    "faqLink": "FAQ",
-    "schedule": "Öffnungszeiten"
   },
   "cta": {
     "headline1": "Die Weltweit Erste Wirklich Personalisierte Lernplattform",
