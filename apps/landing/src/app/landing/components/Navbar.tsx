@@ -20,9 +20,10 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
-    { label: nav.products, href: "#examples" },
     { label: nav.howItWorks, href: "#how-it-works" },
+    { label: nav.products, href: "#examples" },
     { label: nav.testimonials, href: "#testimonials" },
+    { label: nav.pricing, href: "#pricing" },
   ];
 
   return (

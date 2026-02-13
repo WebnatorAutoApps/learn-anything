@@ -22,21 +22,23 @@ export default function LandingContent() {
     <div className="min-h-screen bg-white">
       <HreflangTags />
       <Navbar />
-      <HeroSection />
-      <HowItWorksSection />
-      <ValuePropositionSection />
-      <CTABanner
-        headline={cta.headline1}
-        subtext={cta.subtext1}
-      />
-      <ExamplesSection />
-      <TestimonialsSection />
-      <CTABanner
-        id="cta-final"
-        headline={cta.headline2}
-        subtext={cta.subtext2}
-      />
-      <PricingSection />
+      <main>
+        <HeroSection />
+        <HowItWorksSection />
+        <ValuePropositionSection />
+        <CTABanner
+          headline={cta.headline1}
+          subtext={cta.subtext1}
+        />
+        <ExamplesSection />
+        <TestimonialsSection />
+        <CTABanner
+          id="cta-final"
+          headline={cta.headline2}
+          subtext={cta.subtext2}
+        />
+        <PricingSection />
+      </main>
       <Footer />
     </div>
   );
