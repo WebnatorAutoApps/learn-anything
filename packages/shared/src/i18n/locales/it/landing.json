@@ -117,5 +117,21 @@
     "value2Desc": "Dimentica i corsi generici fatti per le masse. Il tuo percorso è costruito su misura intorno alla tua esperienza, ai tuoi obiettivi e al tuo ritmo. Non esistono due percorsi uguali.",
     "value3Title": "Possibilità Infinite",
     "value3Desc": "Non c'è catalogo da sfogliare. Non c'è limite. Dal calcolo quantistico alla ceramica, dalla produzione hip-hop al sumerico antico — se puoi nominarlo, possiamo insegnarlo."
+  },
+  "footer": {
+    "description": "Apprendimento personalizzato basato sull'IA. Padroneggia qualsiasi competenza attraverso progetti pratici — completamente gratis.",
+    "product": "Prodotto",
+    "howItWorks": "Come Funziona",
+    "examples": "Esempi",
+    "testimonials": "Testimonianze",
+    "pricing": "Prezzi",
+    "legal": "Legale",
+    "privacyPolicy": "Informativa sulla Privacy",
+    "termsAndConditions": "Termini e Condizioni",
+    "connect": "Connettiti",
+    "twitter": "Twitter",
+    "github": "GitHub",
+    "discord": "Discord",
+    "copyright": "LearnAnything. Tutti i diritti riservati."
   }
 }

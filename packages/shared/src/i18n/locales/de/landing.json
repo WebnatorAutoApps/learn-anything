@@ -117,5 +117,21 @@
     "value2Desc": "Vergiss Einheitskurse für die Masse. Dein Lernpfad wird maßgeschneidert um deine Erfahrung, deine Ziele und dein Tempo. Kein Weg gleicht dem anderen.",
     "value3Title": "Unendliche Möglichkeiten",
     "value3Desc": "Es gibt keinen Katalog zum Durchblättern. Es gibt kein Limit. Von Quantencomputing bis Töpfern, von Hip-Hop-Produktion bis Altsumerisch — wenn du es benennen kannst, können wir es lehren."
+  },
+  "footer": {
+    "description": "KI-gestütztes personalisiertes Lernen. Meistere jede Fähigkeit durch praktische Projekte — komplett kostenlos.",
+    "product": "Produkt",
+    "howItWorks": "So Funktioniert's",
+    "examples": "Beispiele",
+    "testimonials": "Erfahrungsberichte",
+    "pricing": "Preise",
+    "legal": "Rechtliches",
+    "privacyPolicy": "Datenschutzrichtlinie",
+    "termsAndConditions": "Nutzungsbedingungen",
+    "connect": "Verbinden",
+    "twitter": "Twitter",
+    "github": "GitHub",
+    "discord": "Discord",
+    "copyright": "LearnAnything. Alle Rechte vorbehalten."
   }
 }

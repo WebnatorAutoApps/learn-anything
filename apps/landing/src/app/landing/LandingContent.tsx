@@ -11,6 +11,7 @@ import {
   ExamplesSection,
   TestimonialsSection,
   PricingSection,
+  Footer,
 } from "./components";
 
 export default function LandingContent() {
@@ -36,6 +37,7 @@ export default function LandingContent() {
         subtext={cta.subtext2}
       />
       <PricingSection />
+      <Footer />
     </div>
   );
 }

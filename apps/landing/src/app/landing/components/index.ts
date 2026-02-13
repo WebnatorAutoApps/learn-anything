@@ -6,3 +6,4 @@ export { default as CTABanner } from "./CTABanner";
 export { default as ExamplesSection } from "./ExamplesSection";
 export { default as TestimonialsSection } from "./TestimonialsSection";
 export { default as PricingSection } from "./PricingSection";
+export { default as Footer } from "./Footer";

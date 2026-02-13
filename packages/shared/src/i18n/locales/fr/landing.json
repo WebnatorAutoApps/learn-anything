@@ -117,5 +117,21 @@
     "value2Desc": "Oubliez les cours génériques faits pour les masses. Votre parcours est construit sur mesure autour de votre expérience, vos objectifs et votre rythme. Aucun parcours n'est identique.",
     "value3Title": "Possibilités Infinies",
     "value3Desc": "Il n'y a pas de catalogue à parcourir. Il n'y a pas de limite. De l'informatique quantique à la poterie, de la production hip-hop au sumérien ancien — si vous pouvez le nommer, nous pouvons l'enseigner."
+  },
+  "footer": {
+    "description": "Apprentissage personnalisé propulsé par l'IA. Maîtrisez n'importe quelle compétence grâce à des projets pratiques — entièrement gratuit.",
+    "product": "Produit",
+    "howItWorks": "Comment Ça Marche",
+    "examples": "Exemples",
+    "testimonials": "Témoignages",
+    "pricing": "Tarifs",
+    "legal": "Juridique",
+    "privacyPolicy": "Politique de Confidentialité",
+    "termsAndConditions": "Conditions Générales",
+    "connect": "Nous Suivre",
+    "twitter": "Twitter",
+    "github": "GitHub",
+    "discord": "Discord",
+    "copyright": "LearnAnything. Tous droits réservés."
   }
 }
