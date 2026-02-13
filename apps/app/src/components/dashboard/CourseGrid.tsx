@@ -32,12 +32,12 @@ export default function CourseGrid({ courses, isLoading, onLearnClick }: CourseG
         {">"} {(d.activeProcessCount || "{count} active process(es) found").replace("{count}", String(courses.length))}
       </Text>
 
-      <View className="flex-row flex-wrap gap-3">
+      <View className="gap-3 sm:flex-row sm:flex-wrap">
         {courses.map((course, index) => (
           <Pressable
             key={course.id}
             onPress={() => router.push(`/(app)/course/${course.id}`)}
-            className="bg-theme-bg border border-theme-primary/20 p-3 flex-1 min-w-[180px] max-w-[300px]"
+            className="bg-theme-bg border border-theme-primary/20 p-3 w-full sm:flex-1 sm:min-w-[180px] sm:max-w-[300px]"
           >
             <View className="flex-row items-center mb-2">
               <Text className="font-mono text-sm text-theme-primary">
@@ -62,7 +62,7 @@ export default function CourseGrid({ courses, isLoading, onLearnClick }: CourseG
 
         <Pressable
           onPress={onLearnClick}
-          className="bg-theme-bg border border-dashed border-theme-primary/30 p-3 flex-1 min-w-[180px] max-w-[300px] items-center justify-center"
+          className="bg-theme-bg border border-dashed border-theme-primary/30 p-3 w-full sm:flex-1 sm:min-w-[180px] sm:max-w-[300px] items-center justify-center"
         >
           <Text className="font-mono text-theme-primary text-lg mb-1">
             +
