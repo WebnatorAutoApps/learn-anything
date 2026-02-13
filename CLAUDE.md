@@ -215,11 +215,26 @@ pnpm --filter @learn-anything/shared test:watch  # Watch mode
 
 ## CI/CD Pipeline
 
-Three jobs in `.github/workflows/ci.yml`:
+### Workflows
+
+Four workflow files in `.github/workflows/`:
+
+**`ci.yml`** — Primary CI (all pushes + PRs):
 
 1. **build** (all pushes + PRs): `pnpm install` → `pnpm lint` → `pnpm test` → `pnpm build`
 2. **migrate** (push to `main` only, after build): `supabase db push`
 3. **deploy-app** (after build): Expo web export → Vercel deploy (production on `main`, preview on branches/PRs with PR comment)
+
+**`deploy-firebase.yml`** — Automatic Firebase App Distribution (push to `main` + manual trigger):
+
+1. **ci**: Lint → Test → Build (gates deployment on passing checks)
+2. **deploy-firebase** (after ci): Expo prebuild → Gradle release APK → Firebase App Distribution via fastlane
+3. Uses `concurrency: firebase-deploy` to prevent overlapping deployments from rapid merges
+4. Also supports `workflow_dispatch` for manual deployments with custom release notes
+
+**`build-android.yml`** — Manual Android APK build (`workflow_dispatch` only):
+
+- One-off builds for testing or ad-hoc distribution via Firebase App Distribution
 
 ### Required GitHub secrets
 
@@ -233,6 +248,12 @@ Three jobs in `.github/workflows/ci.yml`:
 | `VERCEL_TOKEN` | Vercel deployment auth |
 | `VERCEL_ORG_ID` | Vercel organization |
 | `VERCEL_PROJECT_ID` | Vercel project |
+| `ANDROID_KEYSTORE_BASE64` | Base64-encoded Android release keystore |
+| `ANDROID_KEYSTORE_PASSWORD` | Keystore password |
+| `ANDROID_KEY_ALIAS` | Private key alias in keystore |
+| `ANDROID_KEY_PASSWORD` | Private key password |
+| `FIREBASE_SERVICE_ACCOUNT_BASE64` | Base64-encoded Firebase service account JSON |
+| `FIREBASE_ANDROID_APP_ID` | Firebase App ID for distribution |
 
 ## Local Verification (Required Before Every Push)
 

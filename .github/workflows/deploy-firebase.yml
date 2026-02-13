@@ -1,16 +1,51 @@
-name: Build Android APK (Manual)
+name: Deploy to Firebase
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
     inputs:
       message:
         description: "Release notes (shown in Firebase)"
         required: false
-        default: "Development build"
+        default: "Manual deployment"
+
+concurrency:
+  group: firebase-deploy
+  cancel-in-progress: false
 
 jobs:
-  build-android:
+  ci:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build
+        env:
+          EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.EXPO_PUBLIC_SUPABASE_URL }}
+          EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY }}
+
+  deploy-firebase:
+    runs-on: ubuntu-latest
+    needs: ci
+    environment: production
     steps:
       - uses: actions/checkout@v4
 
@@ -66,7 +101,7 @@ jobs:
       - name: Decode Firebase service account
         run: echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_BASE64 }}" | base64 -d > /tmp/firebase-sa.json
 
-      - name: Build and distribute
+      - name: Build and distribute to Firebase
         run: bundle exec fastlane android distribute
         working-directory: apps/app
         env:
@@ -74,4 +109,12 @@ jobs:
           EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY }}
           FIREBASE_ANDROID_APP_ID: ${{ secrets.FIREBASE_ANDROID_APP_ID }}
           GOOGLE_APPLICATION_CREDENTIALS: /tmp/firebase-sa.json
-          FIREBASE_APP_DISTRIBUTION_RELEASE_NOTES: ${{ inputs.message }}
+          FIREBASE_APP_DISTRIBUTION_RELEASE_NOTES: ${{ inputs.message || format('Automated deploy from {0}', github.sha) }}
+
+      - name: Report deployment success
+        if: success()
+        run: echo "::notice::Firebase deployment succeeded for commit ${{ github.sha }}"
+
+      - name: Report deployment failure
+        if: failure()
+        run: echo "::error::Firebase deployment failed for commit ${{ github.sha }}. Check the logs above for details."
