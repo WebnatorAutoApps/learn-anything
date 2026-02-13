@@ -117,5 +117,21 @@
     "value2Desc": "大衆向けに作られた画一的なコースは忘れてください。あなたの学習パスは、あなたの経験、目標、ペースに合わせてカスタムメイドされます。同じパスは二つとありません。",
     "value3Title": "無限の可能性",
     "value3Desc": "閲覧するカタログはありません。制限もありません。量子コンピュータから陶芸、ヒップホップ制作から古代シュメール語まで — 名前を挙げられるものなら、何でも教えられます。"
+  },
+  "footer": {
+    "description": "AI搭載のパーソナライズ学習。実践的なプロジェクトであらゆるスキルをマスター — 完全無料。",
+    "product": "製品",
+    "howItWorks": "仕組み",
+    "examples": "例",
+    "testimonials": "受講者の声",
+    "pricing": "料金",
+    "legal": "法的情報",
+    "privacyPolicy": "プライバシーポリシー",
+    "termsAndConditions": "利用規約",
+    "connect": "フォロー",
+    "twitter": "Twitter",
+    "github": "GitHub",
+    "discord": "Discord",
+    "copyright": "LearnAnything。全著作権所有。"
   }
 }

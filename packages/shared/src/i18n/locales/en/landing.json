@@ -117,5 +117,21 @@
     "value2Desc": "Forget one-size-fits-all courses made for the masses. Your learning path is custom-built around your experience, your goals, and your pace. No two paths are the same.",
     "value3Title": "Infinite Possibilities",
     "value3Desc": "There is no catalog to browse. There is no limit. From quantum computing to pottery, from hip-hop production to ancient Sumerian — if you can name it, we can teach it."
+  },
+  "footer": {
+    "description": "AI-powered personalized learning. Master any skill through hands-on projects — completely free.",
+    "product": "Product",
+    "howItWorks": "How It Works",
+    "examples": "Examples",
+    "testimonials": "Testimonials",
+    "pricing": "Pricing",
+    "legal": "Legal",
+    "privacyPolicy": "Privacy Policy",
+    "termsAndConditions": "Terms & Conditions",
+    "connect": "Connect",
+    "twitter": "Twitter",
+    "github": "GitHub",
+    "discord": "Discord",
+    "copyright": "LearnAnything. All rights reserved."
   }
 }

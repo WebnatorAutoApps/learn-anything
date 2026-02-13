@@ -117,5 +117,21 @@
     "value2Desc": "Olvídate de los cursos genéricos hechos para las masas. Tu camino de aprendizaje se construye a medida de tu experiencia, tus objetivos y tu ritmo. No hay dos caminos iguales.",
     "value3Title": "Posibilidades Infinitas",
     "value3Desc": "No hay catálogo que explorar. No hay límite. Desde computación cuántica hasta cerámica, desde producción de hip-hop hasta sumerio antiguo — si puedes nombrarlo, podemos enseñarlo."
+  },
+  "footer": {
+    "description": "Aprendizaje personalizado impulsado por IA. Domina cualquier habilidad a través de proyectos prácticos — completamente gratis.",
+    "product": "Producto",
+    "howItWorks": "Cómo Funciona",
+    "examples": "Ejemplos",
+    "testimonials": "Testimonios",
+    "pricing": "Precios",
+    "legal": "Legal",
+    "privacyPolicy": "Política de Privacidad",
+    "termsAndConditions": "Términos y Condiciones",
+    "connect": "Conectar",
+    "twitter": "Twitter",
+    "github": "GitHub",
+    "discord": "Discord",
+    "copyright": "LearnAnything. Todos los derechos reservados."
   }
 }

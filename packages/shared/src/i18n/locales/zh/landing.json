@@ -117,5 +117,21 @@
     "value2Desc": "忘掉那些为大众制作的通用课程吧。你的学习路径是围绕你的经验、目标和节奏量身定制的。没有两条路径是相同的。",
     "value3Title": "无限可能",
     "value3Desc": "没有目录可以浏览。没有限制。从量子计算到陶艺，从嘻哈音乐制作到古苏美尔语——只要你能说出来，我们就能教。"
+  },
+  "footer": {
+    "description": "AI驱动的个性化学习。通过实践项目掌握任何技能——完全免费。",
+    "product": "产品",
+    "howItWorks": "使用方法",
+    "examples": "学习示例",
+    "testimonials": "用户评价",
+    "pricing": "价格",
+    "legal": "法律",
+    "privacyPolicy": "隐私政策",
+    "termsAndConditions": "服务条款",
+    "connect": "关注我们",
+    "twitter": "Twitter",
+    "github": "GitHub",
+    "discord": "Discord",
+    "copyright": "LearnAnything。保留所有权利。"
   }
 }
