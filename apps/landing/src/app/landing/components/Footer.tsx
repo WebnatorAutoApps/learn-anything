@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useI18n } from "@/i18n/I18nProvider";
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://app.learnanything.com";
+
 export default function Footer() {
   const { t } = useI18n();
   const footer = t.footer as Record<string, string>;
@@ -12,6 +14,13 @@ export default function Footer() {
     { label: footer.examples, href: "#examples" },
     { label: footer.testimonials, href: "#testimonials" },
     { label: footer.pricing, href: "#pricing" },
+  ];
+
+  const skillLinks = [
+    { label: footer.learnCoding, href: `${APP_URL}/signup` },
+    { label: footer.learnGuitar, href: `${APP_URL}/signup` },
+    { label: footer.learnPhotography, href: `${APP_URL}/signup` },
+    { label: footer.learnCooking, href: `${APP_URL}/signup` },
   ];
 
   const legalLinks = [
@@ -56,7 +65,7 @@ export default function Footer() {
   return (
     <footer className="bg-gray-950 text-gray-400">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
           {/* Brand column */}
           <div className="sm:col-span-2 lg:col-span-1">
             <Link href="/" className="flex items-center gap-2 text-lg font-bold text-white">
@@ -76,6 +85,23 @@ export default function Footer() {
             <ul className="mt-4 space-y-3">
               {productLinks.map((link) => (
                 <li key={link.href}>
+                  <a
+                    href={link.href}
+                    className="text-sm hover:text-white transition-colors"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Popular Skills */}
+          <div>
+            <h3 className="text-sm font-semibold text-white">{footer.learnTitle}</h3>
+            <ul className="mt-4 space-y-3">
+              {skillLinks.map((link) => (
+                <li key={link.label}>
                   <a
                     href={link.href}
                     className="text-sm hover:text-white transition-colors"
