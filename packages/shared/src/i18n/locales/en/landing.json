@@ -7,9 +7,7 @@
     "logIn": "Log in",
     "signUpFree": "Sign Up Free",
     "toggleMenu": "Toggle menu",
-    "products": "Products",
-    "faq": "FAQ",
-    "norteMadrid": "North Madrid"
+    "products": "Products"
   },
   "hero": {
     "learn": "Learn",
@@ -90,26 +88,6 @@
     "t6Skill": "Coffee Making",
     "t6Quote": "I used to think good coffee required expensive equipment, but LearnAnything taught me the science behind extraction, grind size, and water temperature. Now I brew pour-overs and espressos that rival my favorite café — my mornings have never been the same."
   },
-  "faq": {
-    "title": "Frequently Asked Questions",
-    "description": "Everything you need to know about our mochi, bubble tea and specialty coffee in North Madrid.",
-    "faq1Q": "What types of mochi do you offer?",
-    "faq1A": "We offer handmade artisanal mochi in multiple flavors: matcha, strawberry, mango, chocolate, classic daifuku with red bean paste (anko), black sesame, and seasonal specials. We also have mochi ice cream. All mochis are made fresh daily.",
-    "faq2Q": "What is bubble tea and what flavors do you have?",
-    "faq2A": "Bubble tea (also known as boba tea) is a Taiwanese tea-based drink with chewy tapioca pearls. We offer classic milk tea, taro milk tea, matcha bubble tea, brown sugar boba, fruit teas (mango, passion fruit, lychee, peach), and seasonal specials. You can customize sweetness, ice level, and toppings.",
-    "faq3Q": "Where are you located in North Madrid?",
-    "faq3A": "We are located at Calle de Orense 32, 28020 Madrid, in the north zone of the city. We are close to the AZCA business district and the Cuatro Torres Business Area. The nearest metro stations are Santiago Bernabeu (L10) and Nuevos Ministerios (L6, L8, L10).",
-    "faq4Q": "What are your opening hours?",
-    "faq4A": "We are open Monday to Friday from 8:00 AM to 9:00 PM, Saturdays from 9:00 AM to 10:00 PM, and Sundays from 10:00 AM to 8:00 PM.",
-    "faq5Q": "What kind of coffee do you serve?",
-    "faq5A": "We serve specialty coffee with single-origin beans from Colombia, Ethiopia, Guatemala, Kenya, and Brazil. Brewing methods include espresso, pour-over (V60), cold brew, AeroPress, and French press. We also offer matcha latte and other specialty drinks.",
-    "faq6Q": "What is anko?",
-    "faq6A": "Anko is a sweet paste made from red azuki beans, a staple of Japanese confectionery. We offer both tsubuan (chunky texture) and koshian (smooth texture). It is used as filling in many traditional sweets like mochi, dorayaki, taiyaki, and yokan.",
-    "faq7Q": "Do you have options for allergies or dietary restrictions?",
-    "faq7A": "Many of our products are naturally gluten-free (mochi, bubble tea). We use natural ingredients without artificial preservatives or colorants. Please let our staff know about any allergies and we will be happy to help you find suitable options.",
-    "faq8Q": "Can I order for takeaway or delivery?",
-    "faq8A": "Yes, all our products are available for takeaway. We also offer delivery through major delivery platforms in the North Madrid area. Visit our store or check the delivery apps for the full menu."
-  },
   "pricing": {
     "title": "Simple Pricing",
     "description": "No hidden fees. No trials. No credit card required.",
@@ -122,23 +100,6 @@
     "feature4": "Progress tracking and milestones",
     "feature5": "Community access",
     "signUp": "Sign Up for Free"
-  },
-  "footer": {
-    "tagline": "Artisanal mochi, fresh bubble tea, specialty coffee, and traditional Japanese sweets in North Madrid.",
-    "privacyPolicy": "Privacy Policy",
-    "termsConditions": "Terms & Conditions",
-    "copyright": "LearnAnything. All rights reserved.",
-    "twitter": "Twitter",
-    "github": "GitHub",
-    "products": "Products",
-    "mochi": "Artisanal Mochi",
-    "bubbleTea": "Bubble Tea",
-    "cafe": "Specialty Coffee",
-    "anko": "Anko & Japanese Sweets",
-    "quickLinks": "Quick Links",
-    "norteMadrid": "North Madrid",
-    "faqLink": "FAQ",
-    "schedule": "Opening Hours"
   },
   "cta": {
     "headline1": "The World's First Truly Personalized Learning Platform",

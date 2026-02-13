@@ -7,9 +7,7 @@
     "logIn": "Accedi",
     "signUpFree": "Registrati Gratis",
     "toggleMenu": "Apri/chiudi menu",
-    "products": "Prodotti",
-    "faq": "FAQ",
-    "norteMadrid": "Nord di Madrid"
+    "products": "Prodotti"
   },
   "hero": {
     "learn": "Impara",
@@ -102,43 +100,6 @@
     "feature4": "Monitoraggio progressi e traguardi",
     "feature5": "Accesso alla comunità",
     "signUp": "Registrati Gratis"
-  },
-  "faq": {
-    "title": "Domande Frequenti",
-    "description": "Tutto quello che devi sapere sui nostri mochi, bubble tea e caffè speciale nel Nord di Madrid.",
-    "faq1Q": "Quali tipi di mochi offrite?",
-    "faq1A": "Offriamo mochi artigianali fatti a mano in molteplici gusti: matcha, fragola, mango, cioccolato, daifuku classico con pasta di fagioli rossi (anko), sesamo nero e specialità stagionali. Abbiamo anche gelato mochi. Tutti i mochi sono preparati freschi ogni giorno.",
-    "faq2Q": "Cos'è il bubble tea e quali gusti avete?",
-    "faq2A": "Il bubble tea (noto anche come boba tea) è una bevanda taiwanese a base di tè con perle di tapioca gommose. Offriamo tè al latte classico, tè al latte di taro, bubble tea al matcha, boba allo zucchero di canna, tè alla frutta (mango, frutto della passione, litchi, pesca) e specialità stagionali. Puoi personalizzare il livello di dolcezza, ghiaccio e guarnizioni.",
-    "faq3Q": "Dove vi trovate nel Nord di Madrid?",
-    "faq3A": "Ci troviamo in Calle de Orense 32, 28020 Madrid, nella zona nord della città. Siamo vicini al quartiere degli affari AZCA e alla Cuatro Torres Business Area. Le stazioni della metropolitana più vicine sono Santiago Bernabéu (L10) e Nuevos Ministerios (L6, L8, L10).",
-    "faq4Q": "Quali sono i vostri orari di apertura?",
-    "faq4A": "Siamo aperti dal lunedì al venerdì dalle 8:00 alle 21:00, il sabato dalle 9:00 alle 22:00 e la domenica dalle 10:00 alle 20:00.",
-    "faq5Q": "Che tipo di caffè servite?",
-    "faq5A": "Serviamo caffè speciale con chicchi single-origin dalla Colombia, Etiopia, Guatemala, Kenya e Brasile. I metodi di preparazione includono espresso, pour-over (V60), cold brew, AeroPress e French press. Offriamo anche matcha latte e altre bevande speciali.",
-    "faq6Q": "Cos'è l'anko?",
-    "faq6A": "L'anko è una pasta dolce fatta con fagioli rossi azuki, un elemento fondamentale della pasticceria giapponese. Offriamo sia tsubuan (consistenza con pezzi) che koshian (consistenza liscia). Viene usato come ripieno in molti dolci tradizionali come mochi, dorayaki, taiyaki e yokan.",
-    "faq7Q": "Avete opzioni per allergie o restrizioni alimentari?",
-    "faq7A": "Molti dei nostri prodotti sono naturalmente senza glutine (mochi, bubble tea). Utilizziamo ingredienti naturali senza conservanti o coloranti artificiali. Vi preghiamo di informare il nostro personale di eventuali allergie e saremo lieti di aiutarvi a trovare opzioni adatte.",
-    "faq8Q": "Posso ordinare da asporto o con consegna a domicilio?",
-    "faq8A": "Sì, tutti i nostri prodotti sono disponibili da asporto. Offriamo anche consegna a domicilio tramite le principali piattaforme di delivery nella zona del Nord di Madrid. Visitate il nostro negozio o controllate le app di consegna per il menu completo."
-  },
-  "footer": {
-    "tagline": "Mochi artigianale, bubble tea fresco, caffè speciale e dolci giapponesi tradizionali nel Nord di Madrid.",
-    "privacyPolicy": "Informativa sulla Privacy",
-    "termsConditions": "Termini e Condizioni",
-    "copyright": "LearnAnything. Tutti i diritti riservati.",
-    "twitter": "Twitter",
-    "github": "GitHub",
-    "products": "Prodotti",
-    "mochi": "Mochi Artigianale",
-    "bubbleTea": "Bubble Tea",
-    "cafe": "Caffè Speciale",
-    "anko": "Anko & Dolci Giapponesi",
-    "quickLinks": "Link Rapidi",
-    "norteMadrid": "Nord di Madrid",
-    "faqLink": "FAQ",
-    "schedule": "Orari di Apertura"
   },
   "cta": {
     "headline1": "La Prima Piattaforma di Apprendimento Veramente Personalizzata al Mondo",

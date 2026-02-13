@@ -15,17 +15,17 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Mochi y Bubble Tea en Norte Madrid | LearnAnything",
+    default: "LearnAnything — Learn Any Skill with AI-Powered Personalized Courses",
     template: "%s | LearnAnything",
   },
   description:
-    "Mochi artesanal, bubble tea, cafe de especialidad y anko en la zona norte de Madrid. Ingredientes frescos, recetas japonesas autenticas. Visita nuestra tienda en Calle de Orense 32.",
+    "Master any skill through hands-on, AI-generated learning paths. Guitar, coding, photography, woodworking — tell our AI what you want to learn and get a personalized course built just for you. Free forever.",
   metadataBase: new URL(SITE_URL),
   alternates: {
     canonical: "/",
     languages: {
-      "es": "/",
-      "en": "/?lang=en",
+      "en": "/",
+      "es": "/?lang=es",
       "fr": "/?lang=fr",
       "de": "/?lang=de",
       "it": "/?lang=it",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
       "ja": "/?lang=ja",
     },
   },
-  category: "food & drink",
+  category: "education",
 };
 
 export default function RootLayout({
@@ -42,7 +42,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
+    <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

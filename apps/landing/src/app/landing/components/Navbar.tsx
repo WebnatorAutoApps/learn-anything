@@ -23,8 +23,6 @@ export default function Navbar() {
     { label: nav.products, href: "#examples" },
     { label: nav.howItWorks, href: "#how-it-works" },
     { label: nav.testimonials, href: "#testimonials" },
-    { label: nav.faq, href: "#faq" },
-    { label: nav.norteMadrid, href: "/norte-madrid", isLink: true },
   ];
 
   return (
@@ -52,33 +50,19 @@ export default function Navbar() {
 
           {/* Desktop nav links */}
           <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) =>
-              link.isLink ? (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`text-sm font-medium transition-colors ${
-                    scrolled
-                      ? "text-gray-600 hover:text-green-600"
-                      : "text-white/80 hover:text-white"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ) : (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className={`text-sm font-medium transition-colors ${
-                    scrolled
-                      ? "text-gray-600 hover:text-green-600"
-                      : "text-white/80 hover:text-white"
-                  }`}
-                >
-                  {link.label}
-                </a>
-              ),
-            )}
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className={`text-sm font-medium transition-colors ${
+                  scrolled
+                    ? "text-gray-600 hover:text-green-600"
+                    : "text-white/80 hover:text-white"
+                }`}
+              >
+                {link.label}
+              </a>
+            ))}
           </div>
 
           {/* Auth buttons + Language Switcher */}
@@ -141,27 +125,16 @@ export default function Navbar() {
         {/* Mobile menu */}
         {mobileOpen && (
           <div className="md:hidden pb-4 border-t border-gray-100 mt-2 pt-4 bg-white rounded-b-lg">
-            {navLinks.map((link) =>
-              link.isLink ? (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileOpen(false)}
-                  className="block py-2 text-sm font-medium text-gray-600 hover:text-green-600 transition-colors"
-                >
-                  {link.label}
-                </Link>
-              ) : (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileOpen(false)}
-                  className="block py-2 text-sm font-medium text-gray-600 hover:text-green-600 transition-colors"
-                >
-                  {link.label}
-                </a>
-              ),
-            )}
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileOpen(false)}
+                className="block py-2 text-sm font-medium text-gray-600 hover:text-green-600 transition-colors"
+              >
+                {link.label}
+              </a>
+            ))}
             <div className="mt-4 flex flex-col gap-2">
               <a
                 href={`${APP_URL}/login`}
